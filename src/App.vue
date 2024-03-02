@@ -2,12 +2,15 @@
 import { RouterView } from "vue-router";
 import { LAYOUTS } from "@/config";
 import { Authenticated, Default } from "@/components/Layout";
+import { useRoute } from "vue-router";
 
 import "@/assets/index.css";
+
+const route = useRoute();
 </script>
 
 <template>
-  <Authenticated v-if="this.$route.meta.layout == LAYOUTS.AUTHENTICATED">
+  <Authenticated v-if="route.meta.layout == LAYOUTS.AUTHENTICATED">
     <RouterView />
   </Authenticated>
   <Default v-else>

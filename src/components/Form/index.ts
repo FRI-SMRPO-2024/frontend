@@ -1,5 +1,6 @@
 import BaseForm from "./BaseForm.vue";
 import FieldWrapper from "./FieldWrapper.vue";
 import InputField from "./InputField.vue";
+import SelectField from "./SelectField.vue";
 
-export { BaseForm, FieldWrapper, InputField };
+export { BaseForm, FieldWrapper, InputField, SelectField };

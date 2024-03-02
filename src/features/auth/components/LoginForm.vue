@@ -3,6 +3,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 
 import { BaseForm, InputField } from "@/components/Form";
+import { LoginFormData } from "../types";
 
 const validationSchema = toTypedSchema(
   z.object({
@@ -11,7 +12,7 @@ const validationSchema = toTypedSchema(
   }),
 );
 
-async function onSubmit(values: { email: string; password: string }) {
+async function onSubmit(values: LoginFormData) {
   console.log(values);
 
   // TODO: Connect to API
