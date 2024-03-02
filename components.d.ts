@@ -9,9 +9,12 @@ declare module 'vue' {
   export interface GlobalComponents {
     AppBar: typeof import('./src/components/Navigation/AppBar.vue')['default']
     Authenticated: typeof import('./src/components/Layout/Authenticated.vue')['default']
+    BaseForm: typeof import('./src/components/Form/BaseForm.vue')['default']
     Default: typeof import('./src/components/Layout/Default.vue')['default']
+    FieldWrapper: typeof import('./src/components/Form/FieldWrapper.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
-    MainLayout: typeof import('./src/components/Layout/MainLayout.vue')['default']
+    InputField: typeof import('./src/components/Form/InputField.vue')['default']
+    MainLayout: (typeof import("./src/components/Layout/MainLayout.vue"))["default"]
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Sidebar: typeof import('./src/components/Navigation/Sidebar.vue')['default']

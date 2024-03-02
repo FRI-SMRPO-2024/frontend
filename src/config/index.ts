@@ -1,4 +1,4 @@
 export const LAYOUTS = {
-    DEFAULT: 'default',
-    AUTHENTICATED: 'authenticated'
+  DEFAULT: "default",
+  AUTHENTICATED: "authenticated",
 };

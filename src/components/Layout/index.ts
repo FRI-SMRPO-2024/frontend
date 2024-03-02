@@ -1,4 +1,4 @@
-import Authenticated from "./Authenticated";
-import Default from "./Default";
+import Authenticated from "./Authenticated.vue";
+import Default from "./Default.vue";
 
 export { Authenticated, Default };
