@@ -11,9 +11,5 @@
             </div>
         </v-main>
     </div>
-    </v-layout>
-  </template>
-
-<script>
-    import { Sidebar, AppBar } from "@/components/Navigation";
-</script>
+  </v-layout>
+</template>
