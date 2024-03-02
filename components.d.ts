@@ -14,7 +14,7 @@ declare module 'vue' {
     FieldWrapper: typeof import('./src/components/Form/FieldWrapper.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     InputField: typeof import('./src/components/Form/InputField.vue')['default']
-    MainLayout: (typeof import("./src/components/Layout/MainLayout.vue"))["default"]
+    MainLayout: typeof import('./src/components/Layout/MainLayout.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Sidebar: typeof import('./src/components/Navigation/Sidebar.vue')['default']

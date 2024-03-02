@@ -13,6 +13,7 @@
     </div>
   </v-layout>
 </template>
+
 <script setup lang="ts">
 import { AppBar, Sidebar } from "@/components/Navigation";
 </script>
