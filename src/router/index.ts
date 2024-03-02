@@ -5,8 +5,14 @@ import { publicRoutes } from "./public";
 import { LAYOUTS } from "@/config";
 
 const routes = [
-  ...protectedRoutes.map((route: object) => ({ ...route, meta: { layout: LAYOUTS.AUTHENTICATED } })), 
-  ...publicRoutes.map((route: object) => ({ ...route, meta: { layout: LAYOUTS.DEFAULT } }))
+  ...protectedRoutes.map((route: object) => ({
+    ...route,
+    meta: { layout: LAYOUTS.AUTHENTICATED },
+  })),
+  ...publicRoutes.map((route: object) => ({
+    ...route,
+    meta: { layout: LAYOUTS.DEFAULT },
+  })),
 ];
 
 const router = createRouter({

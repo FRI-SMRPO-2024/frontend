@@ -1,4 +1,4 @@
-import Sidebar from "./Sidebar";
-import AppBar from "./AppBar";
+import Sidebar from "./Sidebar.vue";
+import AppBar from "./AppBar.vue";
 
 export { Sidebar, AppBar };

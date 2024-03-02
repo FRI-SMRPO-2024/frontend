@@ -1,9 +1,9 @@
-import LoginView from "@/features/auth/routes/LoginView";
+import { LoginView } from "@/features/auth/routes";
 
 export const publicRoutes = [
-    {
-        path: "/auth/login",
-        name: "login",
-        component: LoginView,
-    },
+  {
+    path: "/auth/login",
+    name: "login",
+    component: LoginView,
+  },
 ];

@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
-
-import {ref, toRef} from "vue";
+import { ref, toRef } from "vue";
 import { useField } from "vee-validate";
 
 import FieldWrapper from "@/components/Form/FieldWrapper.vue";
@@ -33,7 +31,7 @@ const {
 
 function togglePasswordVisibility() {
   displayPassword.value = !displayPassword.value;
-  inputRef.value.type = displayPassword.value ? 'text' : 'password';
+  inputRef.value.type = displayPassword.value ? "text" : "password";
 }
 </script>
 
@@ -55,8 +53,8 @@ function togglePasswordVisibility() {
         class="cursor-pointer absolute top-1/2 translate-y-[-50%] right-4"
         @click="togglePasswordVisibility()"
       >
-      <v-icon :icon="displayPassword ? 'mdi-eye-off' : 'mdi-eye'"></v-icon>
-    </span>
+        <v-icon :icon="displayPassword ? 'mdi-eye-off' : 'mdi-eye'"></v-icon>
+      </span>
     </div>
   </FieldWrapper>
 </template>
