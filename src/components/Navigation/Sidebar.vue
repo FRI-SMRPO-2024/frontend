@@ -13,20 +13,25 @@
 
     <v-list density="compact" nav>
       <v-list-item
-        prepend-icon="mdi-home-city"
-        title="Dashboard"
-        value="home"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-view-dashboard-edit-outline"
-        title="Projects"
-        value="account"
-      ></v-list-item>
-      <v-list-item
-        prepend-icon="mdi-account-group-outline"
-        title="Users"
-        value="users"
+        v-for="(route, idx) in sidebarRoutes"
+        v-bind:key="idx"
+        :prepend-icon="route.icon"
+        :title="route.title"
+        :value="route.value"
+        :to="route.href"
+        :active="isActive(route.href)"
       ></v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>
+
+<script setup lang="ts">
+import { useRoute } from "vue-router";
+import { sidebarRoutes } from "./sidebar.routes";
+
+const route = useRoute();
+
+function isActive(href: string): boolean {
+  return href.replace("/", "") === route.name;
+}
+</script>

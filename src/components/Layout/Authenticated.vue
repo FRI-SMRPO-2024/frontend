@@ -6,7 +6,7 @@
         <AppBar />
       </div>
       <v-main class="w-full grow">
-        <div class="py-5 px-3 w-full h-full">
+        <div class="py-8 px-5 w-full h-full">
           <slot></slot>
         </div>
       </v-main>

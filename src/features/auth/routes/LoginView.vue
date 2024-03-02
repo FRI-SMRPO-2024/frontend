@@ -20,6 +20,5 @@
 </template>
 
 <script setup lang="ts">
-import AuthLayout from "../components/AuthLayout";
-import LoginForm from "../components/LoginForm";
+import { AuthLayout, LoginForm } from "../components/";
 </script>
