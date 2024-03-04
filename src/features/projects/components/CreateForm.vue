@@ -1,24 +1,30 @@
 <script setup lang="ts">
-  import { toTypedSchema } from "@vee-validate/zod";
-  import { z } from "zod";
-  import { BaseForm, InputField, SelectField, TextareaField } from "@/components/Form";
-  import emitter from "@/plugins";
+import { toTypedSchema } from "@vee-validate/zod";
+import { z } from "zod";
+import {
+  BaseForm,
+  InputField,
+  SelectField,
+  TextareaField,
+} from "@/components/Form";
+import emitter from "@/plugins";
+import { CreateProjectData } from "../types";
 
-  const validationSchema = toTypedSchema(
-    z.object({
-      name: z.string().min(1, "Required"),
-      description: z.string().min(1, "Required"),
-      productOwner: z.string().min(1, "Required"),
-      scrumMaster: z.string().min(1, "Required")
-    }),
-  );
+const validationSchema = toTypedSchema(
+  z.object({
+    name: z.string().min(1, "Required"),
+    description: z.string().min(1, "Required"),
+    productOwner: z.string().min(1, "Required"),
+    scrumMaster: z.string().min(1, "Required"),
+  }),
+);
 
-  async function onSubmit(values: any) {
-    console.log(values);
-    // TODO: Connect to API
+async function onSubmit(values: CreateProjectData) {
+  console.log(values);
+  // TODO: Connect to API
 
-    emitter.emit("dialogClose");
-  }
+  emitter.emit("dialogClose");
+}
 </script>
 
 <template>
@@ -44,10 +50,14 @@
           { label: 'Admin', value: 'admin' },
         ]"
         class="w-full"
-    />
+      />
     </div>
 
-    <v-select label="Select developers" multiple :items="['neki', 'state', 'adijo', 'ok', 'seos']"/>
+    <v-select
+      label="Select developers"
+      multiple
+      :items="['neki', 'state', 'adijo', 'ok', 'seos']"
+    />
     <div class="w-full flex justify-end">
       <v-btn
         prepend-icon="mdi-plus-circle"

@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Section, Dialog } from '@/components/Common';
-  import { Projects } from '../mocks';
-  import { CreateForm, ProjectCard } from '../components';
+import { Section, Dialog } from "@/components/Common";
+import { Projects } from "../mocks";
+import { CreateForm, ProjectCard } from "../components";
 </script>

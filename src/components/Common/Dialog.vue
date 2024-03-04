@@ -1,6 +1,11 @@
 <template>
   <div class="w-full">
-    <v-btn @click="isActive = true" :prepend-icon="btnIcon" variant="flat" color="#5865f2">
+    <v-btn
+      @click="isActive = true"
+      :prepend-icon="btnIcon"
+      variant="flat"
+      color="#5865f2"
+    >
       <div class="text-none font-weight-regular">{{ btnText }}</div>
       <v-dialog v-model="isActive" :width="dialogWidth"
         ><!--max-width="500"-->
