@@ -3,6 +3,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { BaseForm, InputField, SelectField } from "@/components/Form";
 import { CreateUserData } from "../types";
+import emitter from "@/plugins";
 
 const validationSchema = toTypedSchema(
   z.object({
@@ -19,6 +20,7 @@ async function onSubmit(values: CreateUserData) {
   console.log(values);
   // TODO: Connect to API
   // TODO: Close Dialog on submit
+  emitter.emit("dialogClose");
 }
 </script>
 
@@ -53,7 +55,8 @@ async function onSubmit(values: CreateUserData) {
     <div class="w-full flex justify-end">
       <v-btn
         prepend-icon="mdi-plus-circle"
-        variant="tonal"
+        variant="flat"
+        color="#5865f2"
         type="submit"
         class="w-2/5"
       >

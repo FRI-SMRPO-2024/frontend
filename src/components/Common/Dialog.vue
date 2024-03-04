@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <v-btn @click="isActive = true" :prepend-icon="btnIcon" variant="tonal">
+    <v-btn @click="isActive = true" :prepend-icon="btnIcon" variant="flat" color="#5865f2">
       <div class="text-none font-weight-regular">{{ btnText }}</div>
       <v-dialog v-model="isActive" :width="dialogWidth"
         ><!--max-width="500"-->
@@ -13,7 +13,7 @@
             <v-btn
               icon="mdi-close"
               rounded="xl"
-              size="sm"
+              size="small"
               variant="text"
               @click="isActive = false"
             ></v-btn>
@@ -40,6 +40,7 @@
 </template>
 <script setup lang="ts">
 import { ref } from "vue";
+import emitter from "@/plugins";
 
 type DialogProps = {
   dialogWidth: number;
@@ -53,4 +54,8 @@ type DialogProps = {
 defineProps<DialogProps>();
 
 const isActive = ref(false);
+
+emitter.on("dialogClose", () => {
+  isActive.value = false;
+});
 </script>

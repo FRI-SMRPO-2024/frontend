@@ -11,16 +11,21 @@
       <tr v-for="(row, idx) in rows" :key="idx">
         <td>{{ idx + 1 }}</td>
         <td v-for="(item, idx) in row" :key="idx">{{ item }}</td>
-        <td v-if="displayActions">
+        <td
+          v-if="displayActions"
+          class="flex items-center flex-start space-x-1"
+        >
           <v-btn
             color="blue-lighten-2"
             icon="mdi-pencil-circle"
             variant="text"
+            size="sm"
           ></v-btn>
           <v-btn
             color="red-lighten-2"
             icon="mdi-delete-circle"
             variant="text"
+            size="sm"
           ></v-btn>
         </td>
       </tr>

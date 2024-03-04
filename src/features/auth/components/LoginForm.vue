@@ -25,7 +25,8 @@ async function onSubmit(values: LoginFormData) {
     <InputField name="password" type="password" label="Password" />
     <v-btn
       prepend-icon="mdi-login"
-      variant="tonal"
+      variant="flat"
+      color="#5865f2"
       type="submit"
       class="w-full"
     >
