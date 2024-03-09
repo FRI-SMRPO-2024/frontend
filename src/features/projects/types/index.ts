@@ -1,4 +1,5 @@
 import { User } from "@/features/users";
+import { Component } from "vue";
 
 interface CreateProjectData {
   title: string;
@@ -26,4 +27,16 @@ interface Project {
   users: User[];
 }
 
-export type { CreateProjectData, ProjectSelectedUsers, UserSelect, Project };
+interface ProjectTab {
+  title: string;
+  component: Component;
+  props?: object;
+}
+
+export type {
+  CreateProjectData,
+  ProjectSelectedUsers,
+  UserSelect,
+  Project,
+  ProjectTab,
+};
