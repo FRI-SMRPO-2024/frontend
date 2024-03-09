@@ -1,4 +1,5 @@
-type UserRows = {
+type User = {
+  id: number;
   username: string;
   fullname: string;
   email: string;
@@ -14,4 +15,4 @@ interface CreateUserData {
   role: "user" | "admin";
 }
 
-export type { UserRows, CreateUserData };
+export type { User, CreateUserData };

@@ -4,7 +4,10 @@
       <Heading :title="route.name as string" :icon="getCurrentRouteIcon" />
     </template>
     <template v-slot:append>
-      <v-btn icon="mdi-account" class="bg-gray-900/10"></v-btn>
+      <div class="flex items-center space-x-4">
+        <div class="text-sm">John Doe</div>
+        <v-btn icon="mdi-account" size="small" class="bg-gray-900/10"></v-btn>
+      </div>
     </template>
   </v-app-bar>
 </template>
@@ -18,8 +21,8 @@ import { sidebarRoutes } from "./sidebar.routes";
 const route = useRoute();
 
 const getCurrentRouteIcon = computed(() => {
-  const currentRoute = sidebarRoutes.find(
-    (item) => item.value === (route.name as string),
+  const currentRoute = sidebarRoutes.find((item) =>
+    (route.name as string).includes(item.value),
   );
 
   return currentRoute ? currentRoute.icon : "";

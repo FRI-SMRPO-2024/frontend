@@ -1,5 +1,5 @@
 import { DashboardView } from "@/features/misc";
-import { ProjectsView } from "@/features/projects";
+import { ProjectView, ProjectsIndex } from "@/features/projects";
 import { UsersView } from "@/features/users";
 
 export const protectedRoutes = [
@@ -15,7 +15,12 @@ export const protectedRoutes = [
   {
     path: "/projects",
     name: "projects",
-    component: ProjectsView,
+    component: ProjectsIndex,
+  },
+  {
+    path: "/projects/:id",
+    name: "projects.view",
+    component: ProjectView,
   },
   {
     path: "/users",

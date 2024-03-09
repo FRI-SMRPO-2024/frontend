@@ -1,3 +1,4 @@
-import ProjectsView from "./ProjectsView.vue";
+import ProjectView from "./ProjectView.vue";
+import ProjectsIndex from "./ProjectsIndex.vue";
 
-export { ProjectsView };
+export { ProjectView, ProjectsIndex };

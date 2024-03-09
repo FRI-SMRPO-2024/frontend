@@ -23,5 +23,6 @@ declare module "vue" {
     SelectField: (typeof import("./src/components/Form/SelectField.vue"))["default"];
     Sidebar: (typeof import("./src/components/Navigation/Sidebar.vue"))["default"];
     Table: (typeof import("./src/components/Common/Table.vue"))["default"];
+    TextareaField: (typeof import("./src/components/Form/TextareaField.vue"))["default"];
   }
 }
