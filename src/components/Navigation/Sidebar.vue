@@ -32,6 +32,6 @@ import { sidebarRoutes } from "./sidebar.routes";
 const route = useRoute();
 
 function isActive(href: string): boolean {
-  return href.replace("/", "") === route.name;
+  return route.fullPath.includes(href.replace("/", ""));
 }
 </script>

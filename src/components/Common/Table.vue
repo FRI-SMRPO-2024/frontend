@@ -34,11 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import { UserRows } from "@/features/users/types";
-
 type TableProps = {
   headers: string[];
-  rows: UserRows[];
+  rows: object[];
   displayActions: boolean;
 };
 

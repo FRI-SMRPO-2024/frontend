@@ -1,63 +1,116 @@
 <script setup lang="ts">
-import { toTypedSchema } from "@vee-validate/zod";
-import { z } from "zod";
-import {
-  BaseForm,
-  InputField,
-  SelectField,
-  TextareaField,
-} from "@/components/Form";
 import emitter from "@/plugins";
-import { CreateProjectData } from "../types";
+import { useField, useForm } from "vee-validate";
+import { CreateProjectData, UserSelect } from "@/features/projects";
+import { User, usersData } from "@/features/users";
 
-const validationSchema = toTypedSchema(
-  z.object({
-    name: z.string().min(1, "Required"),
-    description: z.string().min(1, "Required"),
-    productOwner: z.string().min(1, "Required"),
-    scrumMaster: z.string().min(1, "Required"),
-  }),
-);
+const mapUsersToSelect = (users: User[]): UserSelect[] => {
+  return users.map((user: User) => ({
+    title: user.fullname,
+    value: user.id,
+  }));
+};
 
-async function onSubmit(values: CreateProjectData) {
+const fetchedUsers = mapUsersToSelect(usersData);
+
+const { handleSubmit } = useForm({
+  validationSchema: {
+    name(value: number) {
+      if (value) return true;
+
+      return "Name is required!";
+    },
+    description(value: number) {
+      if (value) return true;
+
+      return "Description is required!";
+    },
+    productOwner(value: number) {
+      if (
+        value === scrumMaster.value.value ||
+        developers.value.value.includes(value)
+      ) {
+        return "Product Owner can't also be Methodology Owner or Developer!";
+      } else if (value) return true;
+
+      return "Product Owner must be defined!";
+    },
+    scrumMaster(value: number) {
+      if (value === productOwner.value.value) {
+        return "Methodology Owner can't also be Product Owner!";
+      } else if (value) return true;
+
+      return "Methodology Owner must be defined!";
+    },
+    developers(value: number[]) {
+      if (value.includes(productOwner.value.value)) {
+        return "Developer can't also be Product Owner!";
+      }
+      if (value.length > 0) return true;
+
+      return "At least one developer must be assigned!";
+    },
+  },
+});
+
+const name = useField<string>("name");
+const description = useField<string>("description");
+const productOwner = useField<number>("productOwner");
+const scrumMaster = useField<number>("scrumMaster");
+const developers = useField<number[]>("developers", {}, { initialValue: [] });
+
+const submit = handleSubmit((values: CreateProjectData) => {
   console.log(values);
   // TODO: Connect to API
 
   emitter.emit("dialogClose");
-}
+});
 </script>
 
 <template>
-  <BaseForm @submit="onSubmit" :validation-schema="validationSchema">
-    <InputField name="name" type="text" label="Title" />
-    <TextareaField name="description" type="text" label="Description" />
+  <form fast-fail @submit.prevent="submit">
+    <v-text-field
+      v-model="name.value.value"
+      :error-messages="name.errorMessage.value"
+      label="Name"
+      variant="outlined"
+      class="w-full"
+    ></v-text-field>
+    <v-textarea
+      v-model="description.value.value"
+      :error-messages="description.errorMessage.value"
+      label="Description"
+      variant="outlined"
+      no-resize
+      class="w-full"
+    ></v-textarea>
     <div class="flex items-center w-full justify-between space-x-4">
-      <SelectField
-        name="productOwner"
+      <v-select
+        v-model="productOwner.value.value"
+        :error-messages="productOwner.errorMessage.value"
         label="Product Owner"
-        :options="[
-          { label: 'User', value: 'user' },
-          { label: 'Admin', value: 'admin' },
-        ]"
+        variant="outlined"
         class="w-full"
-      />
-      <SelectField
-        name="scrumMaster"
-        label="Scrum Master"
-        :options="[
-          { label: '-- Select a user --', value: '' },
-          { label: 'User', value: 'user' },
-          { label: 'Admin', value: 'admin' },
-        ]"
+        :items="fetchedUsers"
+      ></v-select>
+      <v-select
+        v-model="scrumMaster.value.value"
+        :error-messages="scrumMaster.errorMessage.value"
+        label="Methodology Owner"
+        variant="outlined"
         class="w-full"
-      />
+        :items="fetchedUsers"
+      ></v-select>
     </div>
-
     <v-select
-      label="Select developers"
+      v-model="developers.value.value"
+      :error-messages="developers.errorMessage.value"
+      label="Developers"
+      variant="outlined"
+      class="w-full"
       multiple
-      :items="['neki', 'state', 'adijo', 'ok', 'seos']"
-    />
+      :items="fetchedUsers"
+    ></v-select>
     <div class="w-full flex justify-end">
       <v-btn
         prepend-icon="mdi-plus-circle"
@@ -66,8 +119,8 @@ async function onSubmit(values: CreateProjectData) {
         type="submit"
         class="w-2/5"
       >
-        Create
+        Create proejct
       </v-btn>
     </div>
-  </BaseForm>
+  </form>
 </template>

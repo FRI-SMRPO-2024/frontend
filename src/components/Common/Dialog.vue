@@ -7,8 +7,7 @@
       color="#5865f2"
     >
       <div class="text-none font-weight-regular">{{ btnText }}</div>
-      <v-dialog v-model="isActive" :width="dialogWidth"
-        ><!--max-width="500"-->
+      <v-dialog v-model="isActive" :width="dialogWidth">
         <v-card rounded="lg" class="px-5 flex flex-col space-y-4">
           <v-card-title class="p-0 flex justify-between items-center">
             <div class="text-h5 text-medium-emphasis">

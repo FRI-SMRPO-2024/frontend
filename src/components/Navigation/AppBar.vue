@@ -21,8 +21,8 @@ import { sidebarRoutes } from "./sidebar.routes";
 const route = useRoute();
 
 const getCurrentRouteIcon = computed(() => {
-  const currentRoute = sidebarRoutes.find(
-    (item) => item.value === (route.name as string),
+  const currentRoute = sidebarRoutes.find((item) =>
+    (route.name as string).includes(item.value),
   );
 
   return currentRoute ? currentRoute.icon : "";

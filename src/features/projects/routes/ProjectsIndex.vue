@@ -20,8 +20,12 @@
       icon="mdi-view-dashboard-variant"
       description="Here are all the projects that are assigned to you. Click the one you want to expand"
     >
-      <div class="grow w-full grid grid-cols-4 gap-5">
-        <ProjectCard v-for="(project, idx) in Projects" :key="idx" />
+      <div class="grow w-full grid grid-cols-2 gap-5">
+        <ProjectCard
+          v-for="(project, idx) in Projects"
+          :key="idx"
+          :data="project"
+        />
       </div>
     </Section>
   </div>
