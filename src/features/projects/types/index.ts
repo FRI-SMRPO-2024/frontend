@@ -1,6 +1,5 @@
 import { User } from "@/features/users";
 import { Component } from "vue";
-import {StoryPriority, StoryStatus} from "../../../../../backend/src/api/models/story.model";
 
 interface CreateProjectData {
   title: string;
@@ -34,6 +33,17 @@ interface ProjectTab {
   props?: object;
 }
 
+interface Story {
+  name: string;
+  description: string;
+  priority: string;
+  businessValue: number;
+  pointEstimation: number;
+  status: string;
+  acceptanceCriteria: string;
+  rejectedComment: string;
+}
+
 interface CreateStoryData {
   name: string;
   description: string;
@@ -45,7 +55,7 @@ interface CreateStoryData {
   rejectedComment: string;
 }
 
-export enum StoryPriority {
+enum StoryPriority {
   NULL = 'NULL',
   COULD_HAVE = 'COULD_HAVE',
   SHOULD_HAVE = 'SHOULD_HAVE',
@@ -65,5 +75,6 @@ export type {
   UserSelect,
   Project,
   ProjectTab,
+  Story,
   CreateStoryData,
 };

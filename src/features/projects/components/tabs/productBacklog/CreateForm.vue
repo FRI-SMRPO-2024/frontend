@@ -29,16 +29,15 @@ const { handleSubmit } = useForm({
       if (value) return true;
 
       return "Acceptance criteria is required!";
-    }
-
+    },
   },
 });
 
 const name = useField<string>("name");
 const description = useField<string>("description");
 const businessValue = useField<number>("businessValue");
-const priority = useField<string>("priority")
-const acceptanceCriteria = useField<string>("acceptanceCriteria")
+const priority = useField<string>("priority");
+const acceptanceCriteria = useField<string>("acceptanceCriteria");
 
 const submit = handleSubmit((values: CreateStoryData) => {
   console.log(values);
@@ -81,7 +80,12 @@ const submit = handleSubmit((values: CreateStoryData) => {
         label="Priority"
         variant="outlined"
         class="w-full"
-        :items="['COULD HAVE', 'SHOULD HAVE', 'MUST HAVE',`WON'T HAVE THIS TIME`]"
+        :items="[
+          'COULD HAVE',
+          'SHOULD HAVE',
+          'MUST HAVE',
+          `WON'T HAVE THIS TIME`,
+        ]"
       ></v-select>
     </div>
     <v-textarea
@@ -92,7 +96,6 @@ const submit = handleSubmit((values: CreateStoryData) => {
       no-resize
       class="w-full"
     ></v-textarea>
-
 
     <div class="w-full flex justify-end">
       <v-btn

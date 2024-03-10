@@ -1,4 +1,28 @@
-import { Project } from "@/features/projects";
+import { Project, Story } from "@/features/projects";
+
+export const Stories: Story[] = [
+  {
+    name: "Test story 1",
+    description: "test story 1 description",
+    priority: "COULD_HAVE",
+    businessValue: 1,
+    pointEstimation: 2,
+    status: "PRODUCT",
+    acceptanceCriteria: "Everythning finnished",
+    rejectedComment: "",
+  },
+  {
+    name: "Test story 2",
+    description: "test story 2 description",
+    priority: "COULD_HAVE",
+    businessValue: 3,
+    pointEstimation: 5,
+    status: "PRODUCT",
+    acceptanceCriteria: "Everythning finnished and tested",
+    rejectedComment: "",
+  },
+];
+
 
 export const Projects: Project[] = [
   {
