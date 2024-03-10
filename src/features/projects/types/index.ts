@@ -56,17 +56,17 @@ interface CreateStoryData {
 }
 
 enum StoryPriority {
-  NULL = 'NULL',
-  COULD_HAVE = 'COULD_HAVE',
-  SHOULD_HAVE = 'SHOULD_HAVE',
-  MUST_HAVE = 'MUST_HAVE',
-  WONT_HAVE_THIS_TIME = 'WONT_HAVE_THIS_TIME'
+  NULL = "NULL",
+  COULD_HAVE = "COULD_HAVE",
+  SHOULD_HAVE = "SHOULD_HAVE",
+  MUST_HAVE = "MUST_HAVE",
+  WONT_HAVE_THIS_TIME = "WONT_HAVE_THIS_TIME",
 }
 
 enum StoryStatus {
-  PRODUCT = 'PRODUCT',
-  SPRINT = 'SPRINT',
-  DONE = 'DONE'
+  PRODUCT = "PRODUCT",
+  SPRINT = "SPRINT",
+  DONE = "DONE",
 }
 
 export type {

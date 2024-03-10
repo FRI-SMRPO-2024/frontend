@@ -21,21 +21,15 @@
       description="Here are all the stories that are assigned this project. Click the one you want to expand"
     >
       <div class="grow w-full grid grid-cols-1 gap-5">
-        <StoryCard
-          v-for="(story, idx) in Stories"
-          :key="idx"
-          :data="story"
-        />
-     </div>
+        <StoryCard v-for="(story, idx) in Stories" :key="idx" :data="story" />
+      </div>
     </Section>
   </div>
 </template>
 <script setup lang="ts">
-
 import CreateForm from "@/features/projects/components/tabs/productBacklog/CreateForm";
 import { Stories } from "../../../mocks/";
 import StoryCard from "@/features/projects/components/tabs/productBacklog/StoryCard";
 
-console.log(Stories)
-
+console.log(Stories);
 </script>

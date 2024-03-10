@@ -23,7 +23,6 @@ export const Stories: Story[] = [
   },
 ];
 
-
 export const Projects: Project[] = [
   {
     id: 1,

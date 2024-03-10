@@ -14,27 +14,17 @@
             {{ data.description }}
           </div>
           <div class="flex text-gray-500 my-1 justify-space-between">
-            <div>
-              Priority: {{ data.priority }}
-            </div>
-            <div>
-              Business value: {{ data.businessValue }}
-            </div>
+            <div>Priority: {{ data.priority }}</div>
+            <div>Business value: {{ data.businessValue }}</div>
           </div>
           <div class="flex text-gray-500 my-1 justify-space-between">
-            <div>
-              Status: {{ data.status }}
-            </div>
-            <div>
-              Point estimation: {{ data.pointEstimation }}
-            </div>
+            <div>Status: {{ data.status }}</div>
+            <div>Point estimation: {{ data.pointEstimation }}</div>
           </div>
-          <div class="font-weight-bold mt-4">
-            Acceptance criteria:
-          </div>
+          <div class="font-weight-bold mt-4">Acceptance criteria:</div>
 
           <div class="flex-auto text-gray-500 ml-3">
-             {{ data.acceptanceCriteria }}
+            {{ data.acceptanceCriteria }}
           </div>
         </div>
       </div>
@@ -49,6 +39,4 @@ type StoryCardProps = {
 };
 
 defineProps<StoryCardProps>();
-
-
 </script>
