@@ -91,5 +91,5 @@ export type {
   Story,
   CreateStoryData,
   CreateSprintData,
-  Sprint
+  Sprint,
 };

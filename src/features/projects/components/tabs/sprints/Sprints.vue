@@ -29,16 +29,16 @@
         v-for="(sprint, idx) in SprintsMock"
         :key="idx"
         :data="sprint"
-        :idx="idx">
+        :idx="idx"
+      >
       </SprintCard>
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import CreateForm from "@/features/projects/components/tabs/sprints/CreateForm";
-import {SprintsMock} from "../../../mocks"
+import { SprintsMock } from "../../../mocks";
 import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard";
 
-
-console.log(SprintsMock)
+console.log(SprintsMock);
 </script>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
-import {useField, useForm} from "vee-validate";
+import { useField, useForm } from "vee-validate";
 import { CreateSprintData } from "@/features/projects";
 
 const { handleSubmit } = useForm({
@@ -19,15 +19,14 @@ const { handleSubmit } = useForm({
       if (value) return true;
 
       return "Start date is required!";
-    }
+    },
   },
 });
 
-
 const velocity = useField<number>("velocity");
-let selectedEndDateField = useField<Date>('selectedEndDateField')
-let selectedStartDateField = useField<Date>('selectedStartDateField')
-selectedStartDateField.value.value = new Date()
+let selectedEndDateField = useField<Date>("selectedEndDateField");
+let selectedStartDateField = useField<Date>("selectedStartDateField");
+selectedStartDateField.value.value = new Date();
 /*
 function test() {
   console.log(selectedEndDate)
@@ -35,11 +34,17 @@ function test() {
 }*/
 
 function test() {
-  const start = (new Date(selectedStartDateField.value.value - (selectedStartDateField.value.value).getTimezoneOffset() * 60000)).toISOString()
+  const start = new Date(
+    selectedStartDateField.value.value -
+      selectedStartDateField.value.value.getTimezoneOffset() * 60000,
+  ).toISOString();
   if (selectedEndDateField.value.value) {
-    const end = (new Date(selectedEndDateField.value.value - (selectedEndDateField.value.value).getTimezoneOffset() * 60000)).toISOString()
+    const end = new Date(
+      selectedEndDateField.value.value -
+        selectedEndDateField.value.value.getTimezoneOffset() * 60000,
+    ).toISOString();
     if (start >= end) {
-      selectedEndDateField.value.value = undefined
+      selectedEndDateField.value.value = undefined;
     }
   }
 }
@@ -47,17 +52,20 @@ function test() {
 function disablePastDates(val) {
   /*if (val.getDay() === 0 || val.getDay() === 6)
     return false;*/
-  val = (new Date(val - (val).getTimezoneOffset() * 60000)).toISOString()
-  const today = new Date().toISOString().substr(0, 10)
-  return val >= today
+  val = new Date(val - val.getTimezoneOffset() * 60000).toISOString();
+  const today = new Date().toISOString().substr(0, 10);
+  return val >= today;
 }
 
 function disableDatesBeforeStart(val) {
   /*if (val.getDay() === 0 || val.getDay() === 6)
     return false;*/
-  val = (new Date(val - (val).getTimezoneOffset() * 60000)).toISOString()
-  const limit = (new Date(selectedStartDateField.value.value - (selectedStartDateField.value.value).getTimezoneOffset() * 60000)).toISOString()
-  return val > limit
+  val = new Date(val - val.getTimezoneOffset() * 60000).toISOString();
+  const limit = new Date(
+    selectedStartDateField.value.value -
+      selectedStartDateField.value.value.getTimezoneOffset() * 60000,
+  ).toISOString();
+  return val > limit;
 }
 
 const submit = handleSubmit((values: CreateSprintData) => {
@@ -66,34 +74,33 @@ const submit = handleSubmit((values: CreateSprintData) => {
 
   emitter.emit("dialogClose");
 });
-
 </script>
 
 <template>
   <form fast-fail @submit.prevent="submit">
-
     <div class="w-full flex justify-space-between">
       <div>
-
         <v-date-picker
           title="Start date"
           v-model="selectedStartDateField.value.value"
           @click="test"
-          :allowed-dates="disablePastDates">
+          :allowed-dates="disablePastDates"
+        >
         </v-date-picker>
         <p style="color: red; text-decoration: underline">
-          {{selectedStartDateField.errorMessage.value}}
+          {{ selectedStartDateField.errorMessage.value }}
         </p>
       </div>
       <div>
         <v-date-picker
           title="End date"
           v-model="selectedEndDateField.value.value"
-          :allowed-dates="disableDatesBeforeStart">
+          :allowed-dates="disableDatesBeforeStart"
+        >
         </v-date-picker>
         <p style="color: red; text-decoration: underline" class="text-end">
-          {{selectedEndDateField.errorMessage.value}}
-          <br>
+          {{ selectedEndDateField.errorMessage.value }}
+          <br />
         </p>
       </div>
     </div>
@@ -117,13 +124,11 @@ const submit = handleSubmit((values: CreateSprintData) => {
           variant="flat"
           color="#5865f2"
           type="submit"
-          class="w-66">
+          class="w-66"
+        >
           Create sprint
         </v-btn>
       </div>
     </div>
-
-
-
   </form>
 </template>
