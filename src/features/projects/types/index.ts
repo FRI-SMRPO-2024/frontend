@@ -33,10 +33,63 @@ interface ProjectTab {
   props?: object;
 }
 
+interface Story {
+  name: string;
+  description: string;
+  priority: string;
+  businessValue: number;
+  pointEstimation: number;
+  status: string;
+  acceptanceCriteria: string;
+  rejectedComment: string;
+}
+
+interface CreateStoryData {
+  name: string;
+  description: string;
+  priority: StoryPriority; //ENUM
+  businessValue: number;
+  pointEstimation: number;
+  status: StoryStatus; //ENUM
+  acceptanceCriteria: string;
+  rejectedComment: string;
+}
+
+enum StoryPriority {
+  NULL = "NULL",
+  COULD_HAVE = "COULD_HAVE",
+  SHOULD_HAVE = "SHOULD_HAVE",
+  MUST_HAVE = "MUST_HAVE",
+  WONT_HAVE_THIS_TIME = "WONT_HAVE_THIS_TIME",
+}
+
+enum StoryStatus {
+  PRODUCT = "PRODUCT",
+  SPRINT = "SPRINT",
+  DONE = "DONE",
+}
+
+interface CreateSprintData {
+  start_date: Date;
+  end_data: Date;
+  velocity: number;
+  project_id: number;
+}
+
+interface Sprint {
+  start_date: Date;
+  end_data: Date;
+  velocity: number;
+}
+
 export type {
   CreateProjectData,
   ProjectSelectedUsers,
   UserSelect,
   Project,
   ProjectTab,
+  Story,
+  CreateStoryData,
+  CreateSprintData,
+  Sprint,
 };
