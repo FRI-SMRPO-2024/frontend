@@ -1,3 +1,3 @@
-import SprintBacklog from './SprintBacklog.vue'
+import SprintBacklog from "./SprintBacklog.vue";
 
 export { SprintBacklog };

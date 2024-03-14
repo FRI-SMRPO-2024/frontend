@@ -10,12 +10,7 @@
         </Section>
       </div>
       <div class="w-33 flex justify-end">
-
-        <Section
-          class="text-end"
-          title="Add a new story"
-          icon="mdi-plus-box"
-        >
+        <Section class="text-end" title="Add a new story" icon="mdi-plus-box">
           <Dialog
             style="margin-top: -15px"
             title="Create new story"
@@ -29,8 +24,16 @@
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-5 mt-3 ">
-      <StoryCard class="" v-for="(story, idx) in Stories" :key="idx" :idx="idx" :data="story" :clickedTicket="clickedTicket" @click="clickedTicket = idx"/>
+    <div class="grow w-full grid grid-cols-1 gap-5 mt-3">
+      <StoryCard
+        class=""
+        v-for="(story, idx) in Stories"
+        :key="idx"
+        :idx="idx"
+        :data="story"
+        :clickedTicket="clickedTicket"
+        @click="clickedTicket = idx"
+      />
     </div>
   </div>
 </template>
@@ -38,9 +41,9 @@
 import CreateForm from "@/features/projects/components/tabs/productBacklog/CreateForm";
 import { Stories } from "../../../mocks/";
 import StoryCard from "@/features/projects/components/tabs/productBacklog/StoryCard";
-import {ref} from "vue";
+import { ref } from "vue";
 
-const clickedTicket = ref(null)
+const clickedTicket = ref(null);
 
 console.log(Stories);
 </script>

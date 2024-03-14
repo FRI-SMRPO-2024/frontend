@@ -10,12 +10,7 @@
         </Section>
       </div>
       <div class="w-33 flex justify-end">
-
-        <Section
-          class="text-end"
-          title="Add a new sprint"
-          icon="mdi-plus-box"
-        >
+        <Section class="text-end" title="Add a new sprint" icon="mdi-plus-box">
           <Dialog
             style="margin-top: -15px"
             title="Create new Sprint"
@@ -28,9 +23,7 @@
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-5 mt-3 ">
-
-    </div>
+    <div class="grow w-full grid grid-cols-1 gap-5 mt-3"></div>
   </div>
 </template>
 <script setup lang="ts"></script>

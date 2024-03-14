@@ -7,5 +7,5 @@ import Documentation from "./Documentation.vue";
 export { Overview, SprintBacklog, Sprints, Wall, Documentation };
 
 export * from "./productBacklog";
-export * from "./sprintBacklog"
-export * from "./sprints"
+export * from "./sprintBacklog";
+export * from "./sprints";
