@@ -7,7 +7,9 @@ export {}
 
 declare module "vue" {
   export interface GlobalComponents {
+    Alert: (typeof import("./src/components/Alert/Alert.vue"))["default"];
     AppBar: (typeof import("./src/components/Navigation/AppBar.vue"))["default"];
+    AppNotifications: (typeof import("./src/components/Notification/AppNotifications.vue"))["default"];
     Authenticated: (typeof import("./src/components/Layout/Authenticated.vue"))["default"];
     BaseForm: (typeof import("./src/components/Form/BaseForm.vue"))["default"];
     Default: (typeof import("./src/components/Layout/Default.vue"))["default"];
@@ -17,6 +19,7 @@ declare module "vue" {
     HelloWorld: (typeof import("./src/components/HelloWorld.vue"))["default"];
     InputField: (typeof import("./src/components/Form/InputField.vue"))["default"];
     MainLayout: (typeof import("./src/components/Layout/MainLayout.vue"))["default"];
+    Notification: (typeof import("./src/components/Notification/Notification.vue"))["default"];
     RouterLink: (typeof import("vue-router"))["RouterLink"];
     RouterView: (typeof import("vue-router"))["RouterView"];
     Section: (typeof import("./src/components/Common/Section.vue"))["default"];

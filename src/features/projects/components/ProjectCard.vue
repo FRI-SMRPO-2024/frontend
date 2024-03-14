@@ -37,6 +37,7 @@
 <script setup lang="ts">
 import { Project } from "@/features/projects";
 import { useRouter } from "vue-router";
+import { useToast } from "vue-toast-notification";
 
 type ProjectCardProps = {
   data: Project;
@@ -46,7 +47,11 @@ defineProps<ProjectCardProps>();
 
 const router = useRouter();
 
+const toast = useToast();
+
 const handleProjectOpen = (projectId: number) => {
+  toast.success("test message", { position: "top" });
+
   router.push({ name: "projects.view", params: { id: projectId } });
 };
 </script>

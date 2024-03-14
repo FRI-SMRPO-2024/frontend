@@ -5,4 +5,10 @@ type SidebarRoutesType = {
   href: string;
 };
 
-export type { SidebarRoutesType };
+type Notification = {
+  id: string;
+  type: "info" | "warning" | "success" | "error";
+  message: string;
+};
+
+export type { SidebarRoutesType, Notification };
