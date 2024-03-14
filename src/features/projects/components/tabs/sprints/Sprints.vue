@@ -16,14 +16,29 @@
             title="Create new Sprint"
             btnText="Create"
             btnIcon="mdi-plus"
-            :dialogWidth="600"
+            :dialogWidth="900"
             :displayActionBtn="false"
           >
+            <CreateForm></CreateForm>
           </Dialog>
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-5 mt-3"></div>
+    <div class="grow w-full grid grid-cols-1 gap-5 mt-4">
+      <SprintCard
+        v-for="(sprint, idx) in SprintsMock"
+        :key="idx"
+        :data="sprint"
+        :idx="idx">
+      </SprintCard>
+    </div>
   </div>
 </template>
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import CreateForm from "@/features/projects/components/tabs/sprints/CreateForm";
+import {SprintsMock} from "../../../mocks"
+import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard";
+
+
+console.log(SprintsMock)
+</script>

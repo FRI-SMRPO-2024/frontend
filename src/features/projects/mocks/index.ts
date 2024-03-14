@@ -1,4 +1,17 @@
-import { Project, Story } from "@/features/projects";
+import { Project, Story, Sprint } from "@/features/projects";
+
+export const SprintsMock: Sprint[] = [
+  {
+    start_date: new Date(2024, 2, 8),
+    end_date: new Date(2024, 2, 15),
+    velocity: 3,
+  },
+  {
+    start_date: new Date(2024, 2, 16),
+    end_date: new Date(2024, 2, 21),
+    velocity: 2,
+  },
+];
 
 export const Stories: Story[] = [
   {
@@ -13,8 +26,7 @@ export const Stories: Story[] = [
   },
   {
     name: "Test story 2",
-    description:
-      "test story 2 description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. \n Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+    description: "test story 2 description. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
     priority: "MUST_HAVE",
     businessValue: 3,
     pointEstimation: 5,

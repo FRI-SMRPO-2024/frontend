@@ -69,6 +69,19 @@ enum StoryStatus {
   DONE = "DONE",
 }
 
+interface CreateSprintData {
+  start_date: Date;
+  end_data: Date;
+  velocity: number;
+  project_id: number;
+}
+
+interface Sprint {
+  start_date: Date;
+  end_data: Date;
+  velocity: number;
+}
+
 export type {
   CreateProjectData,
   ProjectSelectedUsers,
@@ -77,4 +90,6 @@ export type {
   ProjectTab,
   Story,
   CreateStoryData,
+  CreateSprintData,
+  Sprint
 };
