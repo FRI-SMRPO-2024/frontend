@@ -1,7 +1,7 @@
 const storagePrefix = "smrpo";
 
 const storage = {
-  get: (key: string) => {
+  get: (key: string): string | null => {
     return JSON.parse(
       window.localStorage.getItem(`${storagePrefix}-${key}`) as string,
     );

@@ -1,3 +1,4 @@
 import AppProvider from "./AppProvider.vue";
+import AuthProvider from "./AuthProvider.vue";
 
-export { AppProvider };
+export { AppProvider, AuthProvider };

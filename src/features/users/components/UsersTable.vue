@@ -7,6 +7,6 @@
 import { Table } from "@/components/Common";
 import { usersData } from "@/features/users";
 
-const headers = ["Username", "Full name", "Email", "Role"];
+const headers = ["ID", "Username", "Full name", "Email", "Role"];
 const data = usersData;
 </script>

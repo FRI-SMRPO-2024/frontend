@@ -1,55 +1,24 @@
-import { axios } from "@/lib";
-import { AuthUser, LoginFormData, LoginResponse } from "@/features/auth";
-import { useMutation } from "@tanstack/vue-query";
+import { LoginResponse } from "@/features/auth";
 import { useUserStore } from "@/stores/user.store";
 import storage from "@/utils/storage";
 import { useToast } from "vue-toast-notification";
 
-const loginFn = (data: LoginFormData): Promise<LoginResponse> => {
-  return axios.post("auth/login", data);
-};
+const handleLogout = () => {
+  storage.clear("token");
+  storage.clear("refresh_token");
 
-const logoutFn = () => {
-  return axios.post("auth/logout", {
-    access_token: storage.get("access_token"),
-  });
+  useUserStore().remove();
 };
 
 const handleSuccessAuth = (data: LoginResponse) => {
-  const { email, access_token, refresh_token } = data;
+  const { access_token, refresh_token, user } = data;
 
-  const authUser: AuthUser = {
-    id: 0,
-    email: email,
-    username: "testing",
-    firstName: "test",
-    lastName: "tester",
-    role: "Admin",
-  };
-
-  useUserStore().add(authUser);
+  useUserStore().add(user);
 
   storage.set("token", access_token);
   storage.set("refresh_token", refresh_token);
 
-  useToast().success(`Welcome ${authUser.username}`, { position: "top" });
+  useToast().success(`Welcome ${user.username}`, { position: "top" });
 };
 
-const useAuthenticate = () => {
-  return useMutation({
-    mutationKey: ["login"],
-    mutationFn: (data: LoginFormData) => loginFn(data),
-    onError: (error) => {
-      return error.response.data;
-    },
-  });
-};
-
-const useLogout = () => {
-  return useMutation({
-    mutationKey: ["logout"],
-    mutationFn: () => logoutFn(),
-  });
-};
-
-export { loginFn, useAuthenticate, useLogout, handleSuccessAuth };
+export { handleSuccessAuth, handleLogout };

@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { LoginFormData, LoginResponse } from "../types";
 import { useField, useForm } from "vee-validate";
-import { handleSuccessAuth, useAuthenticate } from "@/features/auth/api";
+import { handleSuccessAuth } from "@/features/auth/api";
 import Alert from "@/components/Alert/Alert.vue";
+import { useAxios } from "@/composables/useAxios";
 import { useRouter } from "vue-router";
-
-const { mutate, isError, error } = useAuthenticate();
-const router = useRouter();
+import { Loader } from "@/components/Common";
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -26,26 +25,25 @@ const { handleSubmit, handleReset } = useForm({
 const email = useField("email");
 const password = useField("password");
 
-const submit = handleSubmit((values: LoginFormData) => {
-  mutate(values, {
-    onSuccess: (data: LoginResponse) => {
-      // Router can't be used outside <script setup> so we have to define onSuccess here
-      handleSuccessAuth(data);
-      router.push({ name: "dashboard" });
-    },
-  });
+const { execute, isError, error, isLoading } = useAxios<LoginResponse>({
+  method: "post",
+  url: "auth/login",
+});
 
-  handleReset();
+const router = useRouter();
+
+const submit = handleSubmit((values: LoginFormData) => {
+  execute(values)
+    .then((res: LoginResponse) => {
+      handleSuccessAuth(res);
+      router.push({ name: "dashboard" });
+    })
+    .catch(() => handleReset());
 });
 </script>
 
 <template>
-  <Alert
-    v-if="isError"
-    :message="error.response.data"
-    type="error"
-    class="mb-2"
-  />
+  <Alert v-if="isError" :message="error.message" type="error" class="mb-2" />
   <form fast-fail @submit="submit">
     <v-text-field
       v-model="email.value.value"
@@ -70,4 +68,7 @@ const submit = handleSubmit((values: LoginFormData) => {
       Login
     </v-btn>
   </form>
+  <div v-if="isLoading" class="flex justify-center mt-3">
+    <Loader />
+  </div>
 </template>

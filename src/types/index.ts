@@ -1,3 +1,5 @@
+import { JwtPayload } from "jwt-decode";
+
 type SidebarRoutesType = {
   title: string;
   value: string;
@@ -11,4 +13,13 @@ type Notification = {
   message: string;
 };
 
-export type { SidebarRoutesType, Notification };
+interface ApiError {
+  status: number;
+  message: string;
+}
+
+interface TokenPayload extends JwtPayload {
+  email: string;
+}
+
+export type { SidebarRoutesType, Notification, TokenPayload, ApiError };

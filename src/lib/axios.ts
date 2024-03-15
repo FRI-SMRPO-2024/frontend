@@ -3,6 +3,7 @@ import Axios, { InternalAxiosRequestConfig } from "axios";
 import { API_URL } from "@/config";
 import { useToast } from "vue-toast-notification";
 import { LoginResponse } from "@/features/auth";
+import { ApiError } from "@/types";
 export const axios = Axios.create({
   baseURL: API_URL,
   withCredentials: true,
@@ -14,7 +15,6 @@ export const refreshAccessTokenFn = async () => {
 };
 
 axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  // set token
   config.headers["Accept"] = "application/json";
   config.headers["Content-Type"] = "application/json";
 
@@ -23,13 +23,24 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 axios.interceptors.response.use(
   (response) => {
-    return response.data;
+    return response;
   },
   (error) => {
-    // Check if token expired and try refreshing
+    const apiError: ApiError = {
+      status: error.response.status,
+      message: error.response.data,
+    };
 
-    useToast().error("Failed to execute the request!", { position: "top" });
+    if (
+      apiError.status === 400 &&
+      apiError.message === "Invalid login credentials"
+    ) {
+      return Promise.reject(apiError);
+    }
 
-    return Promise.reject(error);
+    useToast().error("There was an issue with the request", {
+      position: "top",
+    });
+    return Promise.reject(apiError);
   },
 );

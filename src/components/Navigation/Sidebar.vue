@@ -28,7 +28,7 @@
           variant="flat"
           color="#e8e8e8"
           class="text-none w-2/5"
-          @click="handleLogout()"
+          @click="logoutUser()"
         >
           Logout
         </v-btn>
@@ -38,15 +38,29 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { sidebarRoutes } from "./sidebar.routes";
 import { useUserStore } from "@/stores/user.store";
+import { useAxios } from "@/composables/useAxios";
+import { LoginResponse } from "@/features/auth";
+import { handleLogout } from "@/features/auth/api";
 const route = useRoute();
+const router = useRouter();
 const userStore = useUserStore();
 
 function isActive(href: string): boolean {
   return route.fullPath.includes(href.replace("/", ""));
 }
 
-const handleLogout = () => {};
+const { execute } = useAxios<LoginResponse>({
+  method: "post",
+  url: "auth/logout",
+});
+
+const logoutUser = () => {
+  execute().then(() => {
+    handleLogout();
+    router.push({ name: "login" });
+  });
+};
 </script>
