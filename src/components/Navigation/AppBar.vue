@@ -5,7 +5,7 @@
     </template>
     <template v-slot:append>
       <div class="flex items-center space-x-4">
-        <div class="text-sm">John Doe</div>
+        <div class="text-sm">{{ userStore.getData()?.username }}</div>
         <v-btn icon="mdi-account" size="small" class="bg-gray-900/10"></v-btn>
       </div>
     </template>
@@ -17,8 +17,11 @@ import { computed } from "vue";
 import { Heading } from "../Heading";
 import { useRoute } from "vue-router";
 import { sidebarRoutes } from "./sidebar.routes";
+import { useUserStore } from "@/stores/user.store";
 
 const route = useRoute();
+
+const userStore = useUserStore();
 
 const getCurrentRouteIcon = computed(() => {
   const currentRoute = sidebarRoutes.find((item) =>

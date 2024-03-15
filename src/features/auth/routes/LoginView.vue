@@ -1,6 +1,6 @@
 <template>
   <AuthLayout>
-    <div class="w-1/5">
+    <div class="w-1/5 mb-10">
       <div
         class="w-full flex flex-col items-center justify-start space-y-2 mb-10"
       >

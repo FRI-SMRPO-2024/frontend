@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { LoginFormData } from "../types";
+import { LoginFormData, LoginResponse } from "../types";
 import { useField, useForm } from "vee-validate";
+import { handleSuccessAuth } from "@/features/auth/api";
+import Alert from "@/components/Alert/Alert.vue";
+import { useAxios } from "@/composables/useAxios";
+import { useRouter } from "vue-router";
+import { Loader } from "@/components/Common";
 
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
@@ -20,16 +25,26 @@ const { handleSubmit, handleReset } = useForm({
 const email = useField("email");
 const password = useField("password");
 
-const submit = handleSubmit((values: LoginFormData) => {
-  console.log(values);
-  // TODO: Connect to API
+const { execute, isError, error, isLoading } = useAxios<LoginResponse>({
+  method: "post",
+  url: "auth/login",
+});
 
-  handleReset();
+const router = useRouter();
+
+const submit = handleSubmit((values: LoginFormData) => {
+  execute(values)
+    .then((res: LoginResponse) => {
+      handleSuccessAuth(res);
+      router.push({ name: "dashboard" });
+    })
+    .catch(() => handleReset());
 });
 </script>
 
 <template>
-  <form fast-fail @submit.prevent="submit">
+  <Alert v-if="isError" :message="error.message" type="error" class="mb-2" />
+  <form fast-fail @submit="submit">
     <v-text-field
       v-model="email.value.value"
       variant="outlined"
@@ -53,4 +68,7 @@ const submit = handleSubmit((values: LoginFormData) => {
       Login
     </v-btn>
   </form>
+  <div v-if="isLoading" class="flex justify-center mt-3">
+    <Loader />
+  </div>
 </template>
