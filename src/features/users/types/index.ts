@@ -1,9 +1,12 @@
 type User = {
-  id: number;
-  username: string;
-  fullname: string;
+  id: string;
   email: string;
-  role: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  is_admin: true;
+  created_at: string;
+  last_login: string;
 };
 
 interface CreateUserData {
@@ -15,4 +18,13 @@ interface CreateUserData {
   role: "user" | "admin";
 }
 
-export type { User, CreateUserData };
+type TableUser = {
+  email: string;
+  username: string;
+  fullName: string;
+  role: "Admin" | "User";
+  createdOn: string;
+  lastLogin: string;
+};
+
+export type { User, CreateUserData, TableUser };
