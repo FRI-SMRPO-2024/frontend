@@ -4,7 +4,7 @@
       <v-icon :icon="icon" />
       <span>{{ title }}</span>
     </h2>
-    <p class="font-light text-gray-500 text-sm mb-2">
+    <p class="font-light text-gray-500 text-sm mb-2 whitespace-pre">
       {{ description }}
     </p>
     <slot></slot>

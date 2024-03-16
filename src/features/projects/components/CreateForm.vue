@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { CreateProjectData, UserSelect } from "@/features/projects";
-import { User, usersData } from "@/features/users";
+import { CreateProjectData, Project, UserSelect } from "@/features/projects";
+import { User } from "@/features/users";
+import { useAxios } from "@/composables/useAxios";
+import { ref } from "vue";
+import { Alert } from "@/components/Alert";
+import { Loader } from "@/components/Common";
+import { useToast } from "vue-toast-notification";
 
 const mapUsersToSelect = (users: User[]): UserSelect[] => {
   return users.map((user: User) => ({
-    title: user.fullname,
+    title: `${user.first_name} ${user.last_name}`,
     value: user.id,
   }));
 };
 
-const fetchedUsers = mapUsersToSelect(usersData);
+const fetchedUsers = ref<UserSelect[]>([]);
+
+const { execute: fetchUsers } = useAxios<User[]>({
+  method: "get",
+  url: "user/get-all",
+});
+
+fetchUsers().then((users: User[]) => {
+  fetchedUsers.value = mapUsersToSelect(users);
+});
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -59,15 +73,36 @@ const productOwner = useField<number>("productOwner");
 const scrumMaster = useField<number>("scrumMaster");
 const developers = useField<number[]>("developers", {}, { initialValue: [] });
 
-const submit = handleSubmit((values: CreateProjectData) => {
-  console.log(values);
-  // TODO: Connect to API
+const {
+  execute: submitProject,
+  isLoading,
+  isError,
+  error,
+} = useAxios<Project>({ method: "post", url: "project/create" });
 
-  emitter.emit("dialogClose");
+const submit = handleSubmit((values: CreateProjectData) => {
+  submitProject({
+    name: values.name,
+    description: values.description,
+    owner_id: values.productOwner,
+    scrum_master: values.scrumMaster,
+    developers: values.developers,
+  }).then(() => {
+    useToast().success("Successfully created new project!", {
+      position: "top",
+    });
+    emitter.emit("dialogClose");
+  });
 });
 </script>
 
 <template>
+  <Alert
+    v-if="isError"
+    :message="error.message.error"
+    type="error"
+    class="mb-4"
+  />
   <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="name.value.value"
@@ -119,8 +154,11 @@ const submit = handleSubmit((values: CreateProjectData) => {
         type="submit"
         class="w-2/5"
       >
-        Create proejct
+        Create project
       </v-btn>
     </div>
   </form>
+  <div v-if="isLoading" class="mt-2 flex justify-center">
+    <Loader />
+  </div>
 </template>

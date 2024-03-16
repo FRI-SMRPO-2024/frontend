@@ -1,8 +1,7 @@
-import { User } from "@/features/users";
 import { Component } from "vue";
 
 interface CreateProjectData {
-  title: string;
+  name: string;
   description: string;
   productOwner: string;
   scrumMaster: string;
@@ -17,14 +16,15 @@ interface ProjectSelectedUsers {
 
 interface UserSelect {
   title: string;
-  value: number;
+  value: string;
 }
 
 interface Project {
   id: number;
-  title: string;
+  name: string;
   description: string;
-  users: User[];
+  owner_id: string;
+  created_at: string;
 }
 
 interface ProjectTab {

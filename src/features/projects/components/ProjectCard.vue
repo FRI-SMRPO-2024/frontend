@@ -12,7 +12,7 @@
           <div
             class="w-full flex-none text-lg text-gray-800 font-bold leading-none"
           >
-            {{ data.title }}
+            {{ data.name }}
           </div>
           <div class="flex-auto text-gray-500 my-1">
             {{ data.description }}
@@ -37,7 +37,6 @@
 <script setup lang="ts">
 import { Project } from "@/features/projects";
 import { useRouter } from "vue-router";
-import { useToast } from "vue-toast-notification";
 
 type ProjectCardProps = {
   data: Project;
@@ -47,11 +46,7 @@ defineProps<ProjectCardProps>();
 
 const router = useRouter();
 
-const toast = useToast();
-
 const handleProjectOpen = (projectId: number) => {
-  toast.success("test message", { position: "top" });
-
   router.push({ name: "projects.view", params: { id: projectId } });
 };
 </script>

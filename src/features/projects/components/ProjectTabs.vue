@@ -21,6 +21,7 @@ import {
   Documentation,
   Overview,
   ProductBacklog,
+  Project,
   ProjectTab,
   SprintBacklog,
   Sprints,
@@ -28,10 +29,19 @@ import {
 } from "@/features/projects";
 import { ref } from "vue";
 
+type ProjectTabsProps = {
+  project: Project;
+};
+
+const props = defineProps<ProjectTabsProps>();
+
 const PROJECT_TABS: ProjectTab[] = [
   {
     title: "Overview",
     component: Overview,
+    props: {
+      project: props.project,
+    },
   },
   {
     title: "Product Backlog",
