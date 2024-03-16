@@ -18,8 +18,23 @@ interface ApiError {
   message: string;
 }
 
+interface DateExtractedData {
+  day: string;
+  month: string;
+  year: string;
+  hours: string;
+  minutes: string;
+  seconds: string;
+}
+
 interface TokenPayload extends JwtPayload {
   email: string;
 }
 
-export type { SidebarRoutesType, Notification, TokenPayload, ApiError };
+export type {
+  SidebarRoutesType,
+  Notification,
+  TokenPayload,
+  ApiError,
+  DateExtractedData,
+};

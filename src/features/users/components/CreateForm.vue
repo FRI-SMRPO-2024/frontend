@@ -2,6 +2,13 @@
 import { CreateUserData } from "../types";
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
+import { ref } from "vue";
+import { useAxios } from "@/composables/useAxios";
+import { AuthUser } from "@/features/auth";
+import { Loader } from "@/components/Common";
+import { Alert } from "@/components/Alert";
+import { useToast } from "vue-toast-notification";
+import PasswordMeter from "vue-simple-password-meter";
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -26,9 +33,12 @@ const { handleSubmit } = useForm({
       return "Must be a valid e-mail.";
     },
     password(value) {
-      if (value?.length >= 12) return true;
+      if (
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{12,}$/i.test(value)
+      )
+        return true;
 
-      return "Password length must be at least 12 chars long!";
+      return "Password must be at least 12 characters long and must contain a number and symbol!";
     },
     role(value) {
       if (value) return true;
@@ -45,15 +55,32 @@ const email = useField("email");
 const password = useField("password");
 const role = useField("role");
 
-const submit = handleSubmit((values: CreateUserData) => {
-  console.log(values);
-  // TODO: Connect to API
-
-  emitter.emit("dialogClose");
+const { execute, isLoading, error, isError } = useAxios<AuthUser>({
+  method: "post",
+  url: "auth/signup",
 });
+
+const submit = handleSubmit((values: CreateUserData) => {
+  execute({
+    email: values.email,
+    password: values.password,
+    first_name: values.firstName,
+    last_name: values.lastName,
+    username: values.username,
+    is_admin: values.role === "admin",
+  }).then((user: AuthUser) => {
+    useToast().success(`User ${user.username} successfully created!`, {
+      position: "top",
+    });
+    emitter.emit("dialogClose");
+  });
+});
+
+const hidePassword = ref<boolean>(true);
 </script>
 
 <template>
+  <Alert v-if="isError" :message="error.message" type="error" class="mb-5" />
   <form fast-fail @submit.prevent="submit">
     <div class="flex items-center w-full justify-between space-x-4">
       <v-text-field
@@ -85,12 +112,18 @@ const submit = handleSubmit((values: CreateUserData) => {
       variant="outlined"
     ></v-text-field>
     <v-text-field
+      class="mb-0"
       v-model="password.value.value"
       :error-messages="password.errorMessage.value"
       label="Password"
-      type="password"
+      :append-icon="hidePassword ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="() => (hidePassword = !hidePassword)"
+      :type="hidePassword ? 'password' : 'text'"
       variant="outlined"
     ></v-text-field>
+    <div class="bg-slate-100 rounded-md">
+      <password-meter :password="password.value.value" class="mb-5" />
+    </div>
     <v-select
       v-model="role.value.value"
       :error-messages="role.errorMessage.value"
@@ -110,4 +143,7 @@ const submit = handleSubmit((values: CreateUserData) => {
       </v-btn>
     </div>
   </form>
+  <div v-if="isLoading" class="mt-2 flex justify-center">
+    <Loader />
+  </div>
 </template>

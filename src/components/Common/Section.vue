@@ -7,9 +7,7 @@
     <p class="font-light text-gray-500 text-sm mb-2">
       {{ description }}
     </p>
-    <div>
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 

@@ -1,12 +1,62 @@
 <template>
-  <div class="w-full">
-    <Table :headers="headers" :rows="data" :display-actions="true" />
+  <div class="w-full h-full">
+    <Alert v-if="isError" :message="error.message" type="error" />
+    <Table
+      v-if="!isLoading"
+      :headers="headers"
+      :rows="usersData"
+      :display-actions="true"
+      class="h-full"
+    />
+    <div v-else class="flex justify-center">
+      <Loader />
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import { Table } from "@/components/Common";
-import { usersData } from "@/features/users";
+import { Loader, Table } from "@/components/Common";
+import { TableUser, User } from "@/features/users";
+import { useAxios } from "@/composables/useAxios";
+import { Alert } from "@/components/Alert";
+import { ref } from "vue";
+import { formattedDate, formattedDateTime } from "@/utils/date";
+import emitter from "@/plugins";
 
-const headers = ["ID", "Username", "Full name", "Email", "Role"];
-const data = usersData;
+const { execute, isLoading, isError, error } = useAxios<User[]>({
+  method: "get",
+  url: "user/get-all",
+});
+const usersData = ref<TableUser[]>([]);
+
+const mapUserData = (users: User[]): TableUser[] => {
+  return users.map((user: User) => ({
+    email: user.email,
+    username: user.username ?? "/",
+    fullName: `${user.first_name} ${user.last_name}` ?? "/",
+    role: user.is_admin ? "Admin" : "User",
+    createdOn: formattedDate(user.created_at),
+    lastLogin: formattedDateTime(user.last_login),
+  }));
+};
+
+const fetchUserData = (): void => {
+  execute().then((users: User[]) => {
+    usersData.value = mapUserData(users);
+  });
+};
+
+emitter.on("dialogClose", () => {
+  fetchUserData();
+});
+
+const headers = [
+  "Email",
+  "Username",
+  "Full Name",
+  "Role",
+  "Created at",
+  "Last login",
+];
+
+fetchUserData();
 </script>
