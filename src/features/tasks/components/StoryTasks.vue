@@ -15,18 +15,20 @@ const props = defineProps<StoryTasksProps>();
 
 const tasks = ref<Task[]>([]);
 
-const { execute, isLoading, isError, error } = useAxios<Task[]>({ method: 'get', url: `task/get-by-story/${props.storyId}`})
+const { execute, isLoading, isError, error } = useAxios<Task[]>({
+  method: "get",
+  url: `task/get-by-story/${props.storyId}`,
+});
 
 const insertNewTask = (task: Task) => {
   tasks.value = [...tasks.value, task];
-}
+};
 
 onMounted(() => {
   execute().then((res: Task[]) => {
     tasks.value = res;
   });
 });
-
 </script>
 
 <template>
@@ -42,14 +44,23 @@ onMounted(() => {
           No tasks have been created for this story
         </div>
         <div v-else class="flex flex-col space-y-2">
-          <TaskCard v-for="(task, idx) in tasks" :key="idx" :task="task" :projectId="projectId" />
+          <TaskCard
+            v-for="(task, idx) in tasks"
+            :key="idx"
+            :task="task"
+            :projectId="projectId"
+          />
         </div>
       </div>
     </div>
     <div>
       <div class="flex-col justify-start space-y-2">
         <div class="font-medium text-sm text-gray-700">Create a new task</div>
-        <CreateTaskForm :storyId="storyId" :projectId="projectId" @taskAdded="insertNewTask" />
+        <CreateTaskForm
+          :storyId="storyId"
+          :projectId="projectId"
+          @taskAdded="insertNewTask"
+        />
       </div>
     </div>
   </div>

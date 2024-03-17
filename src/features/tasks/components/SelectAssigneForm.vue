@@ -8,14 +8,18 @@ import { Loader } from "@/components/Common";
 
 type AssigneeFormProps = {
   projectId: number;
-  assignedUserId: string|null;
-}
+  assignedUserId: string | null;
+};
 
 const props = defineProps<AssigneeFormProps>();
 
 const { handleSubmit } = useForm();
 
-const user = useField<string>("user", {}, { initialValue: props.assignedUserId ?? '' });
+const user = useField<string>(
+  "user",
+  {},
+  { initialValue: props.assignedUserId ?? "" },
+);
 
 const assigneeUsers = ref<UserSelect[]>([]);
 const mapUsersToSelect = (projUsers: ProjectUser[]): UserSelect[] => {
@@ -24,7 +28,12 @@ const mapUsersToSelect = (projUsers: ProjectUser[]): UserSelect[] => {
     value: user.user.id,
   }));
 };
-const { execute: fetchUsers, isLoading, isError, error } = useAxios<ProjectUser[]>({
+const {
+  execute: fetchUsers,
+  isLoading,
+  isError,
+  error,
+} = useAxios<ProjectUser[]>({
   method: "get",
   url: `user-project/get-project-users/${props.projectId}`,
 });

@@ -10,7 +10,7 @@ import { onMounted, ref } from "vue";
 
 type TaskFormProps = {
   storyId: number;
-  projectId: number
+  projectId: number;
 };
 
 const props = defineProps<TaskFormProps>();
@@ -28,7 +28,7 @@ const { handleSubmit, handleReset } = useForm({
       if (value) return true;
 
       return "Time estimation is required!";
-    }
+    },
   },
 });
 
@@ -45,7 +45,12 @@ const timeEstimation = useField<number>("time_estimation");
 
 const assigneeUsers = ref<UserSelect[]>([]);
 
-const { execute: submitTask, isLoading, isError, error } = useAxios<Task>({ method: 'post', url: 'task/create'});
+const {
+  execute: submitTask,
+  isLoading,
+  isError,
+  error,
+} = useAxios<Task>({ method: "post", url: "task/create" });
 const { execute: fetchUsers } = useAxios<ProjectUser[]>({
   method: "get",
   url: `user-project/get-project-users/${props.projectId}`,
@@ -55,18 +60,18 @@ onMounted(() => {
   fetchUsers().then((res: ProjectUser[]) => {
     assigneeUsers.value = mapUsersToSelect(res);
   });
-})
+});
 
 const submit = handleSubmit((values: CreateTaskData) => {
   submitTask({
     story_id: props.storyId,
     description: values.description,
     assignee_id: values.assignee ?? null,
-    time_estimation: values.time_estimation
+    time_estimation: values.time_estimation,
   }).then((res: Task) => {
-    useToast().success('Successfully added a new task!', { position: 'top' });
+    useToast().success("Successfully added a new task!", { position: "top" });
     handleReset();
-    emit('taskAdded', res);
+    emit("taskAdded", res);
   });
 });
 </script>

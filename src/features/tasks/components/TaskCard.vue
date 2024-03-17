@@ -13,13 +13,12 @@ defineProps<TaskCardProps>();
 const menu = ref(false);
 
 const constructInitials = (task: Task): string => {
-  if(!task.assignee_id) {
-    return 'N/A';
+  if (!task.assignee_id) {
+    return "N/A";
   }
 
   return `${task.assignee_first_name?.charAt(0)}${task.assignee_last_name?.charAt(0)}`;
-}
-
+};
 </script>
 
 <template>
@@ -41,7 +40,11 @@ const constructInitials = (task: Task): string => {
           <v-list-item prepend-icon="mdi-account" subtitle="Assign a User">
           </v-list-item>
           <v-list-item>
-            <SelectAssigneForm :assignedUserId="task.assignee_id" :projectId="projectId" class="mt-4" />
+            <SelectAssigneForm
+              :assignedUserId="task.assignee_id"
+              :projectId="projectId"
+              class="mt-4"
+            />
           </v-list-item>
         </v-list>
       </v-card>

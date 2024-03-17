@@ -40,8 +40,8 @@ const PROJECT_TABS: ProjectTab[] = [
     title: "Overview",
     component: Overview,
     props: {
-      project: props.project
-    }
+      project: props.project,
+    },
   },
   {
     title: "Product Backlog",

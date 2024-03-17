@@ -27,7 +27,7 @@ onMounted(() => {
   fetchUsers().then((users: User[]) => {
     fetchedUsers.value = mapUsersToSelect(users);
   });
-})
+});
 
 const { handleSubmit } = useForm({
   validationSchema: {

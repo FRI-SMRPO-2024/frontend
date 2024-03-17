@@ -77,25 +77,19 @@ const submit = handleSubmit((values: CreateStoryData) => {
     business_value: values.business_value,
     priority: mapPriority.get(values.priority),
     acceptance_criteria: values.acceptance_criteria,
-  })
-    .then(() => {
-      useToast().success("Successfully created new story!", {
-        position: "top",
-      });
-
-      emitter.emit("dialogClose");
-      emit("get-stories");
+  }).then(() => {
+    useToast().success("Successfully created new story!", {
+      position: "top",
     });
+
+    emitter.emit("dialogClose");
+    emit("get-stories");
+  });
 });
 </script>
 
 <template>
-  <Alert
-    v-if="isError"
-    :message="error.message"
-    type="error"
-    class="mt-2"
-  />
+  <Alert v-if="isError" :message="error.message" type="error" class="mt-2" />
   <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="name.value.value"

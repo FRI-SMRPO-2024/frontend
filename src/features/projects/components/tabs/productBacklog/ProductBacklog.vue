@@ -62,7 +62,12 @@ type SprintProps = {
 
 const props = defineProps<SprintProps>();
 
-const { execute: getStories, isLoading, isError, error } = useAxios<Story[]>({
+const {
+  execute: getStories,
+  isLoading,
+  isError,
+  error,
+} = useAxios<Story[]>({
   method: "get",
   url: `story/get-by-project/${props.project.id}`,
 });

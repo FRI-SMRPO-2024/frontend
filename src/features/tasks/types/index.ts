@@ -1,7 +1,7 @@
 interface Task {
   id: number;
   description: string;
-  assignee_id?: string|null;
+  assignee_id?: string | null;
   assignee_first_name?: string;
   assignee_last_name?: string;
   assignee_username?: string;
