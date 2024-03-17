@@ -6,9 +6,7 @@
       <div class="flex flex-column w-full justify-center">
         <div class="grow">
           <div class="w-full flex-none flex justify-between items-center">
-            <div
-              class="shrink text-lg text-gray-700 font-semibold leading-none"
-            >
+            <div class="shrink text-md text-gray-700 font-medium leading-none">
               {{ data.name }}
             </div>
             <div
@@ -118,17 +116,16 @@
         </div>
         <div
           v-if="idx === clickedTicket"
-          class="mt-6 flex flex-col space-y-4 w-full"
+          class="mt-6 flex flex-col space-y-6 w-full"
         >
+          <v-divider class="w-100 border-gray-500"></v-divider>
           <div class="flex-col justify-start space-y-2">
             <Section
               title="Story Description"
               icon="mdi-information"
               class="shrink"
+              :description="data.description"
             >
-              <div class="px-4" style="white-space: pre-line">
-                {{ data.description }}
-              </div>
             </Section>
           </div>
           <div class="flex-col justify-start space-y-2">
@@ -136,24 +133,27 @@
               title="Acceptance Criteria"
               icon="mdi-check-circle"
               class="shrink"
+              :description="data.acceptance_criteria"
             >
-              <div class="px-4" style="white-space: pre-line">
-                {{ data.acceptance_criteria }}
-              </div>
             </Section>
           </div>
+          <v-divider class="w-4/6 mx-auto border-gray-500"></v-divider>
+          <StoryTasks :storyId="data.id" :projectId="projectId" />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { Story, TimeEstimationForm } from "@/features/projects";
+import { Story, TimeEstimationForm } from "@/features/stories";
 import { ref, toRef } from "vue";
 import emitter from "@/plugins";
+import { StoryTasks } from "@/features/tasks";
+import { Section } from "@/components/Common";
 
 type StoryCardProps = {
   data: Story;
+  projectId: number;
   clickedTicket: number;
   idx: number;
 };

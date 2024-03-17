@@ -37,6 +37,7 @@ const submit = handleSubmit((values: { timeEstimation: number }) => {
       :error-messages="timeEstimation.errorMessage.value"
       label="Time estimation"
       variant="outlined"
+      density="compact"
       type="number"
       :min="0"
       class="w-full"

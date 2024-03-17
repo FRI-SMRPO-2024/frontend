@@ -82,11 +82,12 @@ const hidePassword = ref<boolean>(true);
 <template>
   <Alert v-if="isError" :message="error.message" type="error" class="mb-5" />
   <form fast-fail @submit.prevent="submit">
-    <div class="flex items-center w-full justify-between space-x-4">
+    <div class="flex items-center w-full justify-between space-x-2">
       <v-text-field
         v-model="firstName.value.value"
         :error-messages="firstName.errorMessage.value"
         label="First Name"
+        density="compact"
         variant="outlined"
         class="w-full"
       ></v-text-field>
@@ -95,6 +96,7 @@ const hidePassword = ref<boolean>(true);
         v-model="lastName.value.value"
         :error-messages="lastName.errorMessage.value"
         label="Last Name"
+        density="compact"
         variant="outlined"
         class="w-full"
       ></v-text-field>
@@ -102,6 +104,7 @@ const hidePassword = ref<boolean>(true);
     <v-text-field
       v-model="email.value.value"
       variant="outlined"
+      density="compact"
       :error-messages="email.errorMessage.value"
       label="Email"
     ></v-text-field>
@@ -109,6 +112,7 @@ const hidePassword = ref<boolean>(true);
       v-model="username.value.value"
       :error-messages="username.errorMessage.value"
       label="Username"
+      density="compact"
       variant="outlined"
     ></v-text-field>
     <v-text-field
@@ -120,6 +124,7 @@ const hidePassword = ref<boolean>(true);
       @click:append="() => (hidePassword = !hidePassword)"
       :type="hidePassword ? 'password' : 'text'"
       variant="outlined"
+      density="compact"
     ></v-text-field>
     <div class="bg-slate-100 rounded-md">
       <password-meter :password="password.value.value" class="mb-5" />
@@ -129,6 +134,7 @@ const hidePassword = ref<boolean>(true);
       :error-messages="role.errorMessage.value"
       label="Role"
       variant="outlined"
+      density="compact"
       :items="['User', 'Admin']"
     ></v-select>
     <div class="w-full flex justify-end">

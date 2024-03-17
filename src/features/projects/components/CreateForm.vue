@@ -4,7 +4,7 @@ import { useField, useForm } from "vee-validate";
 import { CreateProjectData, Project, UserSelect } from "@/features/projects";
 import { User } from "@/features/users";
 import { useAxios } from "@/composables/useAxios";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
 import { useToast } from "vue-toast-notification";
@@ -23,9 +23,11 @@ const { execute: fetchUsers } = useAxios<User[]>({
   url: "user/get-all",
 });
 
-fetchUsers().then((users: User[]) => {
-  fetchedUsers.value = mapUsersToSelect(users);
-});
+onMounted(() => {
+  fetchUsers().then((users: User[]) => {
+    fetchedUsers.value = mapUsersToSelect(users);
+  });
+})
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -108,6 +110,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
       v-model="name.value.value"
       :error-messages="name.errorMessage.value"
       label="Name"
+      density="compact"
       variant="outlined"
       class="w-full"
     ></v-text-field>
@@ -116,6 +119,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
       :error-messages="description.errorMessage.value"
       label="Description"
       variant="outlined"
+      density="compact"
       no-resize
       class="w-full"
     ></v-textarea>
@@ -126,6 +130,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
         label="Product Owner"
         variant="outlined"
         class="w-full"
+        density="compact"
         :items="fetchedUsers"
       ></v-select>
       <v-select
@@ -134,6 +139,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
         label="Methodology Owner"
         variant="outlined"
         class="w-full"
+        density="compact"
         :items="fetchedUsers"
       ></v-select>
     </div>
@@ -142,6 +148,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
       :error-messages="developers.errorMessage.value"
       label="Developers"
       variant="outlined"
+      density="compact"
       class="w-full"
       multiple
       :items="fetchedUsers"

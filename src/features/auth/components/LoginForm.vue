@@ -50,6 +50,7 @@ const submit = handleSubmit((values: LoginFormData) => {
       variant="outlined"
       :error-messages="email.errorMessage.value"
       label="Email"
+      density="compact"
     ></v-text-field>
     <v-text-field
       v-model="password.value.value"
@@ -57,6 +58,7 @@ const submit = handleSubmit((values: LoginFormData) => {
       label="Password"
       type="password"
       variant="outlined"
+      density="compact"
     ></v-text-field>
     <v-btn
       prepend-icon="mdi-login"

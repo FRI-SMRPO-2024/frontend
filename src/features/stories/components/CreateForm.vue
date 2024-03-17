@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { CreateStoryData, Project } from "@/features/projects";
+import { Project } from "@/features/projects";
 import { useToast } from "vue-toast-notification";
 import { useAxios } from "@/composables/useAxios";
-import { ref } from "vue";
+import { Alert } from "@/components/Alert";
+import { Loader } from "@/components/Common";
+import { CreateStoryData, Story } from "@/features/stories";
 
 const emit = defineEmits(["get-stories", "dialogClose"]);
 
@@ -13,7 +15,6 @@ type StoryCreateProps = {
 };
 
 const props = defineProps<StoryCreateProps>();
-console.log(props.project.id);
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -54,8 +55,9 @@ const acceptance_criteria = useField<string>("acceptance_criteria");
 let {
   execute: submitStory,
   error,
+  isLoading,
   isError,
-} = useAxios({
+} = useAxios<Story>({
   method: "post",
   url: "story/create",
 });
@@ -68,8 +70,6 @@ const mapPriority = new Map([
 ]);
 
 const submit = handleSubmit((values: CreateStoryData) => {
-  console.log(values);
-
   submitStory({
     project_id: props.project.id,
     name: values.name,
@@ -83,17 +83,19 @@ const submit = handleSubmit((values: CreateStoryData) => {
         position: "top",
       });
 
-      isError = ref(false);
       emitter.emit("dialogClose");
       emit("get-stories");
-    })
-    .catch((error) => {
-      console.log(error);
     });
 });
 </script>
 
 <template>
+  <Alert
+    v-if="isError"
+    :message="error.message"
+    type="error"
+    class="mt-2"
+  />
   <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="name.value.value"
@@ -101,12 +103,14 @@ const submit = handleSubmit((values: CreateStoryData) => {
       label="Name"
       variant="outlined"
       class="w-full"
+      density="compact"
     ></v-text-field>
     <v-textarea
       v-model="description.value.value"
       :error-messages="description.errorMessage.value"
       label="Description"
       variant="outlined"
+      density="compact"
       no-resize
       class="w-full"
     ></v-textarea>
@@ -117,6 +121,7 @@ const submit = handleSubmit((values: CreateStoryData) => {
         label="Business value"
         variant="outlined"
         no-resize
+        density="compact"
         class="w-full"
         type="number"
       ></v-text-field>
@@ -125,6 +130,7 @@ const submit = handleSubmit((values: CreateStoryData) => {
         :error-messages="priority.errorMessage.value"
         label="Priority"
         variant="outlined"
+        density="compact"
         class="w-full"
         :items="[
           'COULD HAVE',
@@ -139,6 +145,7 @@ const submit = handleSubmit((values: CreateStoryData) => {
       :error-messages="acceptance_criteria.errorMessage.value"
       label="Acceptance criteria"
       variant="outlined"
+      density="compact"
       no-resize
       class="w-full"
     ></v-textarea>
@@ -154,11 +161,8 @@ const submit = handleSubmit((values: CreateStoryData) => {
         Create story
       </v-btn>
     </div>
-    <Alert
-      v-if="isError"
-      :message="error.message.error"
-      type="error"
-      class="mt-2"
-    />
   </form>
+  <div v-if="isLoading" class="flex justify-center mt-2">
+    <Loader />
+  </div>
 </template>

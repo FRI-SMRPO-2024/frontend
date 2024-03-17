@@ -13,22 +13,50 @@
       icon="mdi-account-group-outline"
       class="grow"
     >
+      <Alert v-if="isError" :message="error.message" type="error" />
+      <div v-if="isLoading" class="flex justify-center">
+        <Loader />
+      </div>
       <Table
+        v-else
         :headers="['Email', 'Username', 'Full name', 'Role']"
-        :rows="[]"
+        :rows="tableRows"
         :displayActions="false"
       />
     </Section>
   </div>
 </template>
 <script setup lang="ts">
-import { Section, Table } from "@/components/Common";
-import { Project } from "@/features/projects";
+import { Loader, Section, Table } from "@/components/Common";
+import { Project, ProjectUser } from "@/features/projects";
+import { useAxios } from "@/composables/useAxios";
+import { Alert } from "@/components/Alert";
+import { onMounted, ref } from "vue";
 
 type OverviewProps = {
   project: Project;
 };
 
 const props = defineProps<OverviewProps>();
-console.log(props);
+
+const mapUsersToTable = (projectUsers: ProjectUser[]) => {
+  return projectUsers.map((projectUser: ProjectUser) => ({
+    email: projectUser.user.email,
+    username: projectUser.user.username,
+    fullname: `${projectUser.user.firstName} ${projectUser.user.lastName}`,
+    role: projectUser.role.toLowerCase(),
+  }));
+};
+
+const { execute, isLoading, isError, error } = useAxios<ProjectUser[]>({
+  method: "get",
+  url: `user-project/get-project-users/${props.project.id}`,
+});
+
+const tableRows = ref<object[]>([]);
+onMounted(() => {
+  execute().then((res: ProjectUser[]) => {
+    tableRows.value = mapUsersToTable(res);
+  });
+});
 </script>

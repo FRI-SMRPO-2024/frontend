@@ -37,7 +37,6 @@
 <script setup lang="ts">
 import { Project } from "@/features/projects";
 import { useRouter } from "vue-router";
-
 type ProjectCardProps = {
   data: Project;
 };
