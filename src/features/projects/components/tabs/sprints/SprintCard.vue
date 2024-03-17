@@ -5,7 +5,7 @@
     <div class="flex justify-space-between">
       <div>
         <b style="font-size: 18px">
-          <v-icon class="mr-4">mdi-fast-forward</v-icon>Sprint {{ idx + 1 }}</b
+          <v-icon class="mr-4">mdi-fast-forward</v-icon>Sprint {{ numSprints - idx }}</b
         >
       </div>
       <div>
@@ -48,6 +48,7 @@ import { Sprint } from "@/features/projects";
 type StoryCardProps = {
   data: Sprint;
   idx: number;
+  numSprints: number;
 };
 
 defineProps<StoryCardProps>();

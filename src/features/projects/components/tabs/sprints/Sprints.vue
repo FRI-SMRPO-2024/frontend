@@ -5,7 +5,7 @@
         <Section
           title="All sprints."
           icon="mdi-view-dashboard"
-          description="Here are all the sprints for this project. Click the one you want to expand"
+          description="Here are all the sprints for this project."
         >
         </Section>
       </div>
@@ -33,6 +33,7 @@
         :key="idx"
         :data="sprint"
         :idx="idx"
+        :numSprints="sprints.length"
       >
       </SprintCard>
     </div>
@@ -63,12 +64,12 @@ const triggerGetSprints = () => {
   getSprints().then((returned: []) => {
     sprints.value = returned;
 
-    sprints.value.sort((a, b) => {
+    /*sprints.value.sort((a, b) => {
       const dateA = new Date(a.start_date);
       const dateB = new Date(b.start_date);
       return dateA.getTime() - dateB.getTime();
     });
-    console.log(sprints);
+    console.log(sprints);*/
   });
 };
 
