@@ -16,21 +16,27 @@
       <p>
         Start date:
         <b
-          >{{ data.start_date.getDate() }}.{{
-            data.start_date.getMonth() + 1
-          }}.{{ data.start_date.getFullYear() }}
+          >{{ new Date(data.start_date).getDate() }}.{{
+            new Date(data.start_date).getMonth() + 1
+          }}.{{ new Date(data.start_date).getFullYear() }}
           {{
-            data.start_date.toLocaleDateString(locale, { weekday: "long" })
+            new Date(data.start_date).toLocaleDateString(locale, {
+              weekday: "long",
+            })
           }}</b
         >
       </p>
       <p>
         End date:
         <b
-          >{{ data.end_date.getDate() }}.{{ data.end_date.getMonth() + 1 }}.{{
-            data.end_date.getFullYear()
-          }}
-          {{ data.end_date.toLocaleDateString(locale, { weekday: "long" }) }}</b
+          >{{ new Date(data.end_date).getDate() }}.{{
+            new Date(data.end_date).getMonth() + 1
+          }}.{{ new Date(data.end_date).getFullYear() }}
+          {{
+            new Date(data.end_date).toLocaleDateString(locale, {
+              weekday: "long",
+            })
+          }}</b
         >
       </p>
     </div>

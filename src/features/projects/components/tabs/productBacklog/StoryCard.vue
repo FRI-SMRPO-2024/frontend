@@ -55,7 +55,7 @@
                 </template>
               </v-tooltip>
               <div
-                v-if="data.pointEstimation > 0"
+                v-if="data.point_estimation > 0"
                 class="flex align-center justify-start space-x-1 text-xs"
               >
                 <span
@@ -65,10 +65,10 @@
                   />
                   Point Estimation:</span
                 >
-                <span>{{ data.pointEstimation }}</span>
+                <span>{{ data.point_estimation }}</span>
               </div>
               <div
-                v-if="data.businessValue"
+                v-if="data.business_value"
                 class="flex align-center justify-start space-x-1 text-xs"
               >
                 <span
@@ -78,7 +78,7 @@
                   />
                   Business Value:</span
                 >
-                <span>{{ data.businessValue }}</span>
+                <span>{{ data.business_value }}</span>
               </div>
               <div
                 class="flex align-center justify-start space-x-1 text-xs cursor-pointer"
@@ -137,7 +137,7 @@
             <p
               class="text-sm text-gray-500 whitespace-pre text-wrap cursor-text"
             >
-              {{ data.acceptanceCriteria }}
+              {{ data.acceptance_criteria }}
             </p>
           </div>
         </div>

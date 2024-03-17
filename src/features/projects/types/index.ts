@@ -50,11 +50,11 @@ interface CreateStoryData {
   name: string;
   description: string;
   priority: StoryPriority; //ENUM
-  businessValue: number;
-  pointEstimation: number;
+  business_value: number;
+  point_estimation: number;
   status: StoryStatus; //ENUM
-  acceptanceCriteria: string;
-  rejectedComment: string;
+  acceptance_criteria: string;
+  rejected_comment: string;
 }
 
 enum StoryPriority {

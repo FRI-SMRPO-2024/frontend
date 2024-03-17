@@ -1,7 +1,16 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { CreateStoryData } from "@/features/projects";
+import { CreateStoryData, Project } from "@/features/projects";
+import { useToast } from "vue-toast-notification";
+import { useAxios } from "@/composables/useAxios";
+
+type StoryCreateProps = {
+  project: Project;
+};
+
+const props = defineProps<StoryCreateProps>();
+console.log(props.project.id);
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -15,7 +24,7 @@ const { handleSubmit } = useForm({
 
       return "Description is required!";
     },
-    businessValue(value: number) {
+    business_value(value: number) {
       if (value) return true;
 
       return "Business value is required!";
@@ -25,7 +34,7 @@ const { handleSubmit } = useForm({
 
       return "Priority is required!";
     },
-    acceptanceCriteria(value: string) {
+    acceptance_criteria(value: string) {
       if (value) return true;
 
       return "Acceptance criteria is required!";
@@ -35,15 +44,37 @@ const { handleSubmit } = useForm({
 
 const name = useField<string>("name");
 const description = useField<string>("description");
-const businessValue = useField<number>("businessValue");
+const business_value = useField<number>("business_value");
 const priority = useField<string>("priority");
-const acceptanceCriteria = useField<string>("acceptanceCriteria");
+const acceptance_criteria = useField<string>("acceptance_criteria");
+
+const {
+  execute: submitStory,
+} = useAxios({
+  method: "post",
+  url: "story/create",
+});
 
 const submit = handleSubmit((values: CreateStoryData) => {
   console.log(values);
-  // TODO: Connect to API
+  console.log("TEST");
+  console.log(values.priority);
 
-  emitter.emit("dialogClose");
+  submitStory({
+    project_id: props.project.id,
+    sprint_id: 14,
+    name: values.name,
+    description: values.description,
+    business_value: values.business_value,
+    priority: 0,
+    acceptance_criteria: values.acceptance_criteria,
+  }).then(() => {
+    useToast().success("Successfully created new story!", {
+      position: "top",
+    });
+
+    emitter.emit("dialogClose");
+  });
 });
 </script>
 
@@ -66,8 +97,8 @@ const submit = handleSubmit((values: CreateStoryData) => {
     ></v-textarea>
     <div class="flex items-center w-full justify-between space-x-4">
       <v-text-field
-        v-model="businessValue.value.value"
-        :error-messages="businessValue.errorMessage.value"
+        v-model="business_value.value.value"
+        :error-messages="business_value.errorMessage.value"
         label="Business value"
         variant="outlined"
         no-resize
@@ -89,8 +120,8 @@ const submit = handleSubmit((values: CreateStoryData) => {
       ></v-select>
     </div>
     <v-textarea
-      v-model="acceptanceCriteria.value.value"
-      :error-messages="acceptanceCriteria.errorMessage.value"
+      v-model="acceptance_criteria.value.value"
+      :error-messages="acceptance_criteria.errorMessage.value"
       label="Acceptance criteria"
       variant="outlined"
       no-resize

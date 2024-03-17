@@ -19,14 +19,17 @@
             :dialogWidth="900"
             :displayActionBtn="false"
           >
-            <CreateForm></CreateForm>
+            <CreateForm
+              :project="props.project"
+              @get-sprints="triggergetSprints"
+            ></CreateForm>
           </Dialog>
         </Section>
       </div>
     </div>
     <div class="grow w-full grid grid-cols-1 gap-5 mt-4">
       <SprintCard
-        v-for="(sprint, idx) in SprintsMock"
+        v-for="(sprint, idx) in sprints"
         :key="idx"
         :data="sprint"
         :idx="idx"
@@ -37,8 +40,33 @@
 </template>
 <script setup lang="ts">
 import CreateForm from "@/features/projects/components/tabs/sprints/CreateForm";
-import { SprintsMock } from "../../../mocks";
 import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard";
+import { onMounted, ref } from "vue";
+import { useAxios } from "@/composables/useAxios";
+import { Project } from "@/features/projects";
 
-console.log(SprintsMock);
+let sprints = ref([]);
+
+type SprintProps = {
+  project: Project;
+};
+
+const props = defineProps<SprintProps>();
+console.log(props.project.id);
+
+const triggergetSprints = () => {
+  const { execute: getSprints } = useAxios({
+    method: "get",
+    url: `sprint/get-by-project-id/${props.project.id}`,
+  });
+
+  getSprints().then((returned: []) => {
+    sprints.value = returned;
+    console.log(sprints);
+  });
+};
+
+onMounted(() => {
+  triggergetSprints();
+});
 </script>

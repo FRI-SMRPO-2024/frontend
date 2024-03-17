@@ -19,7 +19,7 @@
             :dialogWidth="600"
             :displayActionBtn="false"
           >
-            <CreateForm></CreateForm>
+            <CreateForm :project="props.project"></CreateForm>
           </Dialog>
         </Section>
       </div>
@@ -27,7 +27,7 @@
     <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
       <StoryCard
         class=""
-        v-for="(story, idx) in Stories"
+        v-for="(story, idx) in stories"
         :key="idx"
         :idx="idx"
         :data="story"
@@ -39,11 +39,32 @@
 </template>
 <script setup lang="ts">
 import CreateForm from "@/features/projects/components/tabs/productBacklog/CreateForm";
-import { Stories } from "../../../mocks/";
 import StoryCard from "@/features/projects/components/tabs/productBacklog/StoryCard";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { Project } from "@/features/projects";
+import { useAxios } from "@/composables/useAxios";
 
 const clickedTicket = ref<number>();
+let stories = ref([]);
 
-console.log(Stories);
+type SprintProps = {
+  project: Project;
+};
+
+const props = defineProps<SprintProps>();
+console.log(props.project.id);
+
+const { execute: getStories } = useAxios({
+  method: "get",
+  url: `story/get-by-project/${props.project.id}`,
+});
+
+getStories().then((returned: []) => {
+  stories.value = returned;
+  console.log(stories);
+});
+
+onMounted(() => {
+  getStories();
+});
 </script>

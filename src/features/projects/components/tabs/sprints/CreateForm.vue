@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { CreateSprintData } from "@/features/projects";
+import { CreateSprintData, Project } from "@/features/projects";
+import { useAxios } from "@/composables/useAxios";
+import { useToast } from "vue-toast-notification";
+import { Alert } from "@/components/Alert";
+import { ref } from "vue";
+
+const emit = defineEmits(["get-sprints", "dialogClose"]);
+
+type StoryCreateProps = {
+  project: Project;
+};
+
+const props = defineProps<StoryCreateProps>();
+console.log(props.project.id);
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -50,16 +63,14 @@ function test() {
 }
 
 function disablePastDates(val) {
-  /*if (val.getDay() === 0 || val.getDay() === 6)
-    return false;*/
+  if (val.getDay() === 0 || val.getDay() === 6) return false;
   val = new Date(val - val.getTimezoneOffset() * 60000).toISOString();
   const today = new Date().toISOString().substr(0, 10);
   return val >= today;
 }
 
 function disableDatesBeforeStart(val) {
-  /*if (val.getDay() === 0 || val.getDay() === 6)
-    return false;*/
+  if (val.getDay() === 0 || val.getDay() === 6) return false;
   val = new Date(val - val.getTimezoneOffset() * 60000).toISOString();
   const limit = new Date(
     selectedStartDateField.value.value -
@@ -68,11 +79,40 @@ function disableDatesBeforeStart(val) {
   return val > limit;
 }
 
-const submit = handleSubmit((values: CreateSprintData) => {
-  console.log(values);
-  // TODO: Connect to API
+let {
+  execute: submitSprint,
+  error,
+  isError,
+} = useAxios({
+  method: "post",
+  url: "sprint/create",
+});
 
-  emitter.emit("dialogClose");
+const submit = handleSubmit((values: CreateSprintData) => {
+  submitSprint({
+    project_id: props.project.id,
+    velocity: values.velocity,
+    start_date: new Date(
+      selectedStartDateField.value.value -
+        selectedStartDateField.value.value.getTimezoneOffset() * 60000,
+    ),
+    end_date: new Date(
+      selectedEndDateField.value.value -
+        selectedEndDateField.value.value.getTimezoneOffset() * 60000,
+    ),
+  })
+    .then(() => {
+      useToast().success("Successfully created new sprint!", {
+        position: "top",
+      });
+
+      isError = ref(false);
+      emitter.emit("dialogClose");
+      emit("get-sprints");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 </script>
 
@@ -130,5 +170,6 @@ const submit = handleSubmit((values: CreateSprintData) => {
         </v-btn>
       </div>
     </div>
+    <Alert v-if="isError" :message="error.message.error" type="error" />
   </form>
 </template>
