@@ -24,7 +24,7 @@
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-5 mt-3">
+    <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
       <StoryCard
         class=""
         v-for="(story, idx) in Stories"
@@ -43,7 +43,7 @@ import { Stories } from "../../../mocks/";
 import StoryCard from "@/features/projects/components/tabs/productBacklog/StoryCard";
 import { ref } from "vue";
 
-const clickedTicket = ref(null);
+const clickedTicket = ref<number>();
 
 console.log(Stories);
 </script>
