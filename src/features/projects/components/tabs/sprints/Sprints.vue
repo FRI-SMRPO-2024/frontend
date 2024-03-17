@@ -62,6 +62,12 @@ const triggerGetSprints = () => {
 
   getSprints().then((returned: []) => {
     sprints.value = returned;
+
+    sprints.value.sort((a, b) => {
+      const dateA = new Date(a.start_date);
+      const dateB = new Date(b.start_date);
+      return dateA.getTime() - dateB.getTime();
+    });
     console.log(sprints);
   });
 };
