@@ -1,98 +1,144 @@
 <template>
   <div
-    class="rounded-md border-gray-500 border-opacity-50 border p-2 rounded-3xl p-4 w-full transition duration-300 ease-in-out hover:shadow-md"
+    class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md"
   >
-    <div class="flex justify-start space-x-4">
-      <div class="flex flex-column w-full">
+    <div class="flex justify-start">
+      <div class="flex flex-column w-full justify-center">
         <div class="grow">
-          <div
-            class="w-full flex-none text-lg text-gray-800 mb-3 font-bold leading-none"
-          >
-            {{ data.name }}
-          </div>
-          <div class="flex text-gray-500 my-1 ma-2 justify-space-between">
-            <div>
-              <b>Priority: </b>
-              <v-icon
-                v-if="data.priority === 'NULL'"
-                size="18"
-                icon="mdi-flag-triangle"
-              ></v-icon>
-              <span v-if="data.priority === 'NULL'"> No priority set!</span>
-
-              <v-icon
-                v-if="data.priority === 'MUST_HAVE'"
-                size="18"
-                icon="mdi-triangle"
-                color="orange"
-              ></v-icon>
-              <span
-                v-if="data.priority === 'MUST_HAVE' && idx === clickedTicket"
-              >
-                MUST HAVE</span
-              >
-
-              <v-icon
-                v-if="data.priority === 'SHOULD_HAVE'"
-                size="18"
-                icon="mdi-triangle-outline"
-              ></v-icon>
-              <span
-                v-if="data.priority === 'SHOULD_HAVE' && idx === clickedTicket"
-              >
-                SHOULD HAVE</span
-              >
-
-              <v-icon
-                v-if="data.priority === 'COULD_HAVE'"
-                size="18"
-                icon="mdi-triangle"
-                color="blue"
-              ></v-icon>
-              <span
-                v-if="data.priority === 'COULD_HAVE' && idx === clickedTicket"
-              >
-                COULD HAVE</span
-              >
-
-              <v-icon
-                v-if="data.priority === 'WONT_HAVE_THIS_TIME'"
-                size="18"
-                icon="mdi-flash-triangle"
-              ></v-icon>
-              <span
-                v-if="
-                  data.priority === 'WONT_HAVE_THIS_TIME' &&
-                  idx === clickedTicket
-                "
-              >
-                WONT HAVE THIS TIME</span
-              >
+          <div class="w-full flex-none flex justify-between items-center">
+            <div
+              class="shrink text-lg text-gray-700 font-semibold leading-none"
+            >
+              {{ data.name }}
             </div>
-            <div v-if="idx === clickedTicket">
-              Business value: <b>{{ data.businessValue }}</b>
-            </div>
-            <div v-if="data.pointEstimation > 0">
-              Point estimation: <b>{{ data.pointEstimation }}</b>
+            <div
+              class="grow text-gray-500 flex items-center justify-end space-x-6"
+            >
+              <v-tooltip :text="data.priority">
+                <template v-slot:activator="{ props }">
+                  <div
+                    v-bind="props"
+                    class="flex align-center justify-start space-x-1 text-xs"
+                  >
+                    <span
+                      ><v-icon icon="mdi-chevron-triple-up" size="small" />
+                      Priority:</span
+                    >
+                    <v-icon
+                      v-if="data.priority === 'NULL'"
+                      size="18"
+                      icon="mdi-flag-triangle"
+                    ></v-icon>
+                    <v-icon
+                      v-if="data.priority === 'MUST_HAVE'"
+                      size="18"
+                      icon="mdi-triangle"
+                      color="orange"
+                    ></v-icon>
+                    <v-icon
+                      v-if="data.priority === 'SHOULD_HAVE'"
+                      size="18"
+                      icon="mdi-triangle-outline"
+                    ></v-icon>
+                    <v-icon
+                      v-if="data.priority === 'COULD_HAVE'"
+                      size="18"
+                      icon="mdi-triangle"
+                      color="blue"
+                    ></v-icon>
+                    <v-icon
+                      v-if="data.priority === 'WONT_HAVE_THIS_TIME'"
+                      size="18"
+                      icon="mdi-flash-triangle"
+                    ></v-icon>
+                  </div>
+                </template>
+              </v-tooltip>
+              <div
+                v-if="data.pointEstimation > 0"
+                class="flex align-center justify-start space-x-1 text-xs"
+              >
+                <span
+                  ><v-icon
+                    icon="mdi-numeric-3-box-multiple-outline"
+                    size="small"
+                  />
+                  Point Estimation:</span
+                >
+                <span>{{ data.pointEstimation }}</span>
+              </div>
+              <div
+                v-if="data.businessValue"
+                class="flex align-center justify-start space-x-1 text-xs"
+              >
+                <span
+                  ><v-icon
+                    icon="mdi-chart-bell-curve-cumulative"
+                    size="small"
+                  />
+                  Business Value:</span
+                >
+                <span>{{ data.businessValue }}</span>
+              </div>
+              <div
+                class="flex align-center justify-start space-x-1 text-xs cursor-pointer"
+              >
+                <v-menu
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  location="end"
+                >
+                  <template v-slot:activator="{ props }">
+                    <span v-bind="props"
+                      ><v-icon icon="mdi-timer-edit-outline" size="small" />
+                      Time Estimation:</span
+                    >
+                    <span>{{ timeEstimationVal ?? 0 }}</span>
+                  </template>
+                  <v-card min-width="400">
+                    <v-list>
+                      <v-list-item
+                        prepend-icon="mdi-timer-edit-outline"
+                        subtitle="Estimate story"
+                      >
+                      </v-list-item>
+                      <v-list-item>
+                        <TimeEstimationForm
+                          :storyId="data.id"
+                          :estimation="timeEstimationVal"
+                          class="mt-2"
+                        />
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
+              </div>
             </div>
           </div>
-          <div
-            v-if="idx === clickedTicket"
-            class="flex-auto text-gray-500 my-1 border border-opacity-25 rounded pa-2 my-2"
-          >
-            <b>Description:</b><br />
-            <div></div>
-            {{ data.description }}
+        </div>
+        <div
+          v-if="idx === clickedTicket"
+          class="mt-6 flex flex-col space-y-4 w-full"
+        >
+          <div class="flex-col justify-start space-y-2">
+            <div class="font-medium text-sm text-gray-700">
+              Story Description
+            </div>
+            <p
+              class="text-sm text-gray-500 whitespace-pre text-wrap cursor-text"
+            >
+              {{ data.description }}
+            </p>
           </div>
-
-          <div
-            v-if="idx === clickedTicket"
-            class="flex-auto w-auto text-gray-500 my-1 border border-opacity-25 rounded pa-2 my-2"
-          >
-            <b>Acceptance criteria:</b><br />
-            <div>
+          <div class="flex-col justify-start space-y-1">
+            <div class="font-medium text-sm text-gray-700">
+              Acceptance Criteria
+            </div>
+            <p
+              class="text-sm text-gray-500 whitespace-pre text-wrap cursor-text"
+            >
               {{ data.acceptanceCriteria }}
-            </div>
+            </p>
           </div>
         </div>
       </div>
@@ -100,7 +146,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Story } from "@/features/projects";
+import { Story, TimeEstimationForm } from "@/features/projects";
+import { ref, toRef } from "vue";
+import emitter from "@/plugins";
 
 type StoryCardProps = {
   data: Story;
@@ -108,5 +156,26 @@ type StoryCardProps = {
   idx: number;
 };
 
-defineProps<StoryCardProps>();
+const props = defineProps<StoryCardProps>();
+
+const menu = ref(false);
+const timeEstimationVal = toRef<number>(props.data.timeEstimation ?? 0);
+
+emitter.on(
+  "menuClose",
+  ({
+    storyId,
+    timeEstimation,
+  }: {
+    storyId: number;
+    timeEstimation: number;
+  }) => {
+    if (storyId !== props.data.id) {
+      return;
+    }
+
+    menu.value = false;
+    timeEstimationVal.value = timeEstimation;
+  },
+);
 </script>

@@ -34,11 +34,13 @@ interface ProjectTab {
 }
 
 interface Story {
+  id: number;
   name: string;
   description: string;
   priority: string;
   businessValue: number;
   pointEstimation: number;
+  timeEstimation?: number;
   status: string;
   acceptanceCriteria: string;
   rejectedComment: string;
