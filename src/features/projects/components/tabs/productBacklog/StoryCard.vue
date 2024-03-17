@@ -121,24 +121,26 @@
           class="mt-6 flex flex-col space-y-4 w-full"
         >
           <div class="flex-col justify-start space-y-2">
-            <div class="font-medium text-sm text-gray-700">
-              Story Description
-            </div>
-            <p
-              class="text-sm text-gray-500 whitespace-pre text-wrap cursor-text"
+            <Section
+              title="Story Description"
+              icon="mdi-information"
+              class="shrink"
             >
-              {{ data.description }}
-            </p>
+              <div class="px-4" style="white-space: pre-line">
+                {{ data.description }}
+              </div>
+            </Section>
           </div>
-          <div class="flex-col justify-start space-y-1">
-            <div class="font-medium text-sm text-gray-700">
-              Acceptance Criteria
-            </div>
-            <p
-              class="text-sm text-gray-500 whitespace-pre text-wrap cursor-text"
+          <div class="flex-col justify-start space-y-2">
+            <Section
+              title="Acceptance Criteria"
+              icon="mdi-check-circle"
+              class="shrink"
             >
-              {{ data.acceptance_criteria }}
-            </p>
+              <div class="px-4" style="white-space: pre-line">
+                {{ data.acceptance_criteria }}
+              </div>
+            </Section>
           </div>
         </div>
       </div>

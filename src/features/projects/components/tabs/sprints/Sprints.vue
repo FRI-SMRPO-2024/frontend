@@ -21,7 +21,7 @@
           >
             <CreateForm
               :project="props.project"
-              @get-sprints="triggergetSprints"
+              @get-sprints="triggerGetSprints"
             ></CreateForm>
           </Dialog>
         </Section>
@@ -54,7 +54,7 @@ type SprintProps = {
 const props = defineProps<SprintProps>();
 console.log(props.project.id);
 
-const triggergetSprints = () => {
+const triggerGetSprints = () => {
   const { execute: getSprints } = useAxios({
     method: "get",
     url: `sprint/get-by-project-id/${props.project.id}`,
@@ -67,6 +67,6 @@ const triggergetSprints = () => {
 };
 
 onMounted(() => {
-  triggergetSprints();
+  triggerGetSprints();
 });
 </script>

@@ -4,6 +4,9 @@ import { useField, useForm } from "vee-validate";
 import { CreateStoryData, Project } from "@/features/projects";
 import { useToast } from "vue-toast-notification";
 import { useAxios } from "@/composables/useAxios";
+import { ref } from "vue";
+
+const emit = defineEmits(["get-stories", "dialogClose"]);
 
 type StoryCreateProps = {
   project: Project;
@@ -48,31 +51,45 @@ const business_value = useField<number>("business_value");
 const priority = useField<string>("priority");
 const acceptance_criteria = useField<string>("acceptance_criteria");
 
-const { execute: submitStory } = useAxios({
+let {
+  execute: submitStory,
+  error,
+  isError,
+} = useAxios({
   method: "post",
   url: "story/create",
 });
 
+const mapPriority = new Map([
+  ["COULD HAVE", "COULD_HAVE"],
+  ["SHOULD HAVE", "SHOULD_HAVE"],
+  ["MUST HAVE", "MUST_HAVE"],
+  ["WON'T HAVE THIS TIME", "WONT_HAVE_THIS_TIME"],
+]);
+
 const submit = handleSubmit((values: CreateStoryData) => {
   console.log(values);
-  console.log("TEST");
-  console.log(values.priority);
 
   submitStory({
     project_id: props.project.id,
-    sprint_id: 14,
     name: values.name,
     description: values.description,
     business_value: values.business_value,
-    priority: 0,
+    priority: mapPriority.get(values.priority),
     acceptance_criteria: values.acceptance_criteria,
-  }).then(() => {
-    useToast().success("Successfully created new story!", {
-      position: "top",
-    });
+  })
+    .then(() => {
+      useToast().success("Successfully created new story!", {
+        position: "top",
+      });
 
-    emitter.emit("dialogClose");
-  });
+      isError = ref(false);
+      emitter.emit("dialogClose");
+      emit("get-stories");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 </script>
 
@@ -137,5 +154,11 @@ const submit = handleSubmit((values: CreateStoryData) => {
         Create story
       </v-btn>
     </div>
+    <Alert
+      v-if="isError"
+      :message="error.message.error"
+      type="error"
+      class="mt-2"
+    />
   </form>
 </template>

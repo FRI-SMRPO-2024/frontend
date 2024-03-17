@@ -4,7 +4,6 @@ import { useField, useForm } from "vee-validate";
 import { CreateSprintData, Project } from "@/features/projects";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
-import { Alert } from "@/components/Alert";
 import { ref } from "vue";
 
 const emit = defineEmits(["get-sprints", "dialogClose"]);

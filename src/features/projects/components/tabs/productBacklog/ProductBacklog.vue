@@ -19,7 +19,10 @@
             :dialogWidth="600"
             :displayActionBtn="false"
           >
-            <CreateForm :project="props.project"></CreateForm>
+            <CreateForm
+              :project="props.project"
+              @get-stories="triggerGetStories"
+            ></CreateForm>
           </Dialog>
         </Section>
       </div>
@@ -54,17 +57,19 @@ type SprintProps = {
 const props = defineProps<SprintProps>();
 console.log(props.project.id);
 
-const { execute: getStories } = useAxios({
-  method: "get",
-  url: `story/get-by-project/${props.project.id}`,
-});
+const triggerGetStories = () => {
+  const { execute: getStories } = useAxios({
+    method: "get",
+    url: `story/get-by-project/${props.project.id}`,
+  });
 
-getStories().then((returned: []) => {
-  stories.value = returned;
-  console.log(stories);
-});
+  getStories().then((returned: []) => {
+    stories.value = returned;
+    console.log(stories);
+  });
+};
 
 onMounted(() => {
-  getStories();
+  triggerGetStories();
 });
 </script>
