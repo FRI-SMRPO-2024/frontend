@@ -28,12 +28,17 @@
       </div>
     </div>
     <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
+      <Alert v-if="isError" :message="error.message" type="error" />
+      <div v-if="isLoading" class="flex justify-center">
+        <Loader />
+      </div>
       <StoryCard
-        class=""
+        v-else
         v-for="(story, idx) in stories"
         :key="idx"
         :idx="idx"
         :data="story"
+        :projectId="project.id"
         :clickedTicket="clickedTicket"
         @click="clickedTicket = idx"
       />
@@ -41,31 +46,35 @@
   </div>
 </template>
 <script setup lang="ts">
-import CreateForm from "@/features/projects/components/tabs/productBacklog/CreateForm";
-import StoryCard from "@/features/projects/components/tabs/productBacklog/StoryCard";
 import { onMounted, ref } from "vue";
 import { Project } from "@/features/projects";
 import { useAxios } from "@/composables/useAxios";
+import { CreateForm, Story, StoryCard } from "@/features/stories/";
+import { Alert } from "@/components/Alert";
+import { Loader } from "@/components/Common";
 
-const clickedTicket = ref<number>();
-let stories = ref([]);
+const clickedTicket = ref<number>(-1);
+let stories = ref<Story[]>([]);
 
 type SprintProps = {
   project: Project;
 };
 
 const props = defineProps<SprintProps>();
-console.log(props.project.id);
+
+const {
+  execute: getStories,
+  isLoading,
+  isError,
+  error,
+} = useAxios<Story[]>({
+  method: "get",
+  url: `story/get-by-project/${props.project.id}`,
+});
 
 const triggerGetStories = () => {
-  const { execute: getStories } = useAxios({
-    method: "get",
-    url: `story/get-by-project/${props.project.id}`,
-  });
-
-  getStories().then((returned: []) => {
+  getStories().then((returned: Story[]) => {
     stories.value = returned;
-    console.log(stories);
   });
 };
 
