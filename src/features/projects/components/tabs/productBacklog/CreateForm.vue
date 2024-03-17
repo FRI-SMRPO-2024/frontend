@@ -48,9 +48,7 @@ const business_value = useField<number>("business_value");
 const priority = useField<string>("priority");
 const acceptance_criteria = useField<string>("acceptance_criteria");
 
-const {
-  execute: submitStory,
-} = useAxios({
+const { execute: submitStory } = useAxios({
   method: "post",
   url: "story/create",
 });
