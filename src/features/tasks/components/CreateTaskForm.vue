@@ -106,6 +106,7 @@ const submit = handleSubmit((values: CreateTaskData) => {
         density="compact"
         class="w-2/4"
         :items="assigneeUsers"
+        clearable
       ></v-select>
     </div>
     <div class="w-full flex justify-end">

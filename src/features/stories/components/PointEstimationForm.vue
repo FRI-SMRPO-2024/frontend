@@ -3,6 +3,8 @@ import { useField, useForm } from "vee-validate";
 import emitter from "@/plugins";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
+import { Alert } from "@/components/Alert";
+import { Loader } from "@/components/Common";
 
 const props = defineProps<{
   storyId: number;
@@ -26,7 +28,7 @@ if (props.estimation) {
   pointEstimation.value.value = props.estimation;
 }
 
-const { execute: update } = useAxios({
+const { execute: update, isLoading, isError, error } = useAxios({
   method: "put",
   url: `story/update/${props.storyId}`,
 });
@@ -48,6 +50,7 @@ const submit = handleSubmit((values: { pointEstimation: number }) => {
 </script>
 
 <template>
+  <Alert v-if="isError" :message="error.message.error" type="error" />
   <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="pointEstimation.value.value"
@@ -72,4 +75,7 @@ const submit = handleSubmit((values: { pointEstimation: number }) => {
       </v-btn>
     </div>
   </form>
+  <div v-if="isLoading" class="flex justify-center mt-2">
+    <Loader />
+  </div>
 </template>

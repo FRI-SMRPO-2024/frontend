@@ -100,39 +100,6 @@
                 >
                 <span>{{ data.business_value }}</span>
               </div>
-              <div
-                class="flex align-center justify-start space-x-1 text-xs cursor-pointer"
-              >
-                <v-menu
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  location="end"
-                >
-                  <template v-slot:activator="{ props }">
-                    <span v-bind="props"
-                      ><v-icon icon="mdi-timer-edit-outline" size="small" />
-                      Time Estimation:</span
-                    >
-                    <span>{{ timeEstimationVal ?? 0 }}</span>
-                  </template>
-                  <v-card min-width="400">
-                    <v-list>
-                      <v-list-item
-                        prepend-icon="mdi-timer-edit-outline"
-                        subtitle="Estimate story"
-                      >
-                      </v-list-item>
-                      <v-list-item>
-                        <TimeEstimationForm
-                          :storyId="data.id"
-                          :estimation="timeEstimationVal"
-                          class="mt-2"
-                        />
-                      </v-list-item>
-                    </v-list>
-                  </v-card>
-                </v-menu>
-              </div>
             </div>
           </div>
         </div>
@@ -180,7 +147,6 @@
 <script setup lang="ts">
 import {
   Story,
-  TimeEstimationForm,
   PointEstimationForm,
 } from "@/features/stories";
 import { onBeforeMount, ref, toRef } from "vue";
@@ -203,9 +169,7 @@ type StoryCardProps = {
 const propsGotten = defineProps<StoryCardProps>();
 const currentSprint = ref<object>({});
 
-const menu = ref(false);
 const menu_point_estimation = ref(false);
-const timeEstimationVal = toRef<number>(propsGotten.data.timeEstimation ?? 0);
 const pointEstimationVal = toRef<number>(
   propsGotten.data.point_estimation ?? 0,
 );
@@ -234,7 +198,6 @@ const addStoryToSprint = () => {
 };
 
 const triggerGetCurrentSprint = async () => {
-  //console.log(propsGotten.data);
   const { execute: getCurrentSprint } = useAxios({
     method: "get",
     url: `sprint/current/${propsGotten.projectId}`,
@@ -244,24 +207,6 @@ const triggerGetCurrentSprint = async () => {
     currentSprint.value = returned;
   });
 };
-
-emitter.on(
-  "menuClose",
-  ({
-    storyId,
-    timeEstimation,
-  }: {
-    storyId: number;
-    timeEstimation: number;
-  }) => {
-    if (storyId !== propsGotten.data.id) {
-      return;
-    }
-
-    menu.value = false;
-    timeEstimationVal.value = timeEstimation;
-  },
-);
 
 emitter.on(
   `menuClosePoint${propsGotten.idx}`,
@@ -278,7 +223,6 @@ emitter.on(
 
     menu_point_estimation.value = false;
     pointEstimationVal.value = pointEstimation;
-    emit("get-stories");
   },
 );
 
