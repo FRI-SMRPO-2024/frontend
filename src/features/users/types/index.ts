@@ -15,7 +15,7 @@ interface CreateUserData {
   username: string;
   password: string;
   email: string;
-  role: "user" | "admin";
+  role: "User" | "Admin";
 }
 
 type TableUser = {
@@ -24,7 +24,6 @@ type TableUser = {
   fullName: string;
   role: "Admin" | "User";
   createdOn: string;
-  lastLogin: string;
 };
 
 export type { User, CreateUserData, TableUser };

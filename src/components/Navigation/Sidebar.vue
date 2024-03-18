@@ -12,15 +12,18 @@
     <v-divider></v-divider>
 
     <v-list density="compact" nav>
-      <v-list-item
-        v-for="(route, idx) in sidebarRoutes"
-        v-bind:key="idx"
-        :prepend-icon="route.icon"
-        :title="route.title"
-        :value="route.value"
-        :to="route.href"
-        :active="isActive(route.href)"
-      ></v-list-item>
+      <div v-for="(route, idx) in sidebarRoutes" v-bind:key="idx">
+        <v-list-item
+          v-if="
+            (route.elevated && userStore.getData()?.is_admin) || !route.elevated
+          "
+          :prepend-icon="route.icon"
+          :title="route.title"
+          :value="route.value"
+          :to="route.href"
+          :active="isActive(route.href)"
+        ></v-list-item>
+      </div>
     </v-list>
     <template #append v-if="userStore.isAuthenticated()">
       <div class="pb-4 flex justify-center">
@@ -47,7 +50,6 @@ import { handleLogout } from "@/features/auth/api";
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
-
 function isActive(href: string): boolean {
   return route.fullPath.includes(href.replace("/", ""));
 }

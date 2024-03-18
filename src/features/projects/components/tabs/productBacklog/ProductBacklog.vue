@@ -9,7 +9,10 @@
         >
         </Section>
       </div>
-      <div class="w-33 flex justify-end">
+      <div
+        v-if="useUserStore().getRole() !== 'DEVELOPER'"
+        class="w-33 flex justify-end"
+      >
         <Section class="text-end" title="Add a new story" icon="mdi-plus-box">
           <Dialog
             style="margin-top: -15px"
@@ -99,6 +102,7 @@ import { useAxios } from "@/composables/useAxios";
 import { CreateForm, Story, StoryCard } from "@/features/stories/";
 import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
+import { useUserStore } from "@/stores/user.store";
 
 const clickedTicket = ref<number>(-1);
 let stories = ref<Story[]>([]);

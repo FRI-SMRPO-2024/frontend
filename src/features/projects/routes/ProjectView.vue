@@ -19,23 +19,46 @@
 <script setup lang="ts">
 import { useRoute, useRouter } from "vue-router";
 import ProjectTabs from "@/features/projects/components/ProjectTabs.vue";
-import { Project } from "@/features/projects";
-import { ref } from "vue";
+import { Project, UserRole } from "@/features/projects";
+import { onMounted, ref } from "vue";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
+import { useUserStore } from "@/stores/user.store";
 
 const router = useRouter();
 const route = useRoute();
 const fetchedProject = ref<Project>();
 
-const { execute, isLoading, isError, error } = useAxios<Project>({
+const {
+  execute: fetchProject,
+  isLoading,
+  isError,
+  error,
+} = useAxios<Project>({
   method: "get",
   url: `project/get/${route.params.id}`,
 });
 
-execute().then((res: Project) => {
-  fetchedProject.value = res;
+const { execute: fetchRole } = useAxios<UserRole>({
+  method: "post",
+  url: `user-project/get-user-project`,
+});
+
+const getUserRole = (projectId: number) => {
+  fetchRole({
+    user_id: useUserStore().getData()?.id ?? "",
+    project_id: projectId,
+  }).then((res: UserRole) => {
+    useUserStore().setRole(res.role);
+  });
+};
+
+onMounted(() => {
+  fetchProject().then((res: Project) => {
+    fetchedProject.value = res;
+    getUserRole(res.id);
+  });
 });
 
 const handleBack = () => router.back();

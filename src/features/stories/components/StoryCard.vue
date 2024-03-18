@@ -68,7 +68,13 @@
                     >
                     <span>{{ pointEstimationVal ?? 0 }}</span>
                   </template>
-                  <v-card min-width="400" v-if="data.status === 'PRODUCT'">
+                  <v-card
+                    min-width="400"
+                    v-if="
+                      data.status === 'PRODUCT' &&
+                      useUserStore().getRole() === 'SCRUM_MASTER'
+                    "
+                  >
                     <v-list>
                       <v-list-item
                         prepend-icon="mdi-timer-edit-outline"
@@ -126,7 +132,14 @@
             >
             </Section>
           </div>
-          <div class="w-full flex justify-end" v-if="data.status === 'PRODUCT'">
+          <div
+            class="w-full flex justify-end"
+            v-if="
+              data.status === 'PRODUCT' &&
+              useUserStore().getRole() === 'SCRUM_MASTER' &&
+              pointEstimationVal > 0
+            "
+          >
             <v-btn
               prepend-icon="mdi-plus-circle"
               variant="flat"
@@ -138,23 +151,25 @@
             </v-btn>
           </div>
           <v-divider class="w-4/6 mx-auto border-gray-500"></v-divider>
-          <StoryTasks :storyId="data.id" :projectId="projectId" />
+          <StoryTasks
+            :storyStatus="data.status"
+            :storyId="data.id"
+            :projectId="projectId"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import {
-  Story,
-  PointEstimationForm,
-} from "@/features/stories";
+import { Story, PointEstimationForm } from "@/features/stories";
 import { onBeforeMount, ref, toRef } from "vue";
 import emitter from "@/plugins";
 import { StoryTasks } from "@/features/tasks";
 import { Section } from "@/components/Common";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
+import { useUserStore } from "@/stores/user.store";
 
 const emit = defineEmits(["get-stories"]);
 

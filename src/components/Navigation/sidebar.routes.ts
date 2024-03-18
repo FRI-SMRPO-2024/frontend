@@ -18,5 +18,6 @@ export const sidebarRoutes: SidebarRoutesType[] = [
     value: "users",
     icon: "mdi-account-group-outline",
     href: "/users",
+    elevated: true,
   },
 ];

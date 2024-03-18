@@ -67,7 +67,7 @@ const submit = handleSubmit((values: CreateUserData) => {
     first_name: values.firstName,
     last_name: values.lastName,
     username: values.username,
-    is_admin: values.role === "admin",
+    is_admin: values.role === "Admin",
   }).then((user: AuthUser) => {
     useToast().success(`User ${user.username} successfully created!`, {
       position: "top",

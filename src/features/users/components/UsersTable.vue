@@ -19,7 +19,7 @@ import { TableUser, User } from "@/features/users";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
 import { ref } from "vue";
-import { formattedDate, formattedDateTime } from "@/utils/date";
+import { formattedDate } from "@/utils/date";
 import emitter from "@/plugins";
 
 const { execute, isLoading, isError, error } = useAxios<User[]>({
@@ -35,7 +35,6 @@ const mapUserData = (users: User[]): TableUser[] => {
     fullName: `${user.first_name} ${user.last_name}` ?? "/",
     role: user.is_admin ? "Admin" : "User",
     createdOn: formattedDate(user.created_at),
-    lastLogin: formattedDateTime(user.last_login),
   }));
 };
 
@@ -49,14 +48,7 @@ emitter.on("dialogClose", () => {
   fetchUserData();
 });
 
-const headers = [
-  "Email",
-  "Username",
-  "Full Name",
-  "Role",
-  "Created at",
-  "Last login",
-];
+const headers = ["Email", "Username", "Full Name", "Role", "Created at"];
 
 fetchUserData();
 </script>

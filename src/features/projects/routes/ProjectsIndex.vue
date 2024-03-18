@@ -1,6 +1,7 @@
 <template>
   <div class="w-full flex flex-col space-y-8">
     <Section
+      v-if="isAdmin"
       title="Add a new project"
       icon="mdi-book-plus"
       description="Create a new project for your team"
@@ -39,25 +40,42 @@
 import { Section, Dialog, Loader } from "@/components/Common";
 import { CreateForm, ProjectCard } from "../components";
 import { useAxios } from "@/composables/useAxios";
-import { Project } from "@/features/projects";
-import { ref } from "vue";
+import { Project, UserProjects } from "@/features/projects";
+import { onMounted, ref, toRef } from "vue";
 import { Alert } from "@/components/Alert";
 import emitter from "@/plugins";
+import { useUserStore } from "@/stores/user.store";
 
-const { execute, isLoading, isError, error } = useAxios<Project[]>({
+const user = useUserStore().getData();
+const url = user?.is_admin
+  ? "project/get-all"
+  : `user-project/get-user-projects/${user?.id}`;
+
+const { execute, isLoading, isError, error } = useAxios<
+  Project[] | UserProjects[]
+>({
   method: "get",
-  url: "project/get-all",
+  url,
 });
 
 const projects = ref<Project[]>([]);
+const isAdmin = toRef<boolean>(!!user?.is_admin);
 
 const fetchProjects = () => {
-  execute().then((res: Project[]) => {
-    projects.value = res;
+  execute().then((res: Project[] | UserProjects[]) => {
+    if (!isAdmin.value) {
+      projects.value = res.map(
+        (userProjects: UserProjects) => userProjects.project,
+      );
+    } else {
+      projects.value = res as Project[];
+    }
   });
 };
 
-fetchProjects();
+onMounted(() => {
+  fetchProjects();
+});
 
 emitter.on("dialogClose", () => {
   fetchProjects();
