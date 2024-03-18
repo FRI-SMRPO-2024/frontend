@@ -13,7 +13,6 @@ type StoryCreateProps = {
 };
 
 const props = defineProps<StoryCreateProps>();
-console.log(props.project.id);
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -39,11 +38,6 @@ const velocity = useField<number>("velocity");
 let selectedEndDateField = useField<Date>("selectedEndDateField");
 let selectedStartDateField = useField<Date>("selectedStartDateField");
 selectedStartDateField.value.value = new Date();
-/*
-function test() {
-  console.log(selectedEndDate)
-  console.log(selectedStartDate)
-}*/
 
 function test() {
   const start = new Date(
@@ -99,19 +93,15 @@ const submit = handleSubmit((values: CreateSprintData) => {
       selectedEndDateField.value.value -
         selectedEndDateField.value.value.getTimezoneOffset() * 60000,
     ),
-  })
-    .then(() => {
-      useToast().success("Successfully created new sprint!", {
-        position: "top",
-      });
-
-      isError = ref(false);
-      emitter.emit("dialogClose");
-      emit("get-sprints");
-    })
-    .catch((error) => {
-      console.log(error);
+  }).then(() => {
+    useToast().success("Successfully created new sprint!", {
+      position: "top",
     });
+
+    isError = ref(false);
+    emitter.emit("dialogClose");
+    emit("get-sprints");
+  });
 });
 </script>
 

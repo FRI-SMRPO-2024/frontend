@@ -50,7 +50,7 @@ import { StoryCard } from "@/features/stories";
 import { ref } from "vue";
 import { Project } from "@/features/projects";
 import { useAxios } from "@/composables/useAxios";
-import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard.vue";
+import { SprintCard } from "@/features/sprints";
 import Loader from "@/components/Common/Loader.vue";
 
 const clickedTicket = ref<number>();

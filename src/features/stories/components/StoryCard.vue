@@ -197,7 +197,7 @@ const addStoryToSprint = () => {
     });
     return;
   }
-  if (propsGotten.data.point_estimation < 1) {
+  if (pointEstimationVal.value < 1) {
     useToast().error("Point estimation has to be set!", {
       position: "top",
     });
