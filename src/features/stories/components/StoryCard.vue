@@ -1,4 +1,4 @@
-<template >
+<template>
   <div
     v-if="data.status === check"
     class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md"
@@ -63,7 +63,7 @@
                 >
                   <template v-slot:activator="{ props }">
                     <span v-bind="props"
-                    ><v-icon icon="mdi-timer-edit-outline" size="small" />
+                      ><v-icon icon="mdi-timer-edit-outline" size="small" />
                       Pont Estimation:</span
                     >
                     <span>{{ pointEstimationVal ?? 0 }}</span>
@@ -206,7 +206,9 @@ const currentSprint = ref<object>({});
 const menu = ref(false);
 const menu_point_estimation = ref(false);
 const timeEstimationVal = toRef<number>(propsGotten.data.timeEstimation ?? 0);
-const pointEstimationVal = toRef<number>(propsGotten.data.point_estimation ?? 0);
+const pointEstimationVal = toRef<number>(
+  propsGotten.data.point_estimation ?? 0,
+);
 
 const addStoryToSprint = () => {
   if (propsGotten.data.point_estimation < 1) {
@@ -227,7 +229,7 @@ const addStoryToSprint = () => {
     useToast().success("Successfully added story to current sprint!", {
       position: "top",
     });
-    emit('get-stories')
+    emit("get-stories");
   });
 };
 
@@ -270,14 +272,14 @@ emitter.on(
     storyId: number;
     pointEstimation: number;
   }) => {
-    console.log("4")
-    if (storyId !== propsGotten.data.id) {;
+    console.log("4");
+    if (storyId !== propsGotten.data.id) {
       return;
     }
 
     menu_point_estimation.value = false;
     pointEstimationVal.value = pointEstimation;
-    emit('get-stories')
+    emit("get-stories");
   },
 );
 

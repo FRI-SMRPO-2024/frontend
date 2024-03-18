@@ -4,7 +4,11 @@ import emitter from "@/plugins";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
 
-const props = defineProps<{ storyId: number; idx: number; estimation?: number }>();
+const props = defineProps<{
+  storyId: number;
+  idx: number;
+  estimation?: number;
+}>();
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -22,22 +26,22 @@ if (props.estimation) {
   pointEstimation.value.value = props.estimation;
 }
 
-const {execute: update} =  useAxios({
+const { execute: update } = useAxios({
   method: "put",
   url: `story/update/${props.storyId}`,
 });
 
-const submit = handleSubmit( (values: { pointEstimation: number }) => {
-  console.log("0")
+const submit = handleSubmit((values: { pointEstimation: number }) => {
+  console.log("0");
   update({
     point_estimation: values.pointEstimation,
   }).then(() => {
-    console.log("1")
+    console.log("1");
     useToast().success("Successfully added story to current sprint!", {
       position: "top",
     });
 
-    console.log("2")
+    console.log("2");
     emitter.emit(`menuClosePoint${props.idx}`, {
       storyId: props.storyId,
       pointEstimation: values.pointEstimation,
@@ -47,7 +51,7 @@ const submit = handleSubmit( (values: { pointEstimation: number }) => {
 </script>
 
 <template>
-  <form fast-fail @submit.prevent="submit" >
+  <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="pointEstimation.value.value"
       :error-messages="pointEstimation.errorMessage.value"

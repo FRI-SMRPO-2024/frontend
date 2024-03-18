@@ -89,7 +89,12 @@ const submit = handleSubmit((values: CreateStoryData) => {
 </script>
 
 <template>
-  <Alert v-if="isError" :message="error.message.error" type="error" class="mt-2 mb-2" />
+  <Alert
+    v-if="isError"
+    :message="error.message.error"
+    type="error"
+    class="mt-2 mb-2"
+  />
   <form fast-fail @submit.prevent="submit">
     <v-text-field
       v-model="name.value.value"

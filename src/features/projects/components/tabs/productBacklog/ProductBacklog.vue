@@ -76,7 +76,7 @@ const {
 });
 
 const triggerGetStories = () => {
-  console.log("99")
+  console.log("99");
   getStories().then((returned: Story[]) => {
     stories.value = returned;
   });
