@@ -42,7 +42,6 @@ type ProjectCardProps = {
 };
 
 defineProps<ProjectCardProps>();
-
 const router = useRouter();
 
 const handleProjectOpen = (projectId: number) => {

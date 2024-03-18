@@ -9,7 +9,8 @@ interface AuthUser {
   username: string;
   first_name: string;
   last_name: string;
-  role: "Admin" | "User";
+  is_admin: boolean;
+  last_login: string;
 }
 
 interface LoginResponse {

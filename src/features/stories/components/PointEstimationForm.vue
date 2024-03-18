@@ -28,7 +28,12 @@ if (props.estimation) {
   pointEstimation.value.value = props.estimation;
 }
 
-const { execute: update, isLoading, isError, error } = useAxios({
+const {
+  execute: update,
+  isLoading,
+  isError,
+  error,
+} = useAxios({
   method: "put",
   url: `story/update/${props.storyId}`,
 });

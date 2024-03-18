@@ -9,7 +9,10 @@
         >
         </Section>
       </div>
-      <div class="w-33 flex justify-end">
+      <div
+        v-if="useUserStore().getRole() === 'SCRUM_MASTER'"
+        class="w-33 flex justify-end"
+      >
         <Section class="text-end" title="Add a new sprint" icon="mdi-plus-box">
           <Dialog
             style="margin-top: -15px"
@@ -45,6 +48,7 @@ import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard";
 import { onMounted, ref } from "vue";
 import { useAxios } from "@/composables/useAxios";
 import { Project } from "@/features/projects";
+import { useUserStore } from "@/stores/user.store";
 
 let sprints = ref([]);
 

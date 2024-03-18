@@ -5,6 +5,7 @@ type SidebarRoutesType = {
   value: string;
   icon: string;
   href: string;
+  elevated?: boolean;
 };
 
 type Notification = {

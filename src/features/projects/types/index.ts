@@ -9,10 +9,11 @@ interface CreateProjectData {
   developers: string[];
 }
 
-interface ProjectSelectedUsers {
-  productOwner: number;
-  scrumMaster: number;
-  developers: number[];
+interface UserRole {
+  id: number;
+  user_id: string;
+  project_id: number;
+  role: "OWNER" | "SCRUM_MASTER" | "DEVELOPER";
 }
 
 interface UserSelect {
@@ -31,6 +32,11 @@ interface Project {
 interface ProjectUser {
   user: AuthUser;
   roles: ("OWNER" | "DEVELOPER" | "SCRUM_MASTER")[];
+}
+
+interface UserProjects {
+  project: Project;
+  role: string;
 }
 
 interface ProjectTab {
@@ -54,11 +60,12 @@ interface Sprint {
 
 export type {
   CreateProjectData,
-  ProjectSelectedUsers,
+  UserRole,
   UserSelect,
   Project,
   ProjectTab,
   ProjectUser,
   CreateSprintData,
   Sprint,
+  UserProjects,
 };

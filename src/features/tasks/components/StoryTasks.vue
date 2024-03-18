@@ -8,6 +8,7 @@ import { Alert } from "@/components/Alert";
 
 type StoryTasksProps = {
   storyId: number;
+  storyStatus: string;
   projectId: number;
 };
 
@@ -60,7 +61,7 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div>
+    <div v-if="storyStatus === 'SPRINT'">
       <div class="flex-col justify-start space-y-2">
         <div class="font-medium text-sm text-gray-700">Create a new task</div>
         <CreateTaskForm
