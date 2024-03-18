@@ -116,7 +116,7 @@ const submit = handleSubmit((values: CreateTaskData) => {
         type="submit"
         class="h-full"
       >
-        Add
+        Add task
       </v-btn>
     </div>
   </form>

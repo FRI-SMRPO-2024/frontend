@@ -53,6 +53,9 @@ const PROJECT_TABS: ProjectTab[] = [
   {
     title: "Sprint Backlog",
     component: SprintBacklog,
+    props: {
+      project: props.project,
+    },
   },
   {
     title: "Sprints",

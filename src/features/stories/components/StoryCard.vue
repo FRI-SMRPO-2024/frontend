@@ -1,5 +1,6 @@
-<template>
+<template >
   <div
+    v-if="data.status === check"
     class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md"
   >
     <div class="flex justify-start">
@@ -53,17 +54,38 @@
                 </template>
               </v-tooltip>
               <div
-                v-if="data.point_estimation > 0"
-                class="flex align-center justify-start space-x-1 text-xs"
+                class="flex align-center justify-start space-x-1 text-xs cursor-pointer"
               >
-                <span
-                  ><v-icon
-                    icon="mdi-numeric-3-box-multiple-outline"
-                    size="small"
-                  />
-                  Point Estimation:</span
+                <v-menu
+                  v-model="menu_point_estimation"
+                  :close-on-content-click="false"
+                  location="end"
                 >
-                <span>{{ data.point_estimation }}</span>
+                  <template v-slot:activator="{ props }">
+                    <span v-bind="props"
+                    ><v-icon icon="mdi-timer-edit-outline" size="small" />
+                      Pont Estimation:</span
+                    >
+                    <span>{{ pointEstimationVal ?? 0 }}</span>
+                  </template>
+                  <v-card min-width="400" v-if="data.status === 'PRODUCT'">
+                    <v-list>
+                      <v-list-item
+                        prepend-icon="mdi-timer-edit-outline"
+                        subtitle="Point estimate story"
+                      >
+                      </v-list-item>
+                      <v-list-item>
+                        <PointEstimationForm
+                          :storyId="data.id"
+                          :estimation="pointEstimationVal"
+                          :idx="idx"
+                          class="mt-2"
+                        />
+                      </v-list-item>
+                    </v-list>
+                  </v-card>
+                </v-menu>
               </div>
               <div
                 v-if="data.business_value"
@@ -137,6 +159,17 @@
             >
             </Section>
           </div>
+          <div class="w-full flex justify-end" v-if="data.status === 'PRODUCT'">
+            <v-btn
+              prepend-icon="mdi-plus-circle"
+              variant="flat"
+              color="#5865f2"
+              class="h-full"
+              @click="addStoryToSprint"
+            >
+              Add to current sprint
+            </v-btn>
+          </div>
           <v-divider class="w-4/6 mx-auto border-gray-500"></v-divider>
           <StoryTasks :storyId="data.id" :projectId="projectId" />
         </div>
@@ -145,23 +178,70 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Story, TimeEstimationForm } from "@/features/stories";
-import { ref, toRef } from "vue";
+import {
+  Story,
+  TimeEstimationForm,
+  PointEstimationForm,
+} from "@/features/stories";
+import { onBeforeMount, ref, toRef } from "vue";
 import emitter from "@/plugins";
 import { StoryTasks } from "@/features/tasks";
 import { Section } from "@/components/Common";
+import { useAxios } from "@/composables/useAxios";
+import { useToast } from "vue-toast-notification";
+
+const emit = defineEmits(["get-stories"]);
 
 type StoryCardProps = {
   data: Story;
   projectId: number;
   clickedTicket: number;
   idx: number;
+  check: string;
 };
 
-const props = defineProps<StoryCardProps>();
+const propsGotten = defineProps<StoryCardProps>();
+const currentSprint = ref<object>({});
 
 const menu = ref(false);
-const timeEstimationVal = toRef<number>(props.data.timeEstimation ?? 0);
+const menu_point_estimation = ref(false);
+const timeEstimationVal = toRef<number>(propsGotten.data.timeEstimation ?? 0);
+const pointEstimationVal = toRef<number>(propsGotten.data.point_estimation ?? 0);
+
+const addStoryToSprint = () => {
+  if (propsGotten.data.point_estimation < 1) {
+    useToast().error("Point estimation has to be set!", {
+      position: "top",
+    });
+    return;
+  }
+  const { execute: updateStory } = useAxios({
+    method: "put",
+    url: `story/update/${propsGotten.data.id}`,
+  });
+
+  updateStory({
+    sprint_id: currentSprint.value.id,
+    status: "SPRINT",
+  }).then(() => {
+    useToast().success("Successfully added story to current sprint!", {
+      position: "top",
+    });
+    emit('get-stories')
+  });
+};
+
+const triggerGetCurrentSprint = async () => {
+  //console.log(propsGotten.data);
+  const { execute: getCurrentSprint } = useAxios({
+    method: "get",
+    url: `sprint/current/${propsGotten.projectId}`,
+  });
+
+  await getCurrentSprint().then((returned: object) => {
+    currentSprint.value = returned;
+  });
+};
 
 emitter.on(
   "menuClose",
@@ -172,7 +252,7 @@ emitter.on(
     storyId: number;
     timeEstimation: number;
   }) => {
-    if (storyId !== props.data.id) {
+    if (storyId !== propsGotten.data.id) {
       return;
     }
 
@@ -180,4 +260,28 @@ emitter.on(
     timeEstimationVal.value = timeEstimation;
   },
 );
+
+emitter.on(
+  `menuClosePoint${propsGotten.idx}`,
+  ({
+    storyId,
+    pointEstimation,
+  }: {
+    storyId: number;
+    pointEstimation: number;
+  }) => {
+    console.log("4")
+    if (storyId !== propsGotten.data.id) {;
+      return;
+    }
+
+    menu_point_estimation.value = false;
+    pointEstimationVal.value = pointEstimation;
+    emit('get-stories')
+  },
+);
+
+onBeforeMount(() => {
+  triggerGetCurrentSprint();
+});
 </script>

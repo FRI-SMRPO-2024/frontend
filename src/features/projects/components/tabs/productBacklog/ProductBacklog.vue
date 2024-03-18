@@ -27,8 +27,9 @@
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
+    <div class="grow w-full grid grid-cols-1 gap-3 mt-3" :key="stories">
       <Alert v-if="isError" :message="error.message" type="error" />
+      Product backlog
       <div v-if="isLoading" class="flex justify-center">
         <Loader />
       </div>
@@ -40,7 +41,9 @@
         :data="story"
         :projectId="project.id"
         :clickedTicket="clickedTicket"
+        :check="'PRODUCT'"
         @click="clickedTicket = idx"
+        @get-stories="triggerGetStories"
       />
     </div>
   </div>
@@ -73,6 +76,7 @@ const {
 });
 
 const triggerGetStories = () => {
+  console.log("99")
   getStories().then((returned: Story[]) => {
     stories.value = returned;
   });
