@@ -11,7 +11,11 @@
     </v-tabs>
     <v-window v-model="tab" class="mt-10">
       <v-window-item v-for="(projectTab, idx) in PROJECT_TABS" :key="idx">
-        <component :is="projectTab.component" v-bind="projectTab.props" :key="tab" />
+        <component
+          :is="projectTab.component"
+          v-bind="projectTab.props"
+          :key="tab"
+        />
       </v-window-item>
     </v-window>
   </div>

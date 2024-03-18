@@ -13,7 +13,10 @@
       :numSprints="sprints.length"
       class="mb-2"
     ></SprintCard>
-    <div class="flex mx-4" v-if="!isLoading && Object.keys(currentSprint).length !== 0">
+    <div
+      class="flex mx-4"
+      v-if="!isLoading && Object.keys(currentSprint).length !== 0"
+    >
       <div class="w-66 flex space-y-8">
         <Section
           title="All sprint backlog stories."
@@ -62,19 +65,18 @@ type SprintProps = {
 const props = defineProps<SprintProps>();
 console.log(props.project.id);
 
-const { execute: getCurrentSprint,isLoading } = useAxios({
+const { execute: getCurrentSprint, isLoading } = useAxios({
   method: "get",
   url: `sprint/current/${props.project.id}`,
 });
 
 getCurrentSprint().then((returnedSprint: object) => {
   currentSprint.value = returnedSprint;
-  if (Object.keys(currentSprint.value).length !== 0)
-    triggerGetStories();
+  if (Object.keys(currentSprint.value).length !== 0) triggerGetStories();
 });
 
 function triggerGetStories() {
-  console.log("SPRINT")
+  console.log("SPRINT");
   const { execute: getStories } = useAxios({
     method: "get",
     url: `story/get-by-sprint/${currentSprint.value.id}`,
@@ -82,8 +84,8 @@ function triggerGetStories() {
 
   getStories().then((returnedStories: []) => {
     stories.value = returnedStories;
-    triggerGetSprints()
-  })
+    triggerGetSprints();
+  });
 }
 
 function triggerGetSprints() {

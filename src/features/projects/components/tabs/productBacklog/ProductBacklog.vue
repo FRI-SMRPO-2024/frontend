@@ -134,7 +134,7 @@ const { execute: getCurrentSprint } = useAxios({
 
 getCurrentSprint().then((returnedSprint: object) => {
   currentSprint.value = returnedSprint;
-})
+});
 
 const triggerGetStories = () => {
   getStories().then((returned: Story[]) => {

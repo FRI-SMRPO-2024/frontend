@@ -190,7 +190,7 @@ const pointEstimationVal = toRef<number>(
 );
 
 const addStoryToSprint = () => {
-  console.log(propsGotten.currentSprint)
+  console.log(propsGotten.currentSprint);
   if (Object.keys(propsGotten.currentSprint).length === 0) {
     useToast().error("There is no current assigned sprint!", {
       position: "top",
@@ -236,5 +236,4 @@ emitter.on(
     pointEstimationVal.value = pointEstimation;
   },
 );
-
 </script>
