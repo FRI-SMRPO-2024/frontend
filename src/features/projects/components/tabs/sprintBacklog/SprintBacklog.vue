@@ -3,7 +3,7 @@
     <div v-if="isLoading">
       <Loader></Loader>
     </div>
-    <div v-if="Object.keys(currentSprint).length === 0">
+    <div v-if="!isLoading && Object.keys(currentSprint).length === 0">
       <Alert message="No sprint is currently active!" type="info" />
     </div>
     <SprintCard
