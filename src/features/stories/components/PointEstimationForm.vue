@@ -32,16 +32,13 @@ const { execute: update } = useAxios({
 });
 
 const submit = handleSubmit((values: { pointEstimation: number }) => {
-  console.log("0");
   update({
     point_estimation: values.pointEstimation,
   }).then(() => {
-    console.log("1");
-    useToast().success("Successfully added story to current sprint!", {
+    useToast().success("Successfully changed point estimation!", {
       position: "top",
     });
 
-    console.log("2");
     emitter.emit(`menuClosePoint${props.idx}`, {
       storyId: props.storyId,
       pointEstimation: values.pointEstimation,

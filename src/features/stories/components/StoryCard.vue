@@ -272,7 +272,6 @@ emitter.on(
     storyId: number;
     pointEstimation: number;
   }) => {
-    console.log("4");
     if (storyId !== propsGotten.data.id) {
       return;
     }
