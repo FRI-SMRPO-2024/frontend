@@ -45,8 +45,15 @@
           @get-stories="triggerGetStories"
         />
       </div>
-      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-3 mt-3" :key="stories">
-        <v-divider style="border-color: blue; border-radius: 15px" :thickness="5"></v-divider>
+      <div
+        v-if="!isLoading"
+        class="grow w-full grid grid-cols-1 gap-3 mt-3"
+        :key="stories"
+      >
+        <v-divider
+          style="border-color: blue; border-radius: 15px"
+          :thickness="5"
+        ></v-divider>
         <b>Sprint stories</b>
         <StoryCard
           v-for="(story, idx) in stories"
@@ -60,8 +67,15 @@
           @get-stories="triggerGetStories"
         />
       </div>
-      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-3 mt-3" :key="stories">
-        <v-divider :thickness="5" style="border-color: green; border-radius: 15px"></v-divider>
+      <div
+        v-if="!isLoading"
+        class="grow w-full grid grid-cols-1 gap-3 mt-3"
+        :key="stories"
+      >
+        <v-divider
+          :thickness="5"
+          style="border-color: green; border-radius: 15px"
+        ></v-divider>
         <b>Completed stories</b>
         <StoryCard
           v-for="(story, idx) in stories"
