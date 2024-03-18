@@ -43,8 +43,8 @@ const mapUsersToTable = (projectUsers: ProjectUser[]) => {
   return projectUsers.map((projectUser: ProjectUser) => ({
     email: projectUser.user.email,
     username: projectUser.user.username,
-    fullname: `${projectUser.user.firstName} ${projectUser.user.lastName}`,
-    role: projectUser.role.toLowerCase(),
+    fullname: `${projectUser.user.first_name} ${projectUser.user.last_name}`,
+    role: projectUser.roles.toString().toLowerCase(),
   }));
 };
 

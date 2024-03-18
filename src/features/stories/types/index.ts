@@ -5,7 +5,6 @@ interface Story {
   priority: string;
   business_value: number;
   point_estimation: number;
-  timeEstimation?: number;
   status: string;
   acceptance_criteria: string;
   rejectedComment: string;

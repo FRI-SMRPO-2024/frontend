@@ -12,6 +12,7 @@ type AssigneeFormProps = {
 };
 
 const props = defineProps<AssigneeFormProps>();
+const emit = defineEmits(["selectedUser"]);
 
 const { handleSubmit } = useForm();
 
@@ -44,8 +45,8 @@ onMounted(() => {
   });
 });
 
-const submit = handleSubmit((values: { user: string }) => {
-  console.log(values);
+const submit = handleSubmit((values: { user: string | null }) => {
+  emit("selectedUser", values);
 });
 </script>
 
@@ -60,6 +61,7 @@ const submit = handleSubmit((values: { user: string }) => {
       label="Assignee"
       variant="outlined"
       class="shrink"
+      clearable
       density="compact"
       :items="assigneeUsers"
     ></v-select>

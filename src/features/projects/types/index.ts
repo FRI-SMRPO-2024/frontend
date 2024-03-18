@@ -30,7 +30,7 @@ interface Project {
 
 interface ProjectUser {
   user: AuthUser;
-  role: "OWNER" | "DEVELOPER" | "SCRUM_MASTER";
+  roles: ("OWNER" | "DEVELOPER" | "SCRUM_MASTER")[];
 }
 
 interface ProjectTab {
