@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="data.status === check"
-    class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md"
+    class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md mt-2"
   >
     <div class="flex justify-start">
       <div class="flex flex-column w-full justify-center">
@@ -163,7 +163,7 @@
 </template>
 <script setup lang="ts">
 import { Story, PointEstimationForm } from "@/features/stories";
-import { onBeforeMount, ref, toRef } from "vue";
+import { ref, toRef } from "vue";
 import emitter from "@/plugins";
 import { StoryTasks } from "@/features/tasks";
 import { Section } from "@/components/Common";
@@ -179,10 +179,10 @@ type StoryCardProps = {
   clickedTicket: number;
   idx: number;
   check: string;
+  currentSprint: object;
 };
 
 const propsGotten = defineProps<StoryCardProps>();
-const currentSprint = ref<object>({});
 
 const menu_point_estimation = ref(false);
 const pointEstimationVal = toRef<number>(
@@ -190,6 +190,13 @@ const pointEstimationVal = toRef<number>(
 );
 
 const addStoryToSprint = () => {
+  console.log(propsGotten.currentSprint)
+  if (Object.keys(propsGotten.currentSprint).length === 0) {
+    useToast().error("There is no current assigned sprint!", {
+      position: "top",
+    });
+    return;
+  }
   if (propsGotten.data.point_estimation < 1) {
     useToast().error("Point estimation has to be set!", {
       position: "top",
@@ -202,24 +209,13 @@ const addStoryToSprint = () => {
   });
 
   updateStory({
-    sprint_id: currentSprint.value.id,
+    sprint_id: propsGotten.currentSprint.id,
     status: "SPRINT",
   }).then(() => {
     useToast().success("Successfully added story to current sprint!", {
       position: "top",
     });
     emit("get-stories");
-  });
-};
-
-const triggerGetCurrentSprint = async () => {
-  const { execute: getCurrentSprint } = useAxios({
-    method: "get",
-    url: `sprint/current/${propsGotten.projectId}`,
-  });
-
-  await getCurrentSprint().then((returned: object) => {
-    currentSprint.value = returned;
   });
 };
 
@@ -241,7 +237,4 @@ emitter.on(
   },
 );
 
-onBeforeMount(() => {
-  triggerGetCurrentSprint();
-});
 </script>

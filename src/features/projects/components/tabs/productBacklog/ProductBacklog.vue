@@ -44,13 +44,14 @@
           :projectId="project.id"
           :clickedTicket="clickedTicket"
           :check="'PRODUCT'"
+          :currentSprint="currentSprint"
           @click="clickedTicket = idx"
           @get-stories="triggerGetStories"
         />
       </div>
       <div
         v-if="!isLoading"
-        class="grow w-full grid grid-cols-1 gap-3 mt-3"
+        class="grow w-full grid grid-cols-1 gap-1 mt-3"
         :key="stories"
       >
         <v-divider
@@ -66,6 +67,7 @@
           :projectId="project.id"
           :clickedTicket="clickedTicket"
           :check="'SPRINT'"
+          :currentSprint="currentSprint"
           @click="clickedTicket = idx"
           @get-stories="triggerGetStories"
         />
@@ -87,6 +89,7 @@
           :data="story"
           :projectId="project.id"
           :clickedTicket="clickedTicket"
+          :currentSprint="currentSprint"
           :check="'DONE'"
           @click="clickedTicket = idx"
           @get-stories="triggerGetStories"
@@ -106,6 +109,7 @@ import { useUserStore } from "@/stores/user.store";
 
 const clickedTicket = ref<number>(-1);
 let stories = ref<Story[]>([]);
+const currentSprint = ref<object>({});
 
 type SprintProps = {
   project: Project;
@@ -122,6 +126,15 @@ const {
   method: "get",
   url: `story/get-by-project/${props.project.id}`,
 });
+
+const { execute: getCurrentSprint } = useAxios({
+  method: "get",
+  url: `sprint/current/${props.project.id}`,
+});
+
+getCurrentSprint().then((returnedSprint: object) => {
+  currentSprint.value = returnedSprint;
+})
 
 const triggerGetStories = () => {
   getStories().then((returned: Story[]) => {
