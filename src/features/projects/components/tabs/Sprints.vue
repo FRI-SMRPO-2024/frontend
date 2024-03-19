@@ -36,7 +36,7 @@
         v-if="!isLoading && sprints.length > 0"
         :sprints="sprints"
       />
-      <div v-else class="flex justify-center">
+      <div v-if="isLoading" class="flex justify-center">
         <Loader />
       </div>
     </div>
