@@ -10,7 +10,7 @@ import { Loader } from "@/components/Common";
 const { handleSubmit, handleReset } = useForm({
   validationSchema: {
     email(value) {
-      if (/^[a-z.-]+@[a-z.-]+\.[a-z]+$/i.test(value)) return true;
+      if (/^[a-z0-9.-]+@[a-z0-9.-]+\.[a-z]+$/i.test(value)) return true;
 
       return "Must be a valid e-mail.";
     },

@@ -18,7 +18,7 @@ import { Loader, Table } from "@/components/Common";
 import { TableUser, User } from "@/features/users";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { formattedDate } from "@/utils/date";
 import emitter from "@/plugins";
 
@@ -50,5 +50,7 @@ emitter.on("dialogClose", () => {
 
 const headers = ["Email", "Username", "Full Name", "Role", "Created at"];
 
-fetchUserData();
+onMounted(() => {
+  fetchUserData();
+});
 </script>

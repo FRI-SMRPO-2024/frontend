@@ -1,4 +1,5 @@
 import { DateExtractedData } from "@/types";
+import moment from "moment";
 
 const extractFromDateTime = (datetime: string): DateExtractedData => {
   const date = new Date(datetime);
@@ -30,4 +31,12 @@ const formattedDateTime = (datetime: string) => {
   return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
 };
 
-export { extractFromDateTime, formattedDate, formattedDateTime };
+const dateIsBetween = (from: string, to: string, comapre: string) => {
+  const compareDate = moment(comapre, "DD/MM/YYYY H:is");
+  const startDate = moment(from, "DD/MM/YYYY H:i:s");
+  const endDate = moment(to, "DD/MM/YYYY H:i:s");
+
+  return compareDate.isBetween(startDate, endDate);
+};
+
+export { extractFromDateTime, formattedDate, formattedDateTime, dateIsBetween };

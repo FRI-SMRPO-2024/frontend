@@ -26,7 +26,6 @@ export const useProjectStore = defineStore("project", () => {
     execute()
       .then((res: ProjectUser[]) => {
         users.value = res;
-        console.log(users);
       })
       .catch(() => {
         useToast().error("Failed to fetch project users!", { position: "top" });

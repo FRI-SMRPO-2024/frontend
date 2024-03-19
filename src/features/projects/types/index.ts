@@ -45,19 +45,6 @@ interface ProjectTab {
   props?: object;
 }
 
-interface CreateSprintData {
-  start_date: Date;
-  end_data: Date;
-  velocity: number;
-  project_id: number;
-}
-
-interface Sprint {
-  start_date: Date;
-  end_date: Date;
-  velocity: number;
-}
-
 export type {
   CreateProjectData,
   UserRole,
@@ -65,7 +52,5 @@ export type {
   Project,
   ProjectTab,
   ProjectUser,
-  CreateSprintData,
-  Sprint,
   UserProjects,
 };

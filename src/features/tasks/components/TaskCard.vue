@@ -42,21 +42,22 @@ const {
 const changeTaskStatus = (status: "ACCEPTED" | "NULL" | "COMPLETED") => {
   const assignee_id = status === "NULL" ? null : props.task.task.assignee_id;
   updateTask({
-    ...props.task.task,
     status: status === "NULL" ? null : status,
     assignee_id,
-  }).then(() => {
+  }).then((res: StoryTask) => {
+    console.log("update status", res);
     emit("taskUpdated");
   });
 };
 
 const updateTaskAssignee = (assignee: { user: string | null }) => {
   const status = assignee.user ? "PENDING" : null;
+  console.log(`task/update/${props.task.task.id}`);
   updateTask({
-    ...props.task.task,
     assignee_id: assignee.user,
     status,
-  }).then(() => {
+  }).then((res: StoryTask) => {
+    console.log("change asignee", res);
     emit("taskUpdated");
   });
 };
@@ -193,7 +194,6 @@ const updateTaskAssignee = (assignee: { user: string | null }) => {
           {{ constructInitials(task) }}
         </div>
       </template>
-      {{ task.assignee?.id }} {{ user?.id }} {{ task.task.status ?? "null" }}
       <v-card
         min-width="400"
         v-if="

@@ -5,6 +5,7 @@ import { StoryTask } from "@/features/tasks/types";
 import { useAxios } from "@/composables/useAxios";
 import { Loader } from "@/components/Common";
 import { Alert } from "@/components/Alert";
+import { useUserStore } from "@/stores/user.store";
 
 type StoryTasksProps = {
   storyId: number;
@@ -24,7 +25,6 @@ const { execute, isLoading, isError, error } = useAxios<StoryTask[]>({
 const fetchTasks = () => {
   execute().then((res: StoryTask[]) => {
     tasks.value = res;
-    console.log(res);
   });
 };
 
@@ -61,7 +61,9 @@ onMounted(() => {
         />
       </div>
     </div>
-    <div v-if="storyStatus === 'SPRINT'">
+    <div
+      v-if="storyStatus === 'SPRINT' && useUserStore().getRole() !== 'OWNER'"
+    >
       <div class="flex-col justify-start space-y-2">
         <div class="font-medium text-sm text-gray-700">Create a new task</div>
         <CreateTaskForm

@@ -30,12 +30,12 @@
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-3 mt-3" :key="stories">
+    <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
       <Alert v-if="isError" :message="error.message" type="error" />
       <div v-if="isLoading" class="flex justify-center">
         <Loader />
       </div>
-      <div v-if="!isLoading">
+      <div>
         <StoryCard
           v-for="(story, idx) in stories"
           :key="idx"
@@ -72,11 +72,7 @@
           @get-stories="triggerGetStories"
         />
       </div>
-      <div
-        v-if="!isLoading"
-        class="grow w-full grid grid-cols-1 gap-3 mt-3"
-        :key="stories"
-      >
+      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-3 mt-3">
         <v-divider
           :thickness="5"
           style="border-color: green; border-radius: 15px"

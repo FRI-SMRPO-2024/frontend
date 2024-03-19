@@ -23,61 +23,57 @@
             :displayActionBtn="false"
           >
             <CreateForm
-              :project="props.project"
-              @get-sprints="triggerGetSprints"
+              :project="project"
+              @get-sprints="fetchSprintsData"
             ></CreateForm>
           </Dialog>
         </Section>
       </div>
     </div>
-    <div class="grow w-full grid grid-cols-1 gap-5 mt-4">
-      <SprintCard
-        v-for="(sprint, idx) in sprints"
-        :key="idx"
-        :data="sprint"
-        :idx="idx"
-        :numSprints="sprints.length"
-      >
-      </SprintCard>
+    <div class="grow w-full mt-4">
+      <Alert v-if="isError" :message="error.message.error" type="error" />
+      <SprintsTable
+        v-if="!isLoading && sprints.length > 0"
+        :sprints="sprints"
+      />
+      <div v-if="isLoading" class="flex justify-center">
+        <Loader />
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import CreateForm from "@/features/projects/components/tabs/sprints/CreateForm";
-import SprintCard from "@/features/projects/components/tabs/sprints/SprintCard";
-import { onMounted, ref } from "vue";
-import { useAxios } from "@/composables/useAxios";
+import { CreateForm, Sprint, SprintsTable } from "@/features/sprints";
 import { Project } from "@/features/projects";
 import { useUserStore } from "@/stores/user.store";
-
-let sprints = ref([]);
+import { useAxios } from "@/composables/useAxios";
+import { onMounted, ref } from "vue";
+import { Alert } from "@/components/Alert";
+import { Loader } from "@/components/Common";
+import emitter from "@/plugins";
 
 type SprintProps = {
   project: Project;
 };
 
 const props = defineProps<SprintProps>();
-console.log(props.project.id);
+const sprints = ref<Sprint[]>([]);
+const { execute, isLoading, isError, error } = useAxios<Sprint[]>({
+  method: "get",
+  url: `sprint/get-by-project-id/${props.project.id}`,
+});
 
-const triggerGetSprints = () => {
-  const { execute: getSprints } = useAxios({
-    method: "get",
-    url: `sprint/get-by-project-id/${props.project.id}`,
-  });
-
-  getSprints().then((returned: []) => {
-    sprints.value = returned;
-
-    /*sprints.value.sort((a, b) => {
-      const dateA = new Date(a.start_date);
-      const dateB = new Date(b.start_date);
-      return dateA.getTime() - dateB.getTime();
-    });
-    console.log(sprints);*/
+const fetchSprintsData = (): void => {
+  execute().then((res: Sprint[]) => {
+    sprints.value = res;
   });
 };
 
 onMounted(() => {
-  triggerGetSprints();
+  fetchSprintsData();
+});
+
+emitter.on("dialogClose", () => {
+  fetchSprintsData();
 });
 </script>
