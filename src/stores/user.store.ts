@@ -7,7 +7,7 @@ import { TokenPayload } from "@/types";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<AuthUser | null>(null);
-  const currentRole = ref<string | null>(null);
+  const currentRole = ref<string[] | null>(null);
   const add = (authUser: AuthUser) => {
     user.value = authUser;
   };
@@ -24,11 +24,11 @@ export const useUserStore = defineStore("user", () => {
     return jwtDecode(storage.get("token") as string);
   };
 
-  const setRole = (role: string) => {
-    currentRole.value = role;
+  const setRole = (roles: string[]) => {
+    currentRole.value = roles;
   };
 
-  const getRole = () => currentRole.value;
+  const getRole = (): string[] => currentRole.value;
 
   const removeRole = () => {
     currentRole.value = null;

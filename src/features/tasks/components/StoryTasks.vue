@@ -62,7 +62,7 @@ onMounted(() => {
       </div>
     </div>
     <div
-      v-if="storyStatus === 'SPRINT' && useUserStore().getRole() !== 'OWNER'"
+      v-if="storyStatus === 'SPRINT' && !useUserStore().getRole().includes('OWNER')"
     >
       <div class="flex-col justify-start space-y-2">
         <div class="font-medium text-sm text-gray-700">Create a new task</div>

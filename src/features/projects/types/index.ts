@@ -13,7 +13,7 @@ interface UserRole {
   id: number;
   user_id: string;
   project_id: number;
-  role: "OWNER" | "SCRUM_MASTER" | "DEVELOPER";
+  roles: "OWNER" | "SCRUM_MASTER" | "DEVELOPER"[];
 }
 
 interface UserSelect {

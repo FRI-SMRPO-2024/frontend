@@ -11,7 +11,7 @@ type AxiosProps = {
 
 export const useAxios = <T>({ method, url }: AxiosProps) => {
   const isLoading = ref<boolean>(false);
-  const error = ref<ApiError>({ status: 0, message: "" });
+  const error = ref<ApiError>({ status: 0, message: { error: "", message: "" } });
   const isError = ref<boolean>(false);
 
   const execute = async (body: object = {}): Promise<T> => {

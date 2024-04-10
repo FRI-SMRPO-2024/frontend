@@ -10,7 +10,7 @@
         </Section>
       </div>
       <div
-        v-if="useUserStore().getRole() !== 'DEVELOPER'"
+        v-if="useUserStore().getRole().includes('SCRUM_MASTER') || useUserStore().getRole().includes('OWNER')"
         class="w-33 flex justify-end"
       >
         <Section class="text-end" title="Add a new story" icon="mdi-plus-box">

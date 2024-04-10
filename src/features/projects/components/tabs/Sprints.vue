@@ -10,7 +10,7 @@
         </Section>
       </div>
       <div
-        v-if="useUserStore().getRole() === 'SCRUM_MASTER'"
+        v-if="useUserStore().getRole().includes('SCRUM_MASTER')"
         class="w-33 flex justify-end"
       >
         <Section class="text-end" title="Add a new sprint" icon="mdi-plus-box">

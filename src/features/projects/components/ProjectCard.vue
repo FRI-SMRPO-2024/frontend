@@ -14,7 +14,7 @@
           >
             {{ data.name }}
           </div>
-          <div class="flex-auto text-gray-500 my-1">
+          <div class="flex-auto text-gray-500 my-1 line-clamp-5">
             {{ data.description }}
           </div>
         </div>

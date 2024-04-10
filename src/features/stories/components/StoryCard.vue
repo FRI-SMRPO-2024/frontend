@@ -72,7 +72,7 @@
                     min-width="400"
                     v-if="
                       data.status === 'PRODUCT' &&
-                      useUserStore().getRole() === 'SCRUM_MASTER'
+                      useUserStore().getRole().includes('SCRUM_MASTER')
                     "
                   >
                     <v-list>
@@ -136,7 +136,7 @@
             class="w-full flex justify-end"
             v-if="
               data.status === 'PRODUCT' &&
-              useUserStore().getRole() === 'SCRUM_MASTER' &&
+              useUserStore().getRole().includes('SCRUM_MASTER') &&
               pointEstimationVal > 0
             "
           >

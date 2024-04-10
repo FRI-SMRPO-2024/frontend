@@ -16,7 +16,10 @@ type Notification = {
 
 interface ApiError {
   status: number;
-  message: string;
+  message: {
+    error: string;
+    message: string;
+  };
 }
 
 interface DateExtractedData {

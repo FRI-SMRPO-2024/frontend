@@ -16,7 +16,10 @@ const props = defineProps<StoryCreateProps>();
 
 const { handleSubmit } = useForm({
   validationSchema: {
-    velocity(value: string) {
+    velocity(value: number) {
+      if(value <= 0) {
+        return "Velocity must be greater than 0!";
+      }
       if (value) return true;
 
       return "Velocity is required!";
@@ -145,6 +148,7 @@ const submit = handleSubmit((values: CreateSprintData) => {
           label="Velocity"
           variant="outlined"
           type="number"
+          :min="1"
         ></v-text-field>
       </div>
       <div class="w-50 flex justify-end">

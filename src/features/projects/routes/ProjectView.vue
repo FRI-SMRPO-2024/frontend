@@ -50,7 +50,9 @@ const getUserRole = (projectId: number) => {
     user_id: useUserStore().getData()?.id ?? "",
     project_id: projectId,
   }).then((res: UserRole) => {
-    useUserStore().setRole(res.role);
+    console.log(res.roles);
+    useUserStore().setRole(res.roles);
+    console.log(useUserStore().getRole());
   });
 };
 
