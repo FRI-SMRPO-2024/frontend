@@ -17,7 +17,7 @@ const props = defineProps<StoryCreateProps>();
 const { handleSubmit } = useForm({
   validationSchema: {
     velocity(value: number) {
-      if(value <= 0) {
+      if (value <= 0) {
         return "Velocity must be greater than 0!";
       }
       if (value) return true;

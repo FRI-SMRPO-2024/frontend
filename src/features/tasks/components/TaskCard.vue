@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { StoryTask } from "@/features/tasks/types";
-import { ref } from "vue";
+import { ref, toRef } from "vue";
 import { SelectAssigneForm } from "@/features/tasks";
 import { useUserStore } from "@/stores/user.store";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
+import emitter from "@/plugins";
+import { EditTimeEstimationForm } from "@/features/tasks/components";
 
 type TaskCardProps = {
   task: StoryTask;
@@ -17,6 +19,7 @@ const props = defineProps<TaskCardProps>();
 const selectMenu = ref(false);
 const optionsMenu = ref(false);
 const timeEstimationMenu = ref(false);
+const timeEstimationValue = toRef(props.task.task.time_estimation);
 
 const user = useUserStore().getData();
 const emit = defineEmits(["taskUpdated"]);
@@ -28,7 +31,7 @@ const constructInitials = (task: StoryTask) => {
 
   return `${task.assignee.first_name.charAt(0).toUpperCase()}${task.assignee.last_name.charAt(0).toUpperCase()}`;
 };
-
+console.log(`task/update/${props.task.task.id}`);
 const {
   execute: updateTask,
   isLoading,
@@ -41,26 +44,41 @@ const {
 
 const changeTaskStatus = (status: "ACCEPTED" | "NULL" | "COMPLETED") => {
   const assignee_id = status === "NULL" ? null : props.task.task.assignee_id;
-  updateTask({
-    status: status === "NULL" ? null : status,
-    assignee_id,
-  }).then((res: StoryTask) => {
-    console.log("update status", res);
+  updateTask(
+    {
+      status: status === "NULL" ? null : status,
+      assignee_id,
+    },
+    `task/update/${props.task.task.id}`,
+  ).then(() => {
     emit("taskUpdated");
   });
 };
 
 const updateTaskAssignee = (assignee: { user: string | null }) => {
   const status = assignee.user ? "PENDING" : null;
-  console.log(`task/update/${props.task.task.id}`);
-  updateTask({
-    assignee_id: assignee.user,
-    status,
-  }).then((res: StoryTask) => {
-    console.log("change asignee", res);
+  updateTask(
+    {
+      assignee_id: assignee.user,
+      status,
+    },
+    `task/update/${props.task.task.id}`,
+  ).then(() => {
     emit("taskUpdated");
   });
 };
+
+emitter.on(
+  `menuClosePoint${props.task.task.id}`,
+  ({ taskId, timeEstimation }: { taskId: number; timeEstimation: number }) => {
+    if (taskId !== props.task.task.id) {
+      return;
+    }
+
+    timeEstimationMenu.value = false;
+    timeEstimationValue.value = timeEstimation;
+  },
+);
 </script>
 
 <template>
@@ -110,7 +128,7 @@ const updateTaskAssignee = (assignee: { user: string | null }) => {
               <span
                 ><v-icon icon="mdi-timer-edit-outline" size="small" />:</span
               >
-              <span>{{ task.task.time_estimation }}h</span>
+              <span>{{ timeEstimationValue }}h</span>
             </div>
           </template>
           <v-card min-width="400">
@@ -120,7 +138,14 @@ const updateTaskAssignee = (assignee: { user: string | null }) => {
                 subtitle="Estimate task"
               >
               </v-list-item>
-              <v-list-item> test </v-list-item>
+              <v-list-item>
+                <EditTimeEstimationForm
+                  :task-id="task.task.id"
+                  :idx="task.task.id"
+                  :estimation="task.task.time_estimation"
+                  class="mt-2"
+                />
+              </v-list-item>
             </v-list>
           </v-card>
         </v-menu>
