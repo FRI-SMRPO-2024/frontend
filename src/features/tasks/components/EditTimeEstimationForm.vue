@@ -66,7 +66,7 @@ const submit = handleSubmit((values: { timeEstimation: number }) => {
       density="compact"
       type="number"
       :min="0"
-      class="w-full"
+      class="w-full mt-2"
     ></v-text-field>
     <div class="justify-end">
       <v-btn
