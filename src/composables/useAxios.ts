@@ -11,13 +11,19 @@ type AxiosProps = {
 
 export const useAxios = <T>({ method, url }: AxiosProps) => {
   const isLoading = ref<boolean>(false);
-  const error = ref<ApiError>({ status: 0, message: { error: "", message: "" } });
+  const error = ref<ApiError>({
+    status: 0,
+    message: { error: "", message: "" },
+  });
   const isError = ref<boolean>(false);
 
-  const execute = async (body: object = {}): Promise<T> => {
+  const execute = async (
+    body: object = {},
+    overrideUrl: string = url,
+  ): Promise<T> => {
     isLoading.value = true;
 
-    return axios({ method, url: API_URL + url, data: body })
+    return axios({ method, url: API_URL + overrideUrl, data: body })
       .then((res: AxiosResponse<T>) => {
         return Promise.resolve(res.data);
       })

@@ -29,7 +29,12 @@ const fetchTasks = () => {
 };
 
 const insertNewTask = () => {
+  console.log("fetch new tasks");
   fetchTasks();
+};
+
+const deleteTask = (id: number) => {
+  tasks.value = tasks.value.filter((task: StoryTask) => task.task.id !== id);
 };
 
 onMounted(() => {
@@ -53,16 +58,19 @@ onMounted(() => {
       </div>
       <div v-else class="flex flex-col space-y-2">
         <TaskCard
-          v-for="(task, idx) in tasks"
-          :key="idx"
+          v-for="task in tasks"
+          :key="task.task.id"
           :task="task"
           :projectId="projectId"
           @taskUpdated="insertNewTask"
+          @taskDeleted="deleteTask"
         />
       </div>
     </div>
     <div
-      v-if="storyStatus === 'SPRINT' && !useUserStore().getRole().includes('OWNER')"
+      v-if="
+        storyStatus === 'SPRINT' && !useUserStore().getRole().includes('OWNER')
+      "
     >
       <div class="flex-col justify-start space-y-2">
         <div class="font-medium text-sm text-gray-700">Create a new task</div>

@@ -80,7 +80,12 @@ const hidePassword = ref<boolean>(true);
 </script>
 
 <template>
-  <Alert v-if="isError" :message="error.message.error" type="error" class="mb-5" />
+  <Alert
+    v-if="isError"
+    :message="error.message.error"
+    type="error"
+    class="mb-5"
+  />
   <form fast-fail @submit.prevent="submit">
     <div class="flex items-center w-full justify-between space-x-2">
       <v-text-field

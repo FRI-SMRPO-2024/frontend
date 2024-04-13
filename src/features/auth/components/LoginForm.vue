@@ -43,7 +43,12 @@ const submit = handleSubmit((values: LoginFormData) => {
 </script>
 
 <template>
-  <Alert v-if="isError" :message="error.message.message" type="error" class="mb-3" />
+  <Alert
+    v-if="isError"
+    :message="error.message.message"
+    type="error"
+    class="mb-3"
+  />
   <form fast-fail @submit="submit">
     <v-text-field
       v-model="email.value.value"
