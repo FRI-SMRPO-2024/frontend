@@ -34,66 +34,65 @@
       </div>
     </div>
     <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
-      <Alert v-if="isError" :message="error.message" type="error" />
+      <Alert v-if="isError" :message="error.message.message" type="error" />
       <div v-if="isLoading" class="flex justify-center">
         <Loader />
       </div>
       <div>
         <StoryCard
-          v-for="(story, idx) in stories"
-          :key="idx"
-          :idx="idx"
+          v-for="story in backlogStories"
+          :key="story.id"
+          :idx="story.id"
           :data="story"
           :projectId="project.id"
           :clickedTicket="clickedTicket"
-          :check="'PRODUCT'"
           :currentSprint="currentSprint"
-          @click="clickedTicket = idx"
+          @click="clickedTicket = story.id"
           @get-stories="triggerGetStories"
           @deleteStory="deleteStory"
         />
       </div>
-      <div
-        v-if="!isLoading"
-        class="grow w-full grid grid-cols-1 gap-1 mt-3"
-        :key="stories"
-      >
+      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-1 mt-3">
         <v-divider
           style="border-color: blue; border-radius: 15px"
           :thickness="5"
         ></v-divider>
         <b>Sprint stories</b>
-        <StoryCard
-          v-for="(story, idx) in stories"
-          :key="story.id"
-          :idx="idx"
-          :data="story"
-          :projectId="project.id"
-          :clickedTicket="clickedTicket"
-          :check="'SPRINT'"
-          :currentSprint="currentSprint"
-          @click="clickedTicket = idx"
-          @get-stories="triggerGetStories"
-        />
+        <div>
+          <StoryCard
+            v-for="story in sprintStories"
+            :key="story.id"
+            :idx="story.id"
+            :data="story"
+            :projectId="project.id"
+            :clickedTicket="clickedTicket"
+            :currentSprint="currentSprint"
+            @click="clickedTicket = story.id"
+            @get-stories="triggerGetStories"
+            @rejected-story="triggerGetStories"
+            @accepted-story="triggerGetStories"
+          />
+        </div>
       </div>
-      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-3 mt-3">
+      <div v-if="!isLoading" class="grow w-full grid grid-cols-1 gap-1 mt-3">
         <v-divider
           :thickness="5"
           style="border-color: green; border-radius: 15px"
         ></v-divider>
         <b>Completed stories</b>
-        <StoryCard
-          v-for="(story, idx) in stories"
-          :key="idx"
-          :idx="idx"
-          :data="story"
-          :projectId="project.id"
-          :clickedTicket="clickedTicket"
-          :currentSprint="currentSprint"
-          :check="'DONE'"
-          @click="clickedTicket = idx"
-          @get-stories="triggerGetStories"
-        />
+        <div>
+          <StoryCard
+            v-for="story in completedStories"
+            :key="story.id"
+            :idx="story.id"
+            :data="story"
+            :projectId="project.id"
+            :clickedTicket="clickedTicket"
+            :currentSprint="currentSprint"
+            @click="clickedTicket = story.id"
+            @get-stories="triggerGetStories"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -106,9 +105,12 @@ import { CreateForm, Story, StoryCard } from "@/features/stories/";
 import { Alert } from "@/components/Alert";
 import { BtnDialog, Loader } from "@/components/Common";
 import { useUserStore } from "@/stores/user.store";
+import { Sprint } from "@/features/sprints";
 
 const clickedTicket = ref<number>(-1);
-let stories = ref<Story[]>([]);
+const backlogStories = ref<Story[]>([]);
+const sprintStories = ref<Story[]>([]);
+const completedStories = ref<Story[]>([]);
 const currentSprint = ref<object>({});
 
 type SprintProps = {
@@ -127,23 +129,33 @@ const {
   url: `story/get-by-project/${props.project.id}`,
 });
 
-const { execute: getCurrentSprint } = useAxios({
+const { execute: getCurrentSprint } = useAxios<Sprint>({
   method: "get",
   url: `sprint/current/${props.project.id}`,
 });
 
-getCurrentSprint().then((returnedSprint: object) => {
+getCurrentSprint().then((returnedSprint: Sprint) => {
   currentSprint.value = returnedSprint;
 });
 
 const triggerGetStories = () => {
   getStories().then((returned: Story[]) => {
-    stories.value = returned;
+    backlogStories.value = returned.filter(
+      (story: Story) => story.status === "PRODUCT",
+    );
+    sprintStories.value = returned.filter(
+      (story: Story) => story.status === "SPRINT",
+    );
+    completedStories.value = returned.filter(
+      (story: Story) => story.status === "DONE",
+    );
   });
 };
 
 const deleteStory = (id: number) => {
-  stories.value = stories.value.filter((story: Story) => story.id !== id);
+  backlogStories.value = backlogStories.value.filter(
+    (story: Story) => story.id !== id,
+  );
 };
 
 onMounted(() => {

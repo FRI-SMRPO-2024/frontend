@@ -29,7 +29,6 @@ const fetchTasks = () => {
 };
 
 const insertNewTask = () => {
-  console.log("fetch new tasks");
   fetchTasks();
 };
 

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
 import { Project } from "@/features/projects";
 import { useToast } from "vue-toast-notification";
@@ -82,7 +81,7 @@ const submit = handleSubmit((values: CreateStoryData) => {
       position: "top",
     });
 
-    emitter.emit("dialogClose");
+    emit("dialogClose");
     emit("get-stories");
   });
 });

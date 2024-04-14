@@ -184,7 +184,7 @@ emitter.on(
                 <span>{{ timeEstimationValue }}h</span>
               </div>
             </template>
-            <v-card min-width="400">
+            <v-card min-width="400" v-if="task.task.status !== 'COMPLETED'">
               <v-list>
                 <v-list-item
                   prepend-icon="mdi-timer-edit-outline"
@@ -251,6 +251,7 @@ emitter.on(
                     value="logtime"
                   />
                   <v-list-item
+                    v-if="task.task.status !== 'COMPLETED'"
                     prepend-icon="mdi-delete-circle-outline"
                     title="Delete"
                     value="delete"

@@ -7,7 +7,7 @@ interface Story {
   point_estimation: number;
   status: string;
   acceptance_criteria: string;
-  rejectedComment: string;
+  rejected_comment: string;
 }
 
 interface CreateStoryData {
