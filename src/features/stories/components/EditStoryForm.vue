@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
 import { useToast } from "vue-toast-notification";
 import { useAxios } from "@/composables/useAxios";
@@ -96,7 +95,7 @@ const submit = handleSubmit((values: CreateStoryData) => {
       position: "top",
     });
 
-    emitter.emit("dialogClose");
+    emit("dialogClose");
     emit("update-story", res);
   });
 });

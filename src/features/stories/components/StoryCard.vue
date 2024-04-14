@@ -1,6 +1,5 @@
 <template>
   <div
-    v-if="storyData.status === check"
     class="rounded-md border-gray-100 py-6 px-4 border w-full transition duration-300 ease-in-out hover:shadow-md mt-2"
   >
     <div class="flex justify-start">
@@ -128,6 +127,17 @@
                     <v-list>
                       <v-list density="compact" nav>
                         <v-list-item
+                          v-if="
+                            storyData.status === 'PRODUCT' &&
+                            useUserStore().getRole().includes('SCRUM_MASTER')
+                          "
+                          :disabled="pointEstimationVal === 0"
+                          prepend-icon="mdi-plus-circle"
+                          title="Add to sprint"
+                          @click="addStoryToSprint"
+                          value="addToSprint"
+                        />
+                        <v-list-item
                           prepend-icon="mdi-pencil-circle-outline"
                           title="Edit Story"
                           @click="editDialog = true"
@@ -154,6 +164,59 @@
                   <EditStoryForm
                     :story="storyData"
                     @update-story="updateStoryData"
+                    @dialogClose="editDialog = false"
+                  />
+                </Dialog>
+              </div>
+              <div
+                v-if="
+                  useUserStore().getRole().includes('OWNER') &&
+                  storyData.status === 'SPRINT'
+                "
+                class="flex align-center justify-start space-x-1 text-xs cursor-pointer"
+              >
+                <v-menu
+                  v-model="optionsMenu"
+                  :close-on-content-click="true"
+                  location="bottom"
+                >
+                  <template v-slot:activator="{ props }">
+                    <div v-bind="props" class="cursor-pointer text-xs">
+                      <v-icon icon="mdi-dots-horizontal" size="small" />
+                    </div>
+                  </template>
+                  <v-card min-width="250">
+                    <v-list>
+                      <v-list density="compact" nav>
+                        <v-list-item
+                          :disabled="!canOwnerAceptStory"
+                          prepend-icon="mdi-credit-card-check"
+                          title="Accept Story"
+                          value="accept"
+                          @click="handleAcceptStory"
+                        />
+                        <v-list-item
+                          prepend-icon="mdi-credit-card-remove"
+                          title="Reject Story"
+                          value="reject"
+                          @click="rejectDialog = true"
+                        />
+                      </v-list>
+                    </v-list>
+                  </v-card>
+                </v-menu>
+                <Dialog
+                  title="Reject a story"
+                  :show-dialog="rejectDialog"
+                  :display-action-btn="false"
+                  :dialog-width="600"
+                  @click:outside="rejectDialog = false"
+                  @close-dialog="rejectDialog = false"
+                >
+                  <RejectStoryForm
+                    :story-id="storyData.id"
+                    @rejectStory="emit('rejected-story')"
+                    @dialogClose="rejectDialog = false"
                   />
                 </Dialog>
               </div>
@@ -184,22 +247,16 @@
             </Section>
           </div>
           <div
-            class="w-full flex justify-end"
-            v-if="
-              storyData.status === 'PRODUCT' &&
-              useUserStore().getRole().includes('SCRUM_MASTER') &&
-              pointEstimationVal > 0
-            "
+            v-if="storyData.rejected_comment"
+            class="flex-col justify-start space-y-2"
           >
-            <v-btn
-              prepend-icon="mdi-plus-circle"
-              variant="flat"
-              color="#5865f2"
-              class="h-full"
-              @click="addStoryToSprint"
+            <Section
+              title="Rejection reason"
+              icon="mdi-credit-card-remove"
+              class="shrink"
+              :description="storyData.rejected_comment"
             >
-              Add to current sprint
-            </v-btn>
+            </Section>
           </div>
           <v-divider class="w-4/6 mx-auto border-gray-500"></v-divider>
           <StoryTasks
@@ -213,31 +270,43 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Story, PointEstimationForm, EditStoryForm } from "@/features/stories";
-import { ref, toRef } from "vue";
+import {
+  Story,
+  PointEstimationForm,
+  EditStoryForm,
+  RejectStoryForm,
+} from "@/features/stories";
+import { onMounted, ref, toRef } from "vue";
 import emitter from "@/plugins";
 import { StoryTasks } from "@/features/tasks";
 import { Dialog, Section } from "@/components/Common";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
 import { useUserStore } from "@/stores/user.store";
+import { StoryTask } from "@/features/tasks/types";
 
-const emit = defineEmits(["get-stories", "deleteStory"]);
+const emit = defineEmits([
+  "get-stories",
+  "deleteStory",
+  "rejected-story",
+  "accepted-story",
+]);
 
 type StoryCardProps = {
   data: Story;
   projectId: number;
   clickedTicket: number;
   idx: number;
-  check: string;
   currentSprint: object;
 };
 
 const propsGotten = defineProps<StoryCardProps>();
 const optionsMenu = ref(false);
 const editDialog = ref(false);
+const rejectDialog = ref(false);
 const storyData = toRef<Story>(propsGotten.data);
 
+const canOwnerAceptStory = ref(false);
 const menu_point_estimation = ref(false);
 const pointEstimationVal = toRef<number>(storyData.value.point_estimation ?? 0);
 
@@ -245,6 +314,31 @@ const { execute: deleteStory } = useAxios<Story>({
   method: "delete",
   url: `story/delete/${storyData.value.id}`,
 });
+
+const { execute: updateStory } = useAxios({
+  method: "put",
+  url: `story/update/${storyData.value.id}`,
+});
+
+const canAcceptStory = (): boolean => {
+  const { execute } = useAxios<StoryTask[]>({
+    method: "get",
+    url: `task/get-by-story/${storyData.value.id}`,
+  });
+
+  execute().then((res: StoryTask[]) => {
+    res.every((storyTask: StoryTask) => {
+      if (storyTask.task.status !== "COMPLETED") {
+        canOwnerAceptStory.value = false;
+        return;
+      }
+
+      canOwnerAceptStory.value = true;
+    });
+  });
+
+  return false;
+};
 
 const addStoryToSprint = () => {
   if (Object.keys(propsGotten.currentSprint).length === 0) {
@@ -259,10 +353,6 @@ const addStoryToSprint = () => {
     });
     return;
   }
-  const { execute: updateStory } = useAxios({
-    method: "put",
-    url: `story/update/${storyData.value.id}`,
-  });
 
   updateStory({
     sprint_id: propsGotten.currentSprint.id,
@@ -279,6 +369,17 @@ const deleteUserStory = () => {
   deleteStory().then(() => {
     useToast().success("Deleted a story", { position: "top" });
     emit("deleteStory", storyData.value.id);
+  });
+};
+
+const handleAcceptStory = () => {
+  updateStory({
+    status: "DONE",
+  }).then(() => {
+    useToast().success("Successfully accepted a story!", {
+      position: "top",
+    });
+    emit("get-stories");
   });
 };
 
@@ -303,4 +404,8 @@ emitter.on(
     pointEstimationVal.value = pointEstimation;
   },
 );
+
+onMounted(() => {
+  canAcceptStory();
+});
 </script>
