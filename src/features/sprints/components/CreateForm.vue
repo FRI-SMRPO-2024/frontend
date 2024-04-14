@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { CreateSprintData, Project } from "@/features/projects";
+import { Project } from "@/features/projects";
+import { CreateSprintData } from "@/features/sprints";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
 import { ref } from "vue";

@@ -6,7 +6,7 @@
       icon="mdi-book-plus"
       description="Create a new project for your team"
     >
-      <Dialog
+      <BtnDialog
         title="Create a project"
         btnText="Create"
         btnIcon="mdi-plus"
@@ -14,7 +14,7 @@
         :displayActionBtn="false"
       >
         <CreateForm />
-      </Dialog>
+      </BtnDialog>
     </Section>
     <Section
       title="All projects"
@@ -37,7 +37,7 @@
 </template>
 
 <script setup lang="ts">
-import { Section, Dialog, Loader } from "@/components/Common";
+import { Section, Loader, BtnDialog } from "@/components/Common";
 import { CreateForm, ProjectCard } from "../components";
 import { useAxios } from "@/composables/useAxios";
 import { Project, UserProjects } from "@/features/projects";

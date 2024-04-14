@@ -44,7 +44,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Sprint } from "@/features/projects";
+import { Sprint } from "@/features/sprints";
 
 type StoryCardProps = {
   data: Sprint;

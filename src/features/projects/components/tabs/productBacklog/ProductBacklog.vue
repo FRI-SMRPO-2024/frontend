@@ -17,7 +17,7 @@
         class="w-33 flex justify-end"
       >
         <Section class="text-end" title="Add a new story" icon="mdi-plus-box">
-          <Dialog
+          <BtnDialog
             style="margin-top: -15px"
             title="Create new story"
             btnText="Create"
@@ -29,7 +29,7 @@
               :project="props.project"
               @get-stories="triggerGetStories"
             ></CreateForm>
-          </Dialog>
+          </BtnDialog>
         </Section>
       </div>
     </div>
@@ -50,6 +50,7 @@
           :currentSprint="currentSprint"
           @click="clickedTicket = idx"
           @get-stories="triggerGetStories"
+          @deleteStory="deleteStory"
         />
       </div>
       <div
@@ -64,7 +65,7 @@
         <b>Sprint stories</b>
         <StoryCard
           v-for="(story, idx) in stories"
-          :key="idx"
+          :key="story.id"
           :idx="idx"
           :data="story"
           :projectId="project.id"
@@ -103,7 +104,7 @@ import { Project } from "@/features/projects";
 import { useAxios } from "@/composables/useAxios";
 import { CreateForm, Story, StoryCard } from "@/features/stories/";
 import { Alert } from "@/components/Alert";
-import { Loader } from "@/components/Common";
+import { BtnDialog, Loader } from "@/components/Common";
 import { useUserStore } from "@/stores/user.store";
 
 const clickedTicket = ref<number>(-1);
@@ -139,6 +140,10 @@ const triggerGetStories = () => {
   getStories().then((returned: Story[]) => {
     stories.value = returned;
   });
+};
+
+const deleteStory = (id: number) => {
+  stories.value = stories.value.filter((story: Story) => story.id !== id);
 };
 
 onMounted(() => {
