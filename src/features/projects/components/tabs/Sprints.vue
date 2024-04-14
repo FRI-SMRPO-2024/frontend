@@ -14,7 +14,7 @@
         class="w-33 flex justify-end"
       >
         <Section class="text-end" title="Add a new sprint" icon="mdi-plus-box">
-          <Dialog
+          <BtnDialog
             style="margin-top: -15px"
             title="Create new Sprint"
             btnText="Create"
@@ -26,7 +26,7 @@
               :project="project"
               @get-sprints="fetchSprintsData"
             ></CreateForm>
-          </Dialog>
+          </BtnDialog>
         </Section>
       </div>
     </div>
@@ -49,7 +49,7 @@ import { useUserStore } from "@/stores/user.store";
 import { useAxios } from "@/composables/useAxios";
 import { onMounted, ref } from "vue";
 import { Alert } from "@/components/Alert";
-import { Loader } from "@/components/Common";
+import { BtnDialog, Loader } from "@/components/Common";
 import emitter from "@/plugins";
 
 type SprintProps = {

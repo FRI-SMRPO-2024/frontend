@@ -6,7 +6,7 @@
       icon="mdi-account-plus"
       class="shrink"
     >
-      <Dialog
+      <BtnDialog
         title="Create new user"
         btnText="Create"
         btnIcon="mdi-plus"
@@ -14,7 +14,7 @@
         :displayActionBtn="false"
       >
         <CreateForm />
-      </Dialog>
+      </BtnDialog>
     </Section>
     <Section
       title="All users"
@@ -29,5 +29,5 @@
 
 <script setup lang="ts">
 import { CreateForm, UsersTable } from "../components";
-import { Dialog, Section } from "@/components/Common";
+import { BtnDialog, Section } from "@/components/Common";
 </script>
