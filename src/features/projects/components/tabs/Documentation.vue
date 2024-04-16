@@ -21,13 +21,18 @@ const { handleSubmit } = useForm({
       if (value) return true;
 
       return "Documentation is required!";
-    }
+    },
   },
 });
 
 const documentation = useField("documentation");
 
-const { execute: createDocs, isLoading, error, isError } = useAxios<Documentation>({
+const {
+  execute: createDocs,
+  isLoading,
+  error,
+  isError,
+} = useAxios<Documentation>({
   method: "post",
   url: "documentation/create",
 });
@@ -45,38 +50,37 @@ const { execute: getDocs } = useAxios<Documentation[]>({
 const docsExist = ref<boolean>(false);
 
 onBeforeMount(() => {
-    getDocs().then((res: Documentation[]) => {
-        docsExist.value = res.length > 0;
-        documentation.value.value = res[0].text;
+  getDocs().then((res: Documentation[]) => {
+    docsExist.value = res.length > 0;
+    documentation.value.value = res[0].text;
   });
 });
 
 const submit = handleSubmit((values) => {
-    if (docsExist.value) {
-        updateDocs({
-            project_id: props.project.id,
-            text: values.documentation,
-            date: new Date(),
-        }).then((docs: Documentation) => {
-            useToast().success(`Documentation for project successfully updated!`, {
-            position: "top",
-            });
-            emitter.emit("dialogClose");
-        });
-    } else {
-        createDocs({
-            project_id: props.project.id,
-            text: values.documentation,
-            date: new Date(),
-        }).then((docs: Documentation) => {
-            useToast().success(`Documentation for project successfully created!`, {
-            position: "top",
-            });
-            emitter.emit("dialogClose");
-        });
-    }
+  if (docsExist.value) {
+    updateDocs({
+      project_id: props.project.id,
+      text: values.documentation,
+      date: new Date(),
+    }).then(() => {
+      useToast().success(`Documentation for project successfully updated!`, {
+        position: "top",
+      });
+      emitter.emit("dialogClose");
+    });
+  } else {
+    createDocs({
+      project_id: props.project.id,
+      text: values.documentation,
+      date: new Date(),
+    }).then(() => {
+      useToast().success(`Documentation for project successfully created!`, {
+        position: "top",
+      });
+      emitter.emit("dialogClose");
+    });
+  }
 });
-
 </script>
 
 <template>
@@ -88,7 +92,7 @@ const submit = handleSubmit((values) => {
   />
   <form fast-fail @submit.prevent="submit">
     <div class="flex items-center w-full justify-between space-x-2 pt-2">
-        <v-textarea
+      <v-textarea
         v-model="documentation.value.value"
         :error-messages="documentation.errorMessage.value"
         label="Documentation"
@@ -96,7 +100,7 @@ const submit = handleSubmit((values) => {
         density="compact"
         no-resize
         class="w-full"
-        ></v-textarea>
+      ></v-textarea>
     </div>
     <div class="w-full flex justify-end">
       <v-btn
