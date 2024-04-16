@@ -45,6 +45,12 @@ interface ProjectTab {
   props?: object;
 }
 
+interface Documentation {
+  project_id: number;
+  date: string;
+  text: string;
+}
+
 export type {
   CreateProjectData,
   UserRole,
@@ -53,4 +59,5 @@ export type {
   ProjectTab,
   ProjectUser,
   UserProjects,
+  Documentation,
 };
