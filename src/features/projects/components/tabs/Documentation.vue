@@ -127,55 +127,57 @@ function exportToFile() {
     type="error"
     class="mb-5"
   />
-  <form fast-fail @submit.prevent="submit">
-    <div class="flex items-center w-full justify-between space-x-2 pt-2">
-      <v-textarea
-        v-model="documentation.value.value"
-        :error-messages="documentation.errorMessage.value"
-        label="Documentation"
-        variant="outlined"
-        density="compact"
-        no-resize
-        class="w-full h-full"
-      ></v-textarea>
-    </div>
-    <div class="w-full flex justify-between">
-      <div class="space-x-2">
-        <input
-          type="file"
-          ref="fileInput"
-          @change="importFile"
-          accept=".txt"
-          style="display: none"
-        />
+  <div class="w-75 flex-column" style="margin-left: auto; margin-right: auto">
+    <form fast-fail @submit.prevent="submit">
+      <div class="flex items-center w-full justify-between space-x-2 pt-2">
+        <v-textarea
+          v-model="documentation.value.value"
+          :error-messages="documentation.errorMessage.value"
+          label="Documentation"
+          variant="outlined"
+          density="compact"
+          no-resize
+          class="w-full h-full"
+        ></v-textarea>
+      </div>
+      <div class="w-full flex justify-between">
+        <div class="space-x-2">
+          <input
+            type="file"
+            ref="fileInput"
+            @change="importFile"
+            accept=".txt"
+            style="display: none"
+          />
+          <v-btn
+            @click="triggerFileInput"
+            prepend-icon="mdi-import"
+            variant="flat"
+            color="#5865f2"
+          >
+            Import
+          </v-btn>
+          <v-btn
+            @click="exportToFile"
+            prepend-icon="mdi-export"
+            variant="flat"
+            color="#5865f2"
+          >
+            Export
+          </v-btn>
+        </div>
         <v-btn
-          @click="triggerFileInput"
-          prepend-icon="mdi-import"
+          class="w-2/5"
+          type="submit"
+          prepend-icon="mdi-plus-circle"
           variant="flat"
           color="#5865f2"
         >
-          Import
-        </v-btn>
-        <v-btn
-          @click="exportToFile"
-          prepend-icon="mdi-export"
-          variant="flat"
-          color="#5865f2"
-        >
-          Export
+          Save documentation
         </v-btn>
       </div>
-      <v-btn
-        class="w-2/5"
-        type="submit"
-        prepend-icon="mdi-plus-circle"
-        variant="flat"
-        color="#5865f2"
-      >
-        Save documentation
-      </v-btn>
-    </div>
-  </form>
+    </form>
+  </div>
   <div v-if="isLoading" class="mt-2 flex justify-center">
     <Loader />
   </div>

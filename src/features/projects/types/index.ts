@@ -51,6 +51,14 @@ interface Documentation {
   date: string;
   text: string;
 }
+interface ProjectWall {
+  id: number;
+  project_id: number;
+  user_id: string;
+  content: string;
+  created_at: Date;
+}
+
 
 export type {
   CreateProjectData,
@@ -61,4 +69,5 @@ export type {
   ProjectUser,
   UserProjects,
   Documentation,
+  ProjectWall
 };
