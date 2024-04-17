@@ -5,10 +5,10 @@ import { useAxios } from "@/composables/useAxios";
 import { Loader } from "@/components/Common";
 import { Alert } from "@/components/Alert";
 import { useToast } from "vue-toast-notification";
-import { Documentation } from "../../types";
 import { Project } from "@/features/projects";
-import { onBeforeMount, ref, Ref,reactive } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useUserStore } from "@/stores/user.store";
+import { ProjectWall, User } from "../../types";
 
 type WallProps = {
   project: Project;
@@ -26,18 +26,18 @@ const schema = {
 };
 
 // Then call useForm with the defined schema
-const { handleSubmit, errors } = useForm({
+const { handleSubmit } = useForm({
   validationSchema: schema,
 });
 
 const newPost = useField("post");
 
 const currentUserId = ref<string>("");
-const posts = ref<{user: User, post: ProjectWall}>([]);
+const posts = ref<{ user: User; post: ProjectWall }>([]);
 
 onBeforeMount(async () => {
   await fetchWall();
-  console.log(posts)
+  console.log(posts);
 });
 
 const fetchWall = async () => {
@@ -48,8 +48,8 @@ const fetchWall = async () => {
         currentUserId.value = post.user_id;
 
         const { execute: getUser } = useAxios<User>({
-          method: 'get',
-          url: 'user/get/' + currentUserId.value,
+          method: "get",
+          url: "user/get/" + currentUserId.value,
         });
 
         getUser().then((user) => {
@@ -59,19 +59,26 @@ const fetchWall = async () => {
     }
   });
   posts.value = posts.value.sort((a, b) => {
-    return new Date(a.post.created_at).getTime() - new Date(b.post.created_at).getTime();
-  }); 
-};  
-
+    return (
+      new Date(a.post.created_at).getTime() -
+      new Date(b.post.created_at).getTime()
+    );
+  });
+};
 
 const { execute: getWall } = useAxios<ProjectWall>({
-  method: 'get',
-  url: 'project-wall/get-by-project/' + props.project.id,
+  method: "get",
+  url: "project-wall/get-by-project/" + props.project.id,
 });
 
-const { execute: createPost, isLoading, error, isError } = useAxios<ProjectWall>({
-  method: 'post',
-  url: 'project-wall/create'
+const {
+  execute: createPost,
+  isLoading,
+  error,
+  isError,
+} = useAxios<ProjectWall>({
+  method: "post",
+  url: "project-wall/create",
 });
 
 const submitPost = handleSubmit(async (values) => {
@@ -86,15 +93,14 @@ const submitPost = handleSubmit(async (values) => {
       useToast().success(`Post succesfully made.`, {
         position: "top",
       });
-      newPost.value.value = ''; // Clear the textarea after successful post creation
+      newPost.value.value = ""; // Clear the textarea after successful post creation
       await fetchWall(); // Refetch posts
       emitter.emit("dialogClose");
     });
-
   } catch (error) {
-    console.log(error)
-    useToast().error('Failed to create post. Please try again.', {
-      position: 'top',
+    console.log(error);
+    useToast().error("Failed to create post. Please try again.", {
+      position: "top",
     });
   }
 });
@@ -109,19 +115,25 @@ const submitPost = handleSubmit(async (values) => {
   />
   <div class="w-75 flex-column" style="margin-left: auto; margin-right: auto">
     <div class="w-66 flex space-y-8">
-        <Section
-          title="Project wall."
-          icon="mdi-view-dashboard-variant"
-          description="Here are all the posts for this project."
-        >
-        </Section>
-      </div>
+      <Section
+        title="Project wall."
+        icon="mdi-view-dashboard-variant"
+        description="Here are all the posts for this project."
+      >
+      </Section>
+    </div>
     <div class="mt-4">
       <div class="mt-4">
-        <div v-for="(item, index) in posts" :key="index" class="bg-white p-4 rounded-lg shadow mb-4">
+        <div
+          v-for="(item, index) in posts"
+          :key="index"
+          class="bg-white p-4 rounded-lg shadow mb-4"
+        >
           <div class="flex justify-between items-center mb-2">
             <div>
-              <h5 class="font-bold">{{ item.user.first_name }} {{ item.user.last_name }}</h5>
+              <h5 class="font-bold">
+                {{ item.user.first_name }} {{ item.user.last_name }}
+              </h5>
               <p class="text-sm text-gray-500">@{{ item.user.username }}</p>
             </div>
             <p class="text-sm text-gray-400">

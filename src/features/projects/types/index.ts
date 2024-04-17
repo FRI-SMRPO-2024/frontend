@@ -59,7 +59,6 @@ interface ProjectWall {
   created_at: Date;
 }
 
-
 export type {
   CreateProjectData,
   UserRole,
@@ -69,5 +68,5 @@ export type {
   ProjectUser,
   UserProjects,
   Documentation,
-  ProjectWall
+  ProjectWall,
 };
