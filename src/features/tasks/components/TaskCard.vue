@@ -16,7 +16,6 @@ type TaskCardProps = {
 };
 
 const props = defineProps<TaskCardProps>();
-console.log("props rn", props);
 
 const selectMenu = ref(false);
 const optionsMenu = ref(false);
@@ -52,6 +51,9 @@ const { execute: deleteTask } = useAxios({
 });
 
 const handleDeleteTask = () => {
+  if (!confirm("Are you sure?")) {
+    return;
+  }
   // For some reason we have to pass Id of endpoint again because sometimes different task id is used
   deleteTask({}, `task/delete/${props.task.task.id}`).then(() => {
     useToast().success("Deleted a task", { position: "top" });

@@ -10,6 +10,7 @@ interface AuthUser {
   first_name: string;
   last_name: string;
   is_admin: boolean;
+  created_at: string;
   last_login: string;
 }
 
