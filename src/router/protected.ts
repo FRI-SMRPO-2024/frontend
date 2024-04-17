@@ -32,5 +32,5 @@ export const protectedRoutes = [
     path: "/profile",
     name: "profile",
     component: Profile,
-  }
+  },
 ];

@@ -54,11 +54,11 @@ type userProps = {
   lastNameProp: string;
   emailProp: string;
   roleProp: string;
-}
+};
 
-const props = defineProps<userProps>()
+const props = defineProps<userProps>();
 
-console.log(props)
+console.log(props);
 
 const username = useField("username");
 const firstName = useField("firstName");
@@ -67,16 +67,11 @@ const email = useField("email");
 const password = useField("password");
 const role = useField("role");
 
-if (props.usernameProp)
-  username.value.value = props.usernameProp;
-if (props.firstNameProp)
-  firstName.value.value = props.firstNameProp;
-if (props.lastNameProp)
-  lastName.value.value = props.lastNameProp;
-if (props.emailProp)
-  email.value.value = props.emailProp;
-if (props.roleProp)
-  role.value.value = props.roleProp
+if (props.usernameProp) username.value.value = props.usernameProp;
+if (props.firstNameProp) firstName.value.value = props.firstNameProp;
+if (props.lastNameProp) lastName.value.value = props.lastNameProp;
+if (props.emailProp) email.value.value = props.emailProp;
+if (props.roleProp) role.value.value = props.roleProp;
 
 const { execute, isLoading, error, isError } = useAxios<AuthUser>({
   method: "post",
@@ -103,7 +98,7 @@ const hidePassword = ref<boolean>(true);
 </script>
 
 <template>
-  {{user}}
+  {{ user }}
   <Alert
     v-if="isError"
     :message="error.message.error"

@@ -8,8 +8,8 @@ import { Loader } from "@/components/Common";
 import { Alert } from "@/components/Alert";
 import { useToast } from "vue-toast-notification";
 import PasswordMeter from "vue-simple-password-meter";
-import {handleLogout} from "@/features/auth/api";
-import {useRouter} from "vue-router";
+import { handleLogout } from "@/features/auth/api";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -36,8 +36,7 @@ const { handleSubmit } = useForm({
       return "Must be a valid e-mail.";
     },
     password(value) {
-      if (!value)
-        return true;
+      if (!value) return true;
 
       if (
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{12,}$/i.test(value)
@@ -47,13 +46,11 @@ const { handleSubmit } = useForm({
       return "Password must be at least 12 characters long and must contain a number and symbol!";
     },
     confirmPassword(value) {
-      if (!value)
-        return true;
+      if (!value) return true;
 
-      if (value === password.value.value)
-        return true;
+      if (value === password.value.value) return true;
 
-      return "Confirm password must match original password!"
+      return "Confirm password must match original password!";
     },
     role(value) {
       if (value) return true;
@@ -70,11 +67,11 @@ type userProps = {
   emailProp: string;
   roleProp: string;
   isProfileChange: boolean;
-}
+};
 
-const props = defineProps<userProps>()
+const props = defineProps<userProps>();
 
-console.log(props)
+console.log(props);
 
 const username = useField("username");
 const firstName = useField("firstName");
@@ -84,31 +81,26 @@ const password = useField("password");
 const confirmPassword = useField("confirmPassword");
 const role = useField("role");
 
-if (props.usernameProp)
-  username.value.value = props.usernameProp;
-if (props.firstNameProp)
-  firstName.value.value = props.firstNameProp;
-if (props.lastNameProp)
-  lastName.value.value = props.lastNameProp;
-if (props.emailProp)
-  email.value.value = props.emailProp;
-if (props.roleProp)
-  role.value.value = props.roleProp
+if (props.usernameProp) username.value.value = props.usernameProp;
+if (props.firstNameProp) firstName.value.value = props.firstNameProp;
+if (props.lastNameProp) lastName.value.value = props.lastNameProp;
+if (props.emailProp) email.value.value = props.emailProp;
+if (props.roleProp) role.value.value = props.roleProp;
 
 const { execute: executeId, isError: isErrorId } = useAxios({
   method: "post",
   url: "user/get",
 });
 
-let isError = ref(false)
-let error = ref(undefined)
+let isError = ref(false);
+let error = ref(undefined);
 
 const submit = handleSubmit(async (values: UpdateUserData) => {
   try {
     const responseId = await executeId({
-      email: values.email
-    })
-    console.log(responseId)
+      email: values.email,
+    });
+    console.log(responseId);
 
     const { execute: executeUpdate, isError: isErrorUpdate } = useAxios({
       method: "put",
@@ -118,9 +110,9 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
     const responseUpdate = await executeUpdate({
       username: values.username,
       first_name: values.firstName,
-      last_name: values.lastName
-    })
-    console.log(responseUpdate)
+      last_name: values.lastName,
+    });
+    console.log(responseUpdate);
 
     const { execute: executeSetRole, isError: isErrorSetRole } = useAxios({
       method: "put",
@@ -128,28 +120,36 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
     });
 
     const responseSetRole = await executeSetRole({
-      is_admin: values.role === "Admin"
-    })
-    console.log(responseSetRole)
-
-
-    const { execute: executeChangePassword, isError: isErrorChangePassword } = useAxios({
-      method: "post",
-      url: "auth/change-password/" + responseId.id,
+      is_admin: values.role === "Admin",
     });
+    console.log(responseSetRole);
+
+    const { execute: executeChangePassword, isError: isErrorChangePassword } =
+      useAxios({
+        method: "post",
+        url: "auth/change-password/" + responseId.id,
+      });
 
     if (values.password) {
       const responseChangePassword = await executeChangePassword({
         password: values.password,
-        confirmPassword: values.confirmPassword
-      })
-      console.log(responseChangePassword)
+        confirmPassword: values.confirmPassword,
+      });
+      console.log(responseChangePassword);
     }
 
-
-
-    console.log(isErrorId.value, isErrorUpdate.value, isErrorSetRole.value, isErrorChangePassword.value)
-    if (!isErrorId.value && !isErrorUpdate.value && !isErrorSetRole.value && !isErrorChangePassword.value) {
+    console.log(
+      isErrorId.value,
+      isErrorUpdate.value,
+      isErrorSetRole.value,
+      isErrorChangePassword.value,
+    );
+    if (
+      !isErrorId.value &&
+      !isErrorUpdate.value &&
+      !isErrorSetRole.value &&
+      !isErrorChangePassword.value
+    ) {
       useToast().success(`User successfully updated!`, {
         position: "top",
       });
@@ -165,9 +165,9 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
       emitter.emit("dialogClose");
     }
   } catch (err) {
-    isError.value = true
-    error.value = err
-    console.log(err)
+    isError.value = true;
+    error.value = err;
+    console.log(err);
     useToast().error(`Error while updating user!`, {
       position: "top",
     });
@@ -178,7 +178,7 @@ const hidePassword = ref<boolean>(true);
 </script>
 
 <template>
-  {{user}}
+  {{ user }}
   <Alert
     v-if="isError"
     :message="error?.message.error"

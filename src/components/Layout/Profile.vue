@@ -4,7 +4,7 @@
     :firstNameProp="user.first_name"
     :lastNameProp="user.last_name"
     :emailProp="user.email"
-    :roleProp="user.is_admin ? 'Admin': 'User'"
+    :roleProp="user.is_admin ? 'Admin' : 'User'"
     :isProfileChange="true"
   ></UpdateForm>
 </template>
@@ -14,6 +14,6 @@ import UpdateForm from "@/features/users/components/UpdateForm.vue";
 
 const userStore = useUserStore();
 
-const user = userStore.getData()
-console.log(user)
+const user = userStore.getData();
+console.log(user);
 </script>

@@ -49,7 +49,14 @@ emitter.on("dialogClose", () => {
   fetchUserData();
 });
 
-const headers = ["Email", "Username", "First Name", "Last Name", "Role", "Created at"];
+const headers = [
+  "Email",
+  "Username",
+  "First Name",
+  "Last Name",
+  "Role",
+  "Created at",
+];
 
 onMounted(() => {
   fetchUserData();
