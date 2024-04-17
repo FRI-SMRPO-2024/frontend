@@ -17,7 +17,6 @@ const props = defineProps<DocumentationProps>();
 
 const docsExist = ref<boolean>(false);
 
-
 const { handleSubmit } = useForm({
   validationSchema: {
     documentation(value: string | null) {
@@ -34,7 +33,7 @@ onBeforeMount(() => {
   getDocs().then((res: Documentation[]) => {
     docsExist.value = res.length > 0;
     if (docsExist.value) {
-        documentation.value.value = res[0].text;
+      documentation.value.value = res[0].text;
     }
   });
 });
@@ -47,7 +46,7 @@ const {
 } = useAxios<Documentation>({
   method: "post",
   url: "documentation/create",
-})
+});
 
 const { execute: updateDocs } = useAxios<Documentation>({
   method: "put",
@@ -94,11 +93,11 @@ function triggerFileInput() {
 }
 
 // Function to read a text file and set its content to the textarea
-function importFile(event: any) {
+function importFile(event) {
   const file = event.target.files[0];
   if (file && file.type === "text/plain") {
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       documentation.value.value = e.target?.result;
     };
     reader.readAsText(file);
@@ -109,15 +108,16 @@ function importFile(event: any) {
 
 // Function to export textarea content to a text file
 function exportToFile() {
-  const element = document.createElement('a');
-  const file = new Blob([documentation.value.value as BlobPart], {type: 'text/plain'});
+  const element = document.createElement("a");
+  const file = new Blob([documentation.value.value], {
+    type: "text/plain",
+  });
   element.href = URL.createObjectURL(file);
   element.download = `documentation-${props.project.id}.txt`;
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
 }
-
 </script>
 
 <template>
@@ -136,20 +136,35 @@ function exportToFile() {
         variant="outlined"
         density="compact"
         no-resize
-        class="w-full"
+        class="w-full h-full"
       ></v-textarea>
-
     </div>
     <div class="w-full flex justify-between">
-        <div class="space-x-2">
-            <input type="file" ref="fileInput" @change="importFile" accept=".txt" style="display: none;" />
-            <v-btn @click="triggerFileInput" prepend-icon="mdi-import" variant="flat" color="#5865f2">
-                Import
-            </v-btn>
-            <v-btn @click="exportToFile" prepend-icon="mdi-export" variant="flat" color="#5865f2">
-                Export
-            </v-btn>
-        </div>
+      <div class="space-x-2">
+        <input
+          type="file"
+          ref="fileInput"
+          @change="importFile"
+          accept=".txt"
+          style="display: none"
+        />
+        <v-btn
+          @click="triggerFileInput"
+          prepend-icon="mdi-import"
+          variant="flat"
+          color="#5865f2"
+        >
+          Import
+        </v-btn>
+        <v-btn
+          @click="exportToFile"
+          prepend-icon="mdi-export"
+          variant="flat"
+          color="#5865f2"
+        >
+          Export
+        </v-btn>
+      </div>
       <v-btn
         class="w-2/5"
         type="submit"
