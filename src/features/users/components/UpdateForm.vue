@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { CreateUserData } from "../types";
+import { UpdateUserData } from "../types";
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
 import { ref } from "vue";
 import { useAxios } from "@/composables/useAxios";
-import { AuthUser } from "@/features/auth";
 import { Loader } from "@/components/Common";
 import { Alert } from "@/components/Alert";
 import { useToast } from "vue-toast-notification";
 import PasswordMeter from "vue-simple-password-meter";
+import {handleLogout} from "@/features/auth/api";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -33,12 +36,24 @@ const { handleSubmit } = useForm({
       return "Must be a valid e-mail.";
     },
     password(value) {
+      if (!value)
+        return true;
+
       if (
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{12,}$/i.test(value)
       )
         return true;
 
       return "Password must be at least 12 characters long and must contain a number and symbol!";
+    },
+    confirmPassword(value) {
+      if (!value)
+        return true;
+
+      if (value === password.value.value)
+        return true;
+
+      return "Confirm password must match original password!"
     },
     role(value) {
       if (value) return true;
@@ -54,6 +69,7 @@ type userProps = {
   lastNameProp: string;
   emailProp: string;
   roleProp: string;
+  isProfileChange: boolean;
 }
 
 const props = defineProps<userProps>()
@@ -65,6 +81,7 @@ const firstName = useField("firstName");
 const lastName = useField("lastName");
 const email = useField("email");
 const password = useField("password");
+const confirmPassword = useField("confirmPassword");
 const role = useField("role");
 
 if (props.usernameProp)
@@ -78,25 +95,83 @@ if (props.emailProp)
 if (props.roleProp)
   role.value.value = props.roleProp
 
-const { execute, isLoading, error, isError } = useAxios<AuthUser>({
+const { execute: executeId, isError: isErrorId } = useAxios({
   method: "post",
-  url: "auth/signup",
+  url: "user/get",
 });
 
-const submit = handleSubmit((values: CreateUserData) => {
-  execute({
-    email: values.email,
-    password: values.password,
-    first_name: values.firstName,
-    last_name: values.lastName,
-    username: values.username,
-    is_admin: values.role === "Admin",
-  }).then((user: AuthUser) => {
-    useToast().success(`User ${user.username} successfully created!`, {
+let isError = ref(false)
+let error = ref(undefined)
+
+const submit = handleSubmit(async (values: UpdateUserData) => {
+  try {
+    const responseId = await executeId({
+      email: values.email
+    })
+    console.log(responseId)
+
+    const { execute: executeUpdate, isError: isErrorUpdate } = useAxios({
+      method: "put",
+      url: "user/update/" + responseId.id,
+    });
+
+    const responseUpdate = await executeUpdate({
+      username: values.username,
+      first_name: values.firstName,
+      last_name: values.lastName
+    })
+    console.log(responseUpdate)
+
+    const { execute: executeSetRole, isError: isErrorSetRole } = useAxios({
+      method: "put",
+      url: "user/set-role/" + responseId.id,
+    });
+
+    const responseSetRole = await executeSetRole({
+      is_admin: values.role === "Admin"
+    })
+    console.log(responseSetRole)
+
+
+    const { execute: executeChangePassword, isError: isErrorChangePassword } = useAxios({
+      method: "post",
+      url: "auth/change-password/" + responseId.id,
+    });
+
+    if (values.password) {
+      const responseChangePassword = await executeChangePassword({
+        password: values.password,
+        confirmPassword: values.confirmPassword
+      })
+      console.log(responseChangePassword)
+    }
+
+
+
+    console.log(isErrorId.value, isErrorUpdate.value, isErrorSetRole.value, isErrorChangePassword.value)
+    if (!isErrorId.value && !isErrorUpdate.value && !isErrorSetRole.value && !isErrorChangePassword.value) {
+      useToast().success(`User successfully updated!`, {
+        position: "top",
+      });
+      emitter.emit("dialogClose");
+      if (props.isProfileChange) {
+        handleLogout();
+        router.push({ name: "login" });
+      }
+    } else {
+      useToast().error(`Error while updating user!`, {
+        position: "top",
+      });
+      emitter.emit("dialogClose");
+    }
+  } catch (err) {
+    isError.value = true
+    error.value = err
+    console.log(err)
+    useToast().error(`Error while updating user!`, {
       position: "top",
     });
-    emitter.emit("dialogClose");
-  });
+  }
 });
 
 const hidePassword = ref<boolean>(true);
@@ -106,7 +181,7 @@ const hidePassword = ref<boolean>(true);
   {{user}}
   <Alert
     v-if="isError"
-    :message="error.message.error"
+    :message="error?.message.error"
     type="error"
     class="mb-5"
   />
@@ -135,6 +210,7 @@ const hidePassword = ref<boolean>(true);
       density="compact"
       :error-messages="email.errorMessage.value"
       label="Email"
+      disabled
     ></v-text-field>
     <v-text-field
       v-model="username.value.value"
@@ -157,12 +233,24 @@ const hidePassword = ref<boolean>(true);
     <div class="bg-slate-100 rounded-md">
       <password-meter :password="password.value.value" class="mb-5" />
     </div>
+    <v-text-field
+      class="mb-0"
+      v-model="confirmPassword.value.value"
+      :error-messages="confirmPassword.errorMessage.value"
+      label="Confirm Password"
+      :append-icon="hidePassword ? 'mdi-eye' : 'mdi-eye-off'"
+      @click:append="() => (hidePassword = !hidePassword)"
+      :type="hidePassword ? 'password' : 'text'"
+      variant="outlined"
+      density="compact"
+    ></v-text-field>
     <v-select
       v-model="role.value.value"
       :error-messages="role.errorMessage.value"
       label="Role"
       variant="outlined"
       density="compact"
+      :disabled="props.isProfileChange"
       :items="['User', 'Admin']"
     ></v-select>
     <div class="w-full flex justify-end">
@@ -173,7 +261,7 @@ const hidePassword = ref<boolean>(true);
         variant="flat"
         color="#5865f2"
       >
-        Create User
+        Update User
       </v-btn>
     </div>
   </form>

@@ -9,6 +9,8 @@ type DialogProps = {
   title: string;
   displayActionBtn: boolean;
   actionBtnText?: string;
+  color?: string
+  iconColor?: string
 };
 
 defineProps<DialogProps>();
@@ -19,10 +21,12 @@ const isActive = ref(false);
   <div class="w-full">
     <v-btn
       @click="isActive = true"
-      :prepend-icon="btnIcon"
+
       variant="flat"
-      color="#5865f2"
+      :color="color ? color : '#5865f2'"
+
     >
+      <v-icon :color="iconColor ? iconColor : 'white'">{{btnIcon}}</v-icon>
       <div class="text-none font-weight-regular">{{ btnText }}</div>
       <Dialog
         :title="title"

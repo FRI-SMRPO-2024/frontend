@@ -32,7 +32,8 @@ const mapUserData = (users: User[]): TableUser[] => {
   return users.map((user: User) => ({
     email: user.email,
     username: user.username ?? "/",
-    fullName: `${user.first_name} ${user.last_name}` ?? "/",
+    firstName: `${user.first_name}` ?? "/",
+    lastName: `${user.last_name}` ?? "/",
     role: user.is_admin ? "Admin" : "User",
     createdOn: formattedDate(user.created_at),
   }));
@@ -48,7 +49,7 @@ emitter.on("dialogClose", () => {
   fetchUserData();
 });
 
-const headers = ["Email", "Username", "Full Name", "Role", "Created at"];
+const headers = ["Email", "Username", "First Name", "Last Name", "Role", "Created at"];
 
 onMounted(() => {
   fetchUserData();
