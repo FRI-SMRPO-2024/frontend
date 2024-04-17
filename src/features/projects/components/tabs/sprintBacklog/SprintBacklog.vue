@@ -5,7 +5,7 @@
     </div>
     <Alert
       v-if="isSprintError"
-      :message="sprintErorr.message.error"
+      :message="sprintError.message.error"
       type="error"
     />
     <SprintCard
@@ -15,16 +15,13 @@
       :numSprints="sprints.length"
       class="mb-2"
     ></SprintCard>
-    <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
-      <Loader></Loader>
-    </div>
     <Alert
       v-if="isTasksError"
-      :message="tasksErorr.message.error"
+      :message="tasksError.message.error"
       type="error"
     />
     <div
-      v-if="!tasksLoading && !sprintLoading"
+      v-if="!sprintLoading"
       class="grow w-full flex flex-column space-y-3 mt-5"
     >
       <Section
@@ -32,12 +29,17 @@
         icon="mdi-view-dashboard-variant"
         description="Here are all the tasks that are unassigned in the current sprint"
       >
-        <div class="flex flex-column space-y-1">
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
           <TaskCard
             v-for="task in sprintTasks.unassigned"
-            :key="task.id"
-            :task="{ task, assignee: null }"
+            :key="task.task.id"
+            :task="task"
             :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
           />
         </div>
       </Section>
@@ -46,13 +48,18 @@
         icon="mdi-view-dashboard-variant"
         description="Here are all the tasks that are assigned but not yet active"
       >
-        <div class="flex flex-column space-y-1">
-          <!--<TaskCard
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
+          <TaskCard
             v-for="task in sprintTasks.assigned"
-            :key="task.id"
-            :task="{ task, assignee: null }"
+            :key="task.task.id"
+            :task="task"
             :project-id="project.id"
-          />-->
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
+          />
         </div>
       </Section>
       <Section
@@ -60,26 +67,36 @@
         icon="mdi-view-dashboard-variant"
         description="Here are all the tasks that are active"
       >
-        <div class="flex flex-column space-y-1">
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
           <TaskCard
             v-for="task in sprintTasks.active"
-            :key="task.id"
-            :task="{ task, assignee: null }"
+            :key="task.task.id"
+            :task="task"
             :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
           />
         </div>
       </Section>
       <Section
-        title="Compelted tasks"
+        title="Completed tasks"
         icon="mdi-view-dashboard-variant"
         description="Here are all the tasks that are completed"
       >
-        <div class="flex flex-column space-y-1">
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
           <TaskCard
             v-for="task in sprintTasks.completed"
-            :key="task.id"
-            :task="{ task, assignee: null }"
+            :key="task.task.id"
+            :task="task"
             :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
           />
         </div>
       </Section>
@@ -93,7 +110,7 @@ import { useAxios } from "@/composables/useAxios";
 import { Sprint, SprintCard, SprintTasks } from "@/features/sprints";
 import Loader from "@/components/Common/Loader.vue";
 import { Alert } from "@/components/Alert";
-import { Task } from "@/features/tasks/types";
+import { StoryTask } from "@/features/tasks/types";
 import { TaskCard } from "@/features/tasks";
 
 const currentSprint = ref<Sprint | null>(null);
@@ -115,7 +132,7 @@ const {
   execute: getCurrentSprint,
   isLoading: sprintLoading,
   isError: isSprintError,
-  error: sprintErorr,
+  error: sprintError,
 } = useAxios<Sprint>({
   method: "get",
   url: `sprint/current/${props.project.id}`,
@@ -125,8 +142,8 @@ const {
   execute: fetchSprintTasks,
   isLoading: tasksLoading,
   isError: isTasksError,
-  error: tasksErorr,
-} = useAxios<Task[]>({
+  error: tasksError,
+} = useAxios<StoryTask[]>({
   method: "get",
   url: ``,
 });
@@ -142,21 +159,27 @@ const getSprint = () => {
 };
 
 const getSprintTasks = (sprintId: number) => {
+  sprintTasks.value = {
+    active: [],
+    assigned: [],
+    completed: [],
+    unassigned: [],
+  };
   fetchSprintTasks({}, `task/get-by-sprint/${sprintId}`).then(
-    (tasks: Task[]) => {
-      tasks.forEach((task: Task) => {
-        switch (task.status) {
-          case "PENDING":
-            sprintTasks.value.assigned.push(task);
+    (tasks: StoryTask[]) => {
+      tasks.forEach((storyTask: StoryTask) => {
+        switch (storyTask.task.status) {
+          case "ACCEPTED":
+            sprintTasks.value.assigned.push(storyTask);
             break;
           case "COMPLETED":
-            sprintTasks.value.completed.push(task);
+            sprintTasks.value.completed.push(storyTask);
             break;
           case "ACTIVE":
-            sprintTasks.value.active.push(task);
+            sprintTasks.value.active.push(storyTask);
             break;
           default:
-            sprintTasks.value.unassigned.push(task);
+            sprintTasks.value.unassigned.push(storyTask);
             break;
         }
       });

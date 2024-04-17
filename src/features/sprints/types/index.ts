@@ -1,4 +1,4 @@
-import { Task } from "@/features/tasks/types";
+import { StoryTask } from "@/features/tasks/types";
 
 interface CreateSprintData {
   start_date: Date;
@@ -22,10 +22,10 @@ type TableSprints = {
 };
 
 interface SprintTasks {
-  unassigned: Task[];
-  assigned: Task[];
-  completed: Task[];
-  active: Task[];
+  unassigned: StoryTask[];
+  assigned: StoryTask[];
+  completed: StoryTask[];
+  active: StoryTask[];
 }
 
 export type { CreateSprintData, Sprint, TableSprints, SprintTasks };
