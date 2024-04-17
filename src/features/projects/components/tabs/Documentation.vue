@@ -7,7 +7,7 @@ import { Alert } from "@/components/Alert";
 import { useToast } from "vue-toast-notification";
 import { Documentation } from "../../types";
 import { Project } from "@/features/projects";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, Ref } from "vue";
 
 type DocumentationProps = {
   project: Project;
@@ -15,9 +15,12 @@ type DocumentationProps = {
 
 const props = defineProps<DocumentationProps>();
 
+const docsExist = ref<boolean>(false);
+
+
 const { handleSubmit } = useForm({
   validationSchema: {
-    documentation(value) {
+    documentation(value: string | null) {
       if (value) return true;
 
       return "Documentation is required!";
@@ -27,6 +30,15 @@ const { handleSubmit } = useForm({
 
 const documentation = useField("documentation");
 
+onBeforeMount(() => {
+  getDocs().then((res: Documentation[]) => {
+    docsExist.value = res.length > 0;
+    if (docsExist.value) {
+        documentation.value.value = res[0].text;
+    }
+  });
+});
+
 const {
   execute: createDocs,
   isLoading,
@@ -35,7 +47,7 @@ const {
 } = useAxios<Documentation>({
   method: "post",
   url: "documentation/create",
-});
+})
 
 const { execute: updateDocs } = useAxios<Documentation>({
   method: "put",
@@ -45,15 +57,6 @@ const { execute: updateDocs } = useAxios<Documentation>({
 const { execute: getDocs } = useAxios<Documentation[]>({
   method: "get",
   url: "documentation/get-by-project/" + props.project.id,
-});
-
-const docsExist = ref<boolean>(false);
-
-onBeforeMount(() => {
-  getDocs().then((res: Documentation[]) => {
-    docsExist.value = res.length > 0;
-    documentation.value.value = res[0].text;
-  });
 });
 
 const submit = handleSubmit((values) => {
@@ -77,10 +80,44 @@ const submit = handleSubmit((values) => {
       useToast().success(`Documentation for project successfully created!`, {
         position: "top",
       });
+      docsExist.value = true;
       emitter.emit("dialogClose");
     });
   }
 });
+
+const fileInput: Ref<HTMLInputElement | null> = ref(null);
+
+// Function to trigger the hidden file input
+function triggerFileInput() {
+  fileInput.value?.click();
+}
+
+// Function to read a text file and set its content to the textarea
+function importFile(event: any) {
+  const file = event.target.files[0];
+  if (file && file.type === "text/plain") {
+    const reader = new FileReader();
+    reader.onload = e => {
+      documentation.value.value = e.target?.result;
+    };
+    reader.readAsText(file);
+  } else {
+    useToast().error("Invalid file type. Please select a text file.");
+  }
+}
+
+// Function to export textarea content to a text file
+function exportToFile() {
+  const element = document.createElement('a');
+  const file = new Blob([documentation.value.value as BlobPart], {type: 'text/plain'});
+  element.href = URL.createObjectURL(file);
+  element.download = `documentation-${props.project.id}.txt`;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+
 </script>
 
 <template>
@@ -101,8 +138,18 @@ const submit = handleSubmit((values) => {
         no-resize
         class="w-full"
       ></v-textarea>
+
     </div>
-    <div class="w-full flex justify-end">
+    <div class="w-full flex justify-between">
+        <div class="space-x-2">
+            <input type="file" ref="fileInput" @change="importFile" accept=".txt" style="display: none;" />
+            <v-btn @click="triggerFileInput" prepend-icon="mdi-import" variant="flat" color="#5865f2">
+                Import
+            </v-btn>
+            <v-btn @click="exportToFile" prepend-icon="mdi-export" variant="flat" color="#5865f2">
+                Export
+            </v-btn>
+        </div>
       <v-btn
         class="w-2/5"
         type="submit"

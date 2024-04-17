@@ -46,6 +46,7 @@ interface ProjectTab {
 }
 
 interface Documentation {
+  id: number;
   project_id: number;
   date: string;
   text: string;
