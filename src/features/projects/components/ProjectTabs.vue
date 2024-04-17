@@ -71,6 +71,9 @@ const PROJECT_TABS: ProjectTab[] = [
   {
     title: "Wall",
     component: Wall,
+    props: {
+      project: props.project,
+    },
   },
   {
     title: "Documentation",
