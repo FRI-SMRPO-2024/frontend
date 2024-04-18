@@ -44,24 +44,22 @@ const fetchWall = async () => {
   posts.value = [];
   loaderOn.value = true
   const walls = await getWall();  // Use async/await to wait for the wall posts.
-  const fetchUserPromises = walls.map(async (post) => {
-    const { execute: getUser } = useAxios<User>({
-      method: "get",
-      url: "user/get/" + post.user_id,
-    });
-    const user = await getUser(); // Wait for each user to be fetched.
-    return { user, post };
+
+  const results = walls.map((wall) => {
+    return {
+      user: wall.user,
+      post: wall,
+    };
   });
 
-  const results = await Promise.all(fetchUserPromises); // Wait for all users to be fetched.
   posts.value = results.sort((a, b) => new Date(a.post.changed_at) - new Date(b.post.changed_at)); // Now you can sort the results.
   
   loaderOn.value = false
 };
 
-const { execute: getWall } = useAxios<ProjectWall>({
+const { execute: getWall, isLoading: getWallLoader} = useAxios<ProjectWall>({
   method: "get",
-  url: "project-wall/get-by-project/" + props.project.id,
+  url: "project-wall/get-by-project/" + props.project.id
 });
 
 const {
@@ -113,6 +111,9 @@ const submitPost = handleSubmit(async (values) => {
       >
       </Section>
     </div>
+    <div v-if="getWallLoader" class="mt-2 flex justify-center">
+      <Loader />
+    </div>
     <div class="mt-4">
       <div class="mt-4">
         <div
@@ -156,7 +157,7 @@ const submitPost = handleSubmit(async (values) => {
         </v-btn>
       </div>
     </form>
-    <div v-if="isLoading || loaderOn.value" class="mt-2 flex justify-center">
+    <div v-if="isLoading" class="mt-2 flex justify-center">
       <Loader />
     </div>
   </div>
