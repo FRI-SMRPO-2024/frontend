@@ -21,7 +21,7 @@
       icon="mdi-view-dashboard-variant"
       description="Here are all the projects that are assigned to you. Click the one you want to expand"
     >
-      <Alert v-if="isError" :message="error.message" type="error" />
+      <Alert v-if="isError" :message="error.message.message" type="error" />
       <div v-if="isLoading" class="flex justify-center">
         <Loader />
       </div>
@@ -30,6 +30,7 @@
           v-for="(project, idx) in projects"
           :key="idx"
           :data="project"
+          @projectDeleted="removeProject"
         />
       </div>
     </Section>
@@ -71,6 +72,12 @@ const fetchProjects = () => {
       projects.value = res as Project[];
     }
   });
+};
+
+const removeProject = (id: number) => {
+  projects.value = projects.value.filter(
+    (project: Project) => project.id !== id,
+  );
 };
 
 onMounted(() => {
