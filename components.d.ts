@@ -5,7 +5,7 @@
 // Read more: https://github.com/vuejs/core/pull/3399
 export {}
 
-declare module "vue" {
+declare module 'vue' {
   export interface GlobalComponents {
     Alert: (typeof import("./src/components/Alert/Alert.vue"))["default"];
     AppBar: (typeof import("./src/components/Navigation/AppBar.vue"))["default"];
@@ -23,6 +23,7 @@ declare module "vue" {
     Loader: (typeof import("./src/components/Common/Loader.vue"))["default"];
     MainLayout: (typeof import("./src/components/Layout/MainLayout.vue"))["default"];
     Notification: (typeof import("./src/components/Notification/Notification.vue"))["default"];
+    Profile: typeof import('./src/components/Layout/Profile.vue')['default']
     RouterLink: (typeof import("vue-router"))["RouterLink"];
     RouterView: (typeof import("vue-router"))["RouterView"];
     Section: (typeof import("./src/components/Common/Section.vue"))["default"];

@@ -1,5 +1,5 @@
 import { Component } from "vue";
-import { AuthUser } from "@/features/auth";
+import { User } from "@/features/users";
 
 interface CreateProjectData {
   name: string;
@@ -27,10 +27,12 @@ interface Project {
   description: string;
   owner_id: string;
   created_at: string;
+  scrumMaster: string;
+  developers: string[];
 }
 
 interface ProjectUser {
-  user: AuthUser;
+  user: User;
   roles: ("OWNER" | "DEVELOPER" | "SCRUM_MASTER")[];
 }
 
@@ -45,6 +47,21 @@ interface ProjectTab {
   props?: object;
 }
 
+interface Documentation {
+  id: number;
+  project_id: number;
+  date: string;
+  text: string;
+}
+
+interface ProjectWall {
+  id: number;
+  project_id: number;
+  user_id: string;
+  content: string;
+  created_at: Date;
+}
+
 export type {
   CreateProjectData,
   UserRole,
@@ -53,4 +70,6 @@ export type {
   ProjectTab,
   ProjectUser,
   UserProjects,
+  Documentation,
+  ProjectWall,
 };

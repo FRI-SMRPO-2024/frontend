@@ -18,12 +18,23 @@ interface CreateUserData {
   role: "User" | "Admin";
 }
 
+interface UpdateUserData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
+  role: "User" | "Admin";
+}
+
 type TableUser = {
   email: string;
   username: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
   role: "Admin" | "User";
   createdOn: string;
 };
 
-export type { User, CreateUserData, TableUser };
+export type { User, CreateUserData, UpdateUserData, TableUser };

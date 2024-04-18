@@ -1,61 +1,119 @@
 <template>
-  <div class="w-75 flex-column" style="margin-left: auto; margin-right: auto">
-    <div v-if="isLoading">
+  <div class="w-75 mx-auto flex-column flex items-center">
+    <div v-if="sprintLoading" class="w-full flex justify-center mt-2">
       <Loader></Loader>
     </div>
-    <div v-if="!isLoading && Object.keys(currentSprint).length === 0">
-      <Alert message="No sprint is currently active!" type="info" />
-    </div>
+    <Alert
+      v-if="isSprintError"
+      :message="sprintError.message.error"
+      type="error"
+    />
     <SprintCard
-      v-if="!isLoading && Object.keys(currentSprint).length !== 0"
+      v-if="!sprintLoading && currentSprint"
       :data="currentSprint"
-      :idx="sprints.findIndex((obj) => obj.id === currentSprint.id)"
+      :idx="sprints.findIndex((obj) => obj.id === currentSprint?.id)"
       :numSprints="sprints.length"
       class="mb-2"
     ></SprintCard>
+    <Alert
+      v-if="isTasksError"
+      :message="tasksError.message.error"
+      type="error"
+    />
     <div
-      class="flex mx-4"
-      v-if="!isLoading && Object.keys(currentSprint).length !== 0"
+      v-if="!sprintLoading"
+      class="grow w-full flex flex-column space-y-3 mt-5"
     >
-      <div class="w-66 flex space-y-8">
-        <Section
-          title="All sprint backlog stories."
-          icon="mdi-view-dashboard-variant"
-          description="Here are all the stories that are assigned this sprint. Click the one you want to expand"
-        >
-        </Section>
-      </div>
-    </div>
-    <div class="grow w-full grid grid-cols-1 gap-3 mt-3">
-      <div>
-        <b v-if="stories.length === 0"> No stories added to this sprint! </b>
-        <StoryCard
-          v-for="(story, idx) in stories"
-          :key="idx"
-          :idx="idx"
-          :data="story"
-          :projectId="project.id"
-          :clickedTicket="clickedTicket"
-          :currentSprint="currentSprint"
-          :check="'SPRINT'"
-          @click="clickedTicket = idx"
-          class="ma-2"
-        />
-      </div>
+      <Section
+        title="Unassigned tasks"
+        icon="mdi-view-dashboard-variant"
+        description="Here are all the tasks that are unassigned in the current sprint"
+      >
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
+          <TaskCard
+            v-for="task in sprintTasks.unassigned"
+            :key="task.task.id"
+            :task="task"
+            :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
+          />
+        </div>
+      </Section>
+      <Section
+        title="Assigned tasks"
+        icon="mdi-view-dashboard-variant"
+        description="Here are all the tasks that are assigned but not yet active"
+      >
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
+          <TaskCard
+            v-for="task in sprintTasks.assigned"
+            :key="task.task.id"
+            :task="task"
+            :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
+          />
+        </div>
+      </Section>
+      <Section
+        title="Active tasks"
+        icon="mdi-view-dashboard-variant"
+        description="Here are all the tasks that are active"
+      >
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
+          <TaskCard
+            v-for="task in sprintTasks.active"
+            :key="task.task.id"
+            :task="task"
+            :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
+          />
+        </div>
+      </Section>
+      <Section
+        title="Completed tasks"
+        icon="mdi-view-dashboard-variant"
+        description="Here are all the tasks that are completed"
+      >
+        <div v-if="tasksLoading" class="w-full flex justify-center mt-5">
+          <Loader></Loader>
+        </div>
+        <div v-else class="flex flex-column space-y-1">
+          <TaskCard
+            v-for="task in sprintTasks.completed"
+            :key="task.task.id"
+            :task="task"
+            :project-id="project.id"
+            @taskUpdated="getSprintTasks(currentSprint?.id as number)"
+            @taskDeleted="getSprintTasks(currentSprint?.id as number)"
+          />
+        </div>
+      </Section>
     </div>
   </div>
 </template>
 <script setup lang="ts">
-import { StoryCard } from "@/features/stories";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Project } from "@/features/projects";
 import { useAxios } from "@/composables/useAxios";
-import { SprintCard } from "@/features/sprints";
+import { Sprint, SprintCard, SprintTasks } from "@/features/sprints";
 import Loader from "@/components/Common/Loader.vue";
+import { Alert } from "@/components/Alert";
+import { StoryTask } from "@/features/tasks/types";
+import { TaskCard } from "@/features/tasks";
 
-const clickedTicket = ref<number>();
-const currentSprint = ref<object>({});
-let stories = ref([]);
+const currentSprint = ref<Sprint | null>(null);
 let sprints = ref([]);
 
 type SprintProps = {
@@ -63,39 +121,73 @@ type SprintProps = {
 };
 
 const props = defineProps<SprintProps>();
-console.log(props.project.id);
+const sprintTasks = ref<SprintTasks>({
+  active: [],
+  assigned: [],
+  completed: [],
+  unassigned: [],
+});
 
-const { execute: getCurrentSprint, isLoading } = useAxios({
+const {
+  execute: getCurrentSprint,
+  isLoading: sprintLoading,
+  isError: isSprintError,
+  error: sprintError,
+} = useAxios<Sprint>({
   method: "get",
   url: `sprint/current/${props.project.id}`,
 });
 
-getCurrentSprint().then((returnedSprint: object) => {
-  currentSprint.value = returnedSprint;
-  if (Object.keys(currentSprint.value).length !== 0) triggerGetStories();
+const {
+  execute: fetchSprintTasks,
+  isLoading: tasksLoading,
+  isError: isTasksError,
+  error: tasksError,
+} = useAxios<StoryTask[]>({
+  method: "get",
+  url: ``,
 });
 
-function triggerGetStories() {
-  console.log("SPRINT");
-  const { execute: getStories } = useAxios({
-    method: "get",
-    url: `story/get-by-sprint/${currentSprint.value.id}`,
-  });
+const getSprint = () => {
+  getCurrentSprint().then((returnedSprint: Sprint) => {
+    currentSprint.value = returnedSprint;
 
-  getStories().then((returnedStories: []) => {
-    stories.value = returnedStories;
-    triggerGetSprints();
+    if (returnedSprint.id) {
+      getSprintTasks(returnedSprint.id);
+    }
   });
-}
+};
 
-function triggerGetSprints() {
-  const { execute: getSprints } = useAxios({
-    method: "get",
-    url: `sprint/get-by-project-id/${props.project.id}`,
-  });
+const getSprintTasks = (sprintId: number) => {
+  sprintTasks.value = {
+    active: [],
+    assigned: [],
+    completed: [],
+    unassigned: [],
+  };
+  fetchSprintTasks({}, `task/get-by-sprint/${sprintId}`).then(
+    (tasks: StoryTask[]) => {
+      tasks.forEach((storyTask: StoryTask) => {
+        switch (storyTask.task.status) {
+          case "ACCEPTED":
+            sprintTasks.value.assigned.push(storyTask);
+            break;
+          case "COMPLETED":
+            sprintTasks.value.completed.push(storyTask);
+            break;
+          case "ACTIVE":
+            sprintTasks.value.active.push(storyTask);
+            break;
+          default:
+            sprintTasks.value.unassigned.push(storyTask);
+            break;
+        }
+      });
+    },
+  );
+};
 
-  getSprints().then((returnedSprints: []) => {
-    sprints.value = returnedSprints;
-  });
-}
+onMounted(() => {
+  getSprint();
+});
 </script>
