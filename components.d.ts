@@ -23,6 +23,7 @@ declare module 'vue' {
     Loader: typeof import('./src/components/Common/Loader.vue')['default']
     MainLayout: (typeof import("./src/components/Layout/MainLayout.vue"))["default"]
     Notification: (typeof import("./src/components/Notification/Notification.vue"))["default"]
+    Profile: typeof import('./src/components/Layout/Profile.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Section: typeof import('./src/components/Common/Section.vue')['default']
@@ -30,5 +31,6 @@ declare module 'vue' {
     Sidebar: typeof import('./src/components/Navigation/Sidebar.vue')['default']
     Table: typeof import('./src/components/Common/Table.vue')['default']
     TextareaField: typeof import('./src/components/Form/TextareaField.vue')['default']
+    UserTable: typeof import('./src/components/Common/UserTable.vue')['default']
   }
 }

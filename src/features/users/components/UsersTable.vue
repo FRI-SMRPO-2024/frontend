@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full">
     <Alert v-if="isError" :message="error.message" type="error" />
-    <Table
+    <UserTable
       v-if="!isLoading"
       :headers="headers"
       :rows="usersData"
@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Loader, Table } from "@/components/Common";
+import { Loader, UserTable } from "@/components/Common";
 import { TableUser, User } from "@/features/users";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
@@ -32,7 +32,8 @@ const mapUserData = (users: User[]): TableUser[] => {
   return users.map((user: User) => ({
     email: user.email,
     username: user.username ?? "/",
-    fullName: `${user.first_name} ${user.last_name}` ?? "/",
+    firstName: `${user.first_name}` ?? "/",
+    lastName: `${user.last_name}` ?? "/",
     role: user.is_admin ? "Admin" : "User",
     createdOn: formattedDate(user.created_at),
   }));
@@ -48,7 +49,14 @@ emitter.on("dialogClose", () => {
   fetchUserData();
 });
 
-const headers = ["Email", "Username", "Full Name", "Role", "Created at"];
+const headers = [
+  "Email",
+  "Username",
+  "First Name",
+  "Last Name",
+  "Role",
+  "Created at",
+];
 
 onMounted(() => {
   fetchUserData();

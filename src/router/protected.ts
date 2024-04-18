@@ -1,6 +1,7 @@
 import { DashboardView } from "@/features/misc";
 import { ProjectView, ProjectsIndex } from "@/features/projects";
 import { UsersView } from "@/features/users";
+import { Profile } from "@/components/Layout";
 
 export const protectedRoutes = [
   {
@@ -26,5 +27,10 @@ export const protectedRoutes = [
     path: "/users",
     name: "users",
     component: UsersView,
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: Profile,
   },
 ];
