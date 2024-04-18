@@ -166,11 +166,13 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
     }
   } catch (err) {
     isError.value = true;
-    if (err.message.error === 'duplicate key value violates unique constraint "users_data_username_key"') {
-      err.message.error = 'User with this username already exists!'
+    if (
+      err.message.error ===
+      'duplicate key value violates unique constraint "users_data_username_key"'
+    ) {
+      err.message.error = "User with this username already exists!";
     }
     error.value = err;
-
   }
 });
 
