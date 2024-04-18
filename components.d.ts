@@ -31,5 +31,6 @@ declare module 'vue' {
     Sidebar: typeof import('./src/components/Navigation/Sidebar.vue')['default']
     Table: typeof import('./src/components/Common/Table.vue')['default']
     TextareaField: typeof import('./src/components/Form/TextareaField.vue')['default']
+    UserTable: typeof import('./src/components/Common/UserTable.vue')['default']
   }
 }

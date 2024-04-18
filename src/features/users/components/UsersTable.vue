@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full">
     <Alert v-if="isError" :message="error.message" type="error" />
-    <Table
+    <UserTable
       v-if="!isLoading"
       :headers="headers"
       :rows="usersData"
@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { Loader, Table } from "@/components/Common";
+import { Loader, UserTable } from "@/components/Common";
 import { TableUser, User } from "@/features/users";
 import { useAxios } from "@/composables/useAxios";
 import { Alert } from "@/components/Alert";
