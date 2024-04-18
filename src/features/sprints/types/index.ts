@@ -14,6 +14,7 @@ interface Sprint {
 }
 
 type TableSprints = {
+  info: object;
   start_date: string;
   end_date: string;
   velocity: number;
