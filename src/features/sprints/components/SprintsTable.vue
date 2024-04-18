@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { Table } from "@/components/Common";
+import { SprintTable } from "@/components/Common";
 import { onMounted, ref } from "vue";
-import { formattedDate } from "@/utils/date";
 import { Sprint, TableSprints } from "@/features/sprints";
 
 type SprintsTableProps = {
@@ -14,25 +13,27 @@ const sprintsData = ref<TableSprints[]>([]);
 const mapSprintsData = (sprints: Sprint[]): TableSprints[] => {
   return sprints.map((sprint: Sprint): TableSprints => {
     return {
+      info: { id: sprint.id },
       velocity: sprint.velocity,
-      start_date: formattedDate(sprint.start_date),
-      end_date: formattedDate(sprint.end_date),
+      start_date: sprint.start_date,
+      end_date: sprint.end_date,
     };
   });
 };
 
 const headers = ["Velocity", "Start", "End"];
 onMounted(() => {
-  sprintsData.value = mapSprintsData(props.sprints);
+  console.log(props.sprints);
+  sprintsData.value = mapSprintsData(props.sprints).reverse();
 });
 </script>
 
 <template>
   <div class="w-full h-full">
-    <Table
+    <SprintTable
       :headers="headers"
       :rows="sprintsData"
-      :display-actions="false"
+      :display-actions="true"
       class="h-full"
     />
   </div>
