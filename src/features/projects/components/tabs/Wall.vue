@@ -34,36 +34,29 @@ const newPost = useField("post");
 
 const currentUserId = ref<string>("");
 const posts = ref<{ user: User; post: ProjectWall }>([]);
+const loaderOn = ref<boolean>(false)
 
 onBeforeMount(async () => {
   await fetchWall();
-  console.log(posts);
 });
 
 const fetchWall = async () => {
   posts.value = [];
-  getWall().then((res: ProjectWall[]) => {
-    if (res) {
-      res.forEach((post) => {
-        currentUserId.value = post.user_id;
-
-        const { execute: getUser } = useAxios<User>({
-          method: "get",
-          url: "user/get/" + currentUserId.value,
-        });
-
-        getUser().then((user) => {
-          posts.value.push({ user, post });
-        });
-      });
-    }
+  loaderOn.value = true
+  const walls = await getWall();  // Use async/await to wait for the wall posts.
+  const fetchUserPromises = walls.map(async (post) => {
+    const { execute: getUser } = useAxios<User>({
+      method: "get",
+      url: "user/get/" + post.user_id,
+    });
+    const user = await getUser(); // Wait for each user to be fetched.
+    return { user, post };
   });
-  posts.value = posts.value.sort((a, b) => {
-    return (
-      new Date(a.post.created_at).getTime() -
-      new Date(b.post.created_at).getTime()
-    );
-  });
+
+  const results = await Promise.all(fetchUserPromises); // Wait for all users to be fetched.
+  posts.value = results.sort((a, b) => new Date(a.post.changed_at) - new Date(b.post.changed_at)); // Now you can sort the results.
+  
+  loaderOn.value = false
 };
 
 const { execute: getWall } = useAxios<ProjectWall>({
@@ -82,7 +75,6 @@ const {
 });
 
 const submitPost = handleSubmit(async (values) => {
-  console.log(values);
   // values would contain the validated form data
   try {
     createPost({
@@ -98,7 +90,6 @@ const submitPost = handleSubmit(async (values) => {
       emitter.emit("dialogClose");
     });
   } catch (error) {
-    console.log(error);
     useToast().error("Failed to create post. Please try again.", {
       position: "top",
     });
@@ -165,7 +156,7 @@ const submitPost = handleSubmit(async (values) => {
         </v-btn>
       </div>
     </form>
-    <div v-if="isLoading" class="mt-2 flex justify-center">
+    <div v-if="isLoading || loaderOn.value" class="mt-2 flex justify-center">
       <Loader />
     </div>
   </div>
