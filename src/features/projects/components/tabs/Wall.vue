@@ -8,7 +8,7 @@ import { useToast } from "vue-toast-notification";
 import { Project } from "@/features/projects";
 import { onBeforeMount, ref } from "vue";
 import { useUserStore } from "@/stores/user.store";
-import { ProjectWall, User } from "../../types";
+import { ProjectWall } from "../../types";
 
 type WallProps = {
   project: Project;
@@ -32,9 +32,7 @@ const { handleSubmit } = useForm({
 
 const newPost = useField("post");
 
-const currentUserId = ref<string>("");
-const posts = ref<{ user: User; post: ProjectWall }>([]);
-const loaderOn = ref<boolean>(false)
+const posts = ref<ProjectWall[]>([]);
 
 onBeforeMount(async () => {
   await fetchWall();
@@ -42,24 +40,17 @@ onBeforeMount(async () => {
 
 const fetchWall = async () => {
   posts.value = [];
-  loaderOn.value = true
-  const walls = await getWall();  // Use async/await to wait for the wall posts.
+  const walls = await getWall(); // Use async/await to wait for the wall posts.
 
-  const results = walls.map((wall) => {
-    return {
-      user: wall.user,
-      post: wall,
-    };
-  });
-
-  posts.value = results.sort((a, b) => new Date(a.post.changed_at) - new Date(b.post.changed_at)); // Now you can sort the results.
-  
-  loaderOn.value = false
+  posts.value = walls.sort(
+    (a, b) =>
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime(),
+  );
 };
 
-const { execute: getWall, isLoading: getWallLoader} = useAxios<ProjectWall>({
+const { execute: getWall, isLoading: getWallLoader } = useAxios<ProjectWall[]>({
   method: "get",
-  url: "project-wall/get-by-project/" + props.project.id
+  url: "project-wall/get-by-project/" + props.project.id,
 });
 
 const {
@@ -129,10 +120,10 @@ const submitPost = handleSubmit(async (values) => {
               <p class="text-sm text-gray-500">@{{ item.user.username }}</p>
             </div>
             <p class="text-sm text-gray-400">
-              {{ new Date(item.post.created_at).toLocaleString() }}
+              {{ new Date(item.created_at).toLocaleString() }}
             </p>
           </div>
-          <p class="text-gray-700">{{ item.post.content }}</p>
+          <p class="text-gray-700">{{ item.content }}</p>
         </div>
       </div>
     </div>

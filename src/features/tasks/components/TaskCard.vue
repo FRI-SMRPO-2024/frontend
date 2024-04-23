@@ -8,7 +8,9 @@ import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
 import emitter from "@/plugins";
 import { EditTimeEstimationForm } from "@/features/tasks/components";
+import { TimeLogForm } from "@/features/tasks/components";
 import { useToast } from "vue-toast-notification";
+import { computed } from "vue";
 
 type TaskCardProps = {
   task: StoryTask;
@@ -23,6 +25,20 @@ const timeEstimationMenu = ref(false);
 const taskDescription = toRef(props.task.task.description);
 const editMode = ref(false);
 const timeEstimationValue = toRef(props.task.task.time_estimation);
+
+const logTimeMenu = ref(false);
+
+const timeLogs = toRef(props.task.time_logs);
+const logTimeCombinedValue = computed(() => {
+  const totalHours = timeLogs.value.reduce((acc, log) => {
+    const dateTimeFrom = new Date(`${log.date}T${log.time_from}`);
+    const dateTimeTo = new Date(`${log.date}T${log.time_to}`);
+    return (
+      acc + (dateTimeTo.getTime() - dateTimeFrom.getTime()) / 1000 / 60 / 60
+    ); // milliseconds to hours
+  }, 0);
+  return totalHours.toFixed(2);
+});
 
 const user = useUserStore().getData();
 const emit = defineEmits(["taskUpdated", "taskDeleted"]);
@@ -73,6 +89,10 @@ const changeTaskStatus = (status: "ACCEPTED" | "NULL" | "COMPLETED") => {
   ).then(() => {
     emit("taskUpdated");
   });
+};
+
+const logTime = () => {
+  logTimeMenu.value = true;
 };
 
 const updateTaskAssignee = (assignee: { user: string | null }) => {
@@ -205,6 +225,39 @@ emitter.on(
             </v-card>
           </v-menu>
           <v-menu
+            v-if="
+              user?.id === task.task.assignee_id &&
+              task.task.status !== 'COMPLETED' &&
+              task.task.status !== 'PENDING'
+            "
+            v-model="logTimeMenu"
+            :close-on-content-click="false"
+            location="bottom"
+          >
+            <template v-slot:activator="{ props }">
+              <div
+                v-bind="props"
+                class="min-w-16 rounded-md border border-gray-500 cursor-pointer py-1 px-2 text-xs text-gray-700 flex items-center justify-between space-x-1"
+              >
+                <span><v-icon icon="mdi-timer-sand" size="small" />:</span>
+                <span>{{ logTimeCombinedValue }}h</span>
+              </div>
+            </template>
+            <v-card min-width="700" v-if="task.task.status !== 'COMPLETED'">
+              <v-list>
+                <v-list-item prepend-icon="mdi-timer-sand" subtitle="Log time">
+                </v-list-item>
+                <v-list-item>
+                  <TimeLogForm
+                    :time-logs="timeLogs"
+                    :task="task.task"
+                    class="mt-2"
+                  />
+                </v-list-item>
+              </v-list>
+            </v-card>
+          </v-menu>
+          <v-menu
             v-model="optionsMenu"
             :close-on-content-click="true"
             location="bottom"
@@ -250,6 +303,7 @@ emitter.on(
                   <v-list-item
                     prepend-icon="mdi-timer-sand"
                     title="Log Time"
+                    @click="logTime()"
                     value="logtime"
                   />
                   <v-list-item

@@ -48,7 +48,6 @@ const {
   url: "documentation/create",
 });
 
-
 const { execute: updateDocs } = useAxios<Documentation>({
   method: "put",
   url: "documentation/update/" + props.project.id,

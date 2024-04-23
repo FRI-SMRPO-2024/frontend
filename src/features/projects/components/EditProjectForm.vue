@@ -76,17 +76,17 @@ const { handleSubmit } = useForm<CreateProjectData>({
         value === scrumMaster.value.value ||
         developers.value.value.includes(value)
       ) {
-        return "Product Owner can't also be Methodology Owner or Developer!";
+        return "Product Owner can't also be Scrum Master or Developer!";
       } else if (value) return true;
 
       return "Product Owner must be defined!";
     },
     scrumMaster(value: string) {
       if (value === productOwner.value.value) {
-        return "Methodology Owner can't also be Product Owner!";
+        return "Scrum Master can't also be Product Owner!";
       } else if (value) return true;
 
-      return "Methodology Owner must be defined!";
+      return "Scrum Master must be defined!";
     },
     developers(value: string[]) {
       if (value.includes(productOwner.value.value)) {
@@ -185,7 +185,7 @@ const submit = handleSubmit((values: CreateProjectData) => {
       <v-select
         v-model="scrumMaster.value.value"
         :error-messages="scrumMaster.errorMessage.value"
-        label="Methodology Owner"
+        label="Scrum Master"
         variant="outlined"
         class="w-full"
         density="compact"

@@ -57,7 +57,7 @@ interface Documentation {
 interface ProjectWall {
   id: number;
   project_id: number;
-  user_id: string;
+  user: User;
   content: string;
   created_at: Date;
 }
