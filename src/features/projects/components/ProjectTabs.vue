@@ -25,6 +25,7 @@ import {
   Documentation,
   Overview,
   ProductBacklog,
+  FutureReleases,
   Project,
   ProjectTab,
   SprintBacklog,
@@ -50,6 +51,13 @@ const PROJECT_TABS: ProjectTab[] = [
   {
     title: "Product Backlog",
     component: ProductBacklog,
+    props: {
+      project: props.project,
+    },
+  },
+  {
+    title: "Future Releases",
+    component: FutureReleases,
     props: {
       project: props.project,
     },

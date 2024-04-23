@@ -32,9 +32,9 @@ const { handleSubmit } = useForm({
 
 const newPost = useField("post");
 
-const currentUserId = ref<string>("");
+//const currentUserId = ref<string>("");
 const posts = ref<{ user: User; post: ProjectWall }>([]);
-const loaderOn = ref<boolean>(false)
+const loaderOn = ref<boolean>(false);
 
 onBeforeMount(async () => {
   await fetchWall();
@@ -42,8 +42,8 @@ onBeforeMount(async () => {
 
 const fetchWall = async () => {
   posts.value = [];
-  loaderOn.value = true
-  const walls = await getWall();  // Use async/await to wait for the wall posts.
+  loaderOn.value = true;
+  const walls = await getWall(); // Use async/await to wait for the wall posts.
 
   const results = walls.map((wall) => {
     return {
@@ -52,14 +52,16 @@ const fetchWall = async () => {
     };
   });
 
-  posts.value = results.sort((a, b) => new Date(a.post.changed_at) - new Date(b.post.changed_at)); // Now you can sort the results.
-  
-  loaderOn.value = false
+  posts.value = results.sort(
+    (a, b) => new Date(a.post.changed_at) - new Date(b.post.changed_at),
+  ); // Now you can sort the results.
+
+  loaderOn.value = false;
 };
 
-const { execute: getWall, isLoading: getWallLoader} = useAxios<ProjectWall>({
+const { execute: getWall, isLoading: getWallLoader } = useAxios<ProjectWall>({
   method: "get",
-  url: "project-wall/get-by-project/" + props.project.id
+  url: "project-wall/get-by-project/" + props.project.id,
 });
 
 const {

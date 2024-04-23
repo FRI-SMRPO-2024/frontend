@@ -385,6 +385,7 @@ const handleAcceptStory = () => {
 
 const updateStoryData = (newStoryData: Story) => {
   storyData.value = newStoryData;
+  emit("get-stories");
 };
 
 emitter.on(

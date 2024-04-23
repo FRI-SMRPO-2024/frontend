@@ -7,3 +7,4 @@ export { Overview, Wall, Documentation, Sprints };
 
 export * from "./productBacklog";
 export * from "./sprintBacklog";
+export * from "./futureReleases";
