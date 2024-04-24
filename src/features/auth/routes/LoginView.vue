@@ -11,7 +11,7 @@
           Login to your account
         </h2>
         <p className="text-center text-sm text-gray-600">
-          Enter your email and password to access Jira
+          Enter your email and password to access Fake Jira
         </p>
       </div>
       <LoginForm />

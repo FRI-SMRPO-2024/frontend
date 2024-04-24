@@ -48,7 +48,6 @@ const fetchWall = async () => {
 };
 
 const { execute: getWall, isLoading: getWallLoader } = useAxios<ProjectWall[]>({
-
   method: "get",
   url: "project-wall/get-by-project/" + props.project.id,
 });

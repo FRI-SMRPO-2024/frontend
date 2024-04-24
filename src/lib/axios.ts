@@ -3,7 +3,7 @@ import Axios, { InternalAxiosRequestConfig } from "axios";
 import { API_URL } from "@/config";
 import { useToast } from "vue-toast-notification";
 import { LoginResponse } from "@/features/auth";
-import { ApiError } from "@/types";
+// import { ApiError } from "@/types";
 export const axios = Axios.create({
   baseURL: API_URL,
   withCredentials: true,
@@ -33,9 +33,7 @@ axios.interceptors.response.use(
       message: error.response.data,
     };
 
-    if (
-      apiError.message.message === "Invalid login credentials"
-    ) {
+    if (apiError.message.message === "Invalid login credentials") {
       return Promise.reject(apiError);
     }
 

@@ -22,7 +22,7 @@ FROM nginx:stable-alpine as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Expose port 80 to the outside once the container has launched
-EXPOSE 80
+EXPOSE 8080
 
 # When the container starts, Nginx will start as well
 CMD ["nginx", "-g", "daemon off;"]
