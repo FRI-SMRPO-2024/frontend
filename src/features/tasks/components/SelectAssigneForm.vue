@@ -41,6 +41,7 @@ const {
 
 onMounted(() => {
   fetchUsers().then((res: ProjectUser[]) => {
+    res = res.filter(obj => !obj.roles.includes("OWNER"));
     assigneeUsers.value = mapUsersToSelect(res);
   });
 });
