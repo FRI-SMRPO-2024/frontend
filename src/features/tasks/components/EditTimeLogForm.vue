@@ -14,10 +14,10 @@ const props = defineProps<{
 
 const leaveEditMode = (
   timeLogId: number,
-  description: string,
+  timeLog: TimeLog,
   edited: boolean,
 ) => {
-  emitter.emit(`timeLogEdited${timeLogId}`, { timeLogId, description, edited });
+  emitter.emit(`timeLogEdited${timeLogId}`, { timeLogId, timeLog, edited });
 };
 
 const { handleSubmit, handleReset } = useForm({
@@ -112,10 +112,10 @@ const submit = handleSubmit(
           position: "top",
         });
         handleReset();
-        leaveEditMode(res.id, res.description, true);
+        leaveEditMode(res.id, res, true);
 
         // Emit an event to inform the parent component of the update
-        emitter.emit("timeLogCreated", {
+        emitter.emit(`timeLogCreated${res.id}`, {
           index: props.index,
           timeLog: res,
         });
@@ -137,10 +137,10 @@ const submit = handleSubmit(
           position: "top",
         });
         handleReset();
-        leaveEditMode(res.id, res.description, true);
+        leaveEditMode(res.id, res, true);
 
         // Emit an event to inform the parent component of the update
-        emitter.emit("timeLogUpdated", {
+        emitter.emit(`timeLogUpdated${res.id}`, {
           index: props.index,
           timeLog: res,
         });
@@ -201,9 +201,24 @@ const submit = handleSubmit(
       density="compact"
       type="number"
     ></v-text-field>
-    <div class="space-x-1">
-      <v-btn variant="flat" size="default" color="#5865f2" type="submit">
+    <div class="space-x-1 flex">
+      <v-btn
+        variant="flat"
+        size="default"
+        color="#5865f2"
+        type="submit"
+        class="w-full text-xs shrink"
+      >
         Save
+      </v-btn>
+      <v-btn
+        variant="flat"
+        size="default"
+        color="#e8e8e8"
+        class="w-full text-xs shrink"
+        @click="leaveEditMode(props.timeLog.id, props.timeLog, false)"
+      >
+        Cancel
       </v-btn>
     </div>
     `

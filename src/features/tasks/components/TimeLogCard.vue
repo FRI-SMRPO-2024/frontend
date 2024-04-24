@@ -12,15 +12,36 @@ const props = defineProps<{
   taskId: number;
 }>();
 
+const timeLogRef = ref<TimeLog>(props.timeLog);
 const editMode = ref<boolean>(false);
 
-// const leaveEditMode = (
-//   timeLogId: number,
-//   description: string,
-//   edited: boolean,
-// ) => {
-//   emitter.emit(`timeLogEdited${timeLogId}`, { timeLogId, description, edited });
-// };
+emitter.on(
+  `timeLogEdited${props.timeLog.id}`,
+  ({
+    timeLogId,
+    timeLog,
+    edited,
+  }: {
+    timeLogId: number;
+    timeLog: TimeLog;
+    edited: boolean;
+  }) => {
+    console.log(timeLogId, timeLog, edited);
+    if (timeLogId !== timeLogRef.value.id) {
+      return;
+    }
+
+    editMode.value = false;
+
+    if (edited) {
+      timeLogRef.value = timeLog;
+      emitter.emit(`updateTimeLog${props.taskId}`, {
+        index: props.index,
+        timeLog,
+      });
+    }
+  },
+);
 
 const {
   execute: deleteTimeLog,
@@ -37,7 +58,7 @@ const removeTimeLog = async () => {
     useToast().success("Time log deleted successfully!", {
       position: "top",
     });
-    emitter.emit("removeTimeLog", props.index);
+    emitter.emit(`removeTimeLog${props.taskId}`, props.index);
   });
 };
 </script>
@@ -54,7 +75,7 @@ const removeTimeLog = async () => {
         v-if="!editMode"
         class="flex w-full justify-start items-center space-x-3"
       >
-        <p class="text-sm w-full">
+        <!-- <p class="text-sm w-full">
           Description : {{ props.timeLog.description }}
         </p>
         <p class="text-xs text-gray-500 w-full">
@@ -63,6 +84,14 @@ const removeTimeLog = async () => {
         </p>
         <p class="text-xs text-gray-500 w-full">
           Estimated Time Left :{{ props.timeLog.estimated_time_left }}
+        </p> -->
+        <p class="text-sm w-full">Description : {{ timeLogRef.description }}</p>
+        <p class="text-xs text-gray-500 w-full">
+          Time From - Time To : {{ timeLogRef.time_from }} -
+          {{ timeLogRef.time_to }}
+        </p>
+        <p class="text-xs text-gray-500 w-full">
+          Estimated Time Left :{{ timeLogRef.estimated_time_left }}
         </p>
         <div class="flex justify-start items-center space-x-1">
           <v-btn
@@ -79,7 +108,7 @@ const removeTimeLog = async () => {
       <EditTimeLogForm
         v-else
         :task-id="props.taskId"
-        :time-log="props.timeLog"
+        :time-log="timeLogRef"
         :index="props.index"
         @leaveEditMode="editMode = false"
       />
@@ -90,7 +119,7 @@ const removeTimeLog = async () => {
         color="#e8e8e8"
         size="default"
         class="text-xs"
-        @click="removeTimeLog"
+        @click="removeTimeLog()"
       >
         Remove
       </v-btn>

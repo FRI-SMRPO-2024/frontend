@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { StoryTask } from "@/features/tasks/types";
+import {
+  StoryTask,
+  TimeLog,
+  TimeLogCreate,
+  TimeLogUpdate,
+} from "@/features/tasks/types";
 import { ref, toRef } from "vue";
 import { EditTaskForm, SelectAssigneForm } from "@/features/tasks";
 import { useUserStore } from "@/stores/user.store";
@@ -11,6 +16,8 @@ import { EditTimeEstimationForm } from "@/features/tasks/components";
 import { TimeLogsForm } from "@/features/tasks/components";
 import { useToast } from "vue-toast-notification";
 import { computed } from "vue";
+import { onMounted } from "vue";
+import { onUnmounted } from "vue";
 
 type TaskCardProps = {
   task: StoryTask;
@@ -38,6 +45,132 @@ const logTimeCombinedValue = computed(() => {
     ); // milliseconds to hours
   }, 0);
   return totalHours.toFixed(2);
+});
+
+const timerRunning = ref(false);
+const startTime = ref<Date | null>(null);
+const elapsedTime = ref(0);
+const intervalRef = ref<number | null>(null);
+const timerTimeLogId = ref<number | null>(null);
+
+const { execute: createTimeLog } = useAxios({
+  method: "post",
+  url: `time-log/create`,
+});
+
+const { execute: getTimeLogByTask } = useAxios({
+  method: "get",
+  url: `time-log/get-by-task/${props.task.task.id}`,
+});
+
+// Function to start the timer
+const startTimer = async () => {
+  startTime.value = new Date();
+  const timeLogCreate: TimeLogCreate = {
+    task_id: props.task.task.id,
+    user_id: useUserStore().getData()?.id ?? "",
+    description: `${props.task.task.description} - Automatic Time Log`,
+    date: new Date().toISOString().split("T")[0],
+    time_from: new Date().toISOString().split("T")[1],
+    time_to: "00:00:00",
+    estimated_time_left: 0,
+  };
+  // Create a record in the database
+  createTimeLog(timeLogCreate).then((res: TimeLog) => {
+    timerTimeLogId.value = res.id;
+    // emitter.emit(`timeLogAdded${props.task.task.id}`, {
+    //   timeLogId: res.id,
+    //   timeLog: res,
+    //   edited: true,
+    // });
+  });
+
+  timerRunning.value = true;
+  intervalRef.value = setInterval(() => {
+    elapsedTime.value = Date.now() - startTime.value!.getTime();
+  }, 1000) as unknown as number;
+};
+
+// Function to stop the timer
+const stopTimer = async () => {
+  if (intervalRef.value) {
+    clearInterval(intervalRef.value);
+  }
+  const endTime = new Date();
+
+  // Update the record in the database
+  if (timerTimeLogId.value) {
+    const timeLogUpdate: TimeLogUpdate = {
+      task_id: props.task.task.id,
+      user_id: useUserStore().getData()?.id ?? "",
+      description: `${props.task.task.description} - Automatic Time Log`,
+      date: new Date().toISOString().split("T")[0],
+      time_from: new Date(startTime.value).toISOString().split("T")[1],
+      time_to: new Date(endTime).toISOString().split("T")[1],
+      estimated_time_left: 0,
+    };
+    const { execute: updateTimeLog } = useAxios({
+      method: "put",
+      url: `time-log/update/${timerTimeLogId.value}`,
+    });
+
+    updateTimeLog(timeLogUpdate).then(() => {
+      timerTimeLogId.value = null;
+      // emitter.emit(`timeLogEdited${props.task.task.id}`, {
+      //   timeLogId: res.id,
+      //   timeLog: res,
+      //   edited: true,
+      // });
+    });
+  }
+  timerRunning.value = false;
+  elapsedTime.value = 0;
+};
+
+// Toggle the timer on/off
+const toggleTimer = () => {
+  if (timerRunning.value) {
+    stopTimer();
+  } else {
+    startTimer();
+  }
+};
+
+// Format elapsed time into a readable string
+const formatElapsedTime = (ms: number) => {
+  const seconds = Math.floor(ms / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  return `${hours}:${minutes % 60}:${seconds % 60}`;
+};
+
+// Check for an existing timer on component mount
+onMounted(() => {
+  getTimeLogByTask().then((response: TimeLog[]) => {
+    const ongoingTimer = response.find(
+      (log) =>
+        log.description.includes("- Automatic Time Log") &&
+        log.time_to === "00:00:00",
+    );
+    if (ongoingTimer) {
+      startTime.value = new Date(
+        ongoingTimer.date + "T" + ongoingTimer.time_from,
+      );
+      timerTimeLogId.value = ongoingTimer.id;
+      intervalRef.value = setInterval(() => {
+        elapsedTime.value = Date.now() - startTime.value.getTime();
+      }, 1000);
+      timerRunning.value = true;
+    }
+  });
+});
+
+// Clear the interval when the component is unmounted
+onUnmounted(() => {
+  if (intervalRef.value) {
+    clearInterval(intervalRef.value);
+  }
 });
 
 const user = useUserStore().getData();
@@ -224,6 +357,17 @@ emitter.on(
               </v-list>
             </v-card>
           </v-menu>
+          <v-menu v-if="elapsedTime" location="bottom">
+            <template v-slot:activator="{ props }">
+              <div
+                v-bind="props"
+                class="min-w-16 bg-green-100 rounded-md border border-gray-500 py-1 px-2 text-xs text-gray-700 flex items-center justify-between space-x-1"
+              >
+                <span><v-icon icon="mdi-clock-start" size="small" />:</span>
+                <span>{{ formatElapsedTime(elapsedTime) }}</span>
+              </div>
+            </template>
+          </v-menu>
           <v-menu
             v-if="
               user?.id === task.task.assignee_id &&
@@ -301,6 +445,22 @@ emitter.on(
                     value="inprogress"
                   />
                   <v-list-item
+                    v-if="
+                      user?.id === task.task.assignee_id &&
+                      (task.task.status === 'ACTIVE' ||
+                        task.task.status === 'ACCEPTED')
+                    "
+                    prepend-icon="mdi-clock-start"
+                    :title="`${timerRunning ? 'Stop' : 'Start'} Timer`"
+                    @click="toggleTimer()"
+                    value="toggletimer"
+                  />
+                  <v-list-item
+                    v-if="
+                      user?.id === task.task.assignee_id &&
+                      (task.task.status === 'ACTIVE' ||
+                        task.task.status === 'ACCEPTED')
+                    "
                     prepend-icon="mdi-timer-sand"
                     title="Log Time"
                     @click="logTime()"
