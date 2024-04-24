@@ -35,6 +35,7 @@
       <SprintsTable
         v-if="!isLoading && sprints.length > 0"
         :sprints="sprints"
+        :key="sprints"
       />
       <div v-if="isLoading" class="flex justify-center">
         <Loader />

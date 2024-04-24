@@ -1,19 +1,23 @@
 <script setup lang="ts">
 import emitter from "@/plugins";
 import { useField, useForm } from "vee-validate";
-import { Project } from "@/features/projects";
 import { CreateSprintData } from "@/features/sprints";
 import { useAxios } from "@/composables/useAxios";
 import { useToast } from "vue-toast-notification";
 import { ref } from "vue";
 
-const emit = defineEmits(["get-sprints", "dialogClose"]);
-
-type StoryCreateProps = {
-  project: Project;
+type SprintProps = {
+  sprint_id: string;
+  prop_velocity: string;
+  prop_start_date: Date;
+  prop_end_date: Date;
 };
 
-const props = defineProps<StoryCreateProps>();
+const props = defineProps<SprintProps>();
+console.log(props.prop_velocity);
+console.log(props.prop_start_date);
+console.log(props.prop_end_date);
+console.log(props.sprint_id);
 
 const { handleSubmit } = useForm({
   validationSchema: {
@@ -41,7 +45,10 @@ const { handleSubmit } = useForm({
 const velocity = useField<number>("velocity");
 let selectedEndDateField = useField<Date>("selectedEndDateField");
 let selectedStartDateField = useField<Date>("selectedStartDateField");
-selectedStartDateField.value.value = new Date();
+
+velocity.value.value = Number(props.prop_velocity);
+selectedStartDateField.value.value = new Date(props.prop_start_date);
+selectedEndDateField.value.value = new Date(props.prop_end_date);
 
 function test() {
   const start = new Date(
@@ -81,13 +88,12 @@ let {
   error,
   isError,
 } = useAxios({
-  method: "post",
-  url: "sprint/create",
+  method: "put",
+  url: "sprint/update/" + props.sprint_id,
 });
 
 const submit = handleSubmit((values: CreateSprintData) => {
   submitSprint({
-    project_id: props.project.id,
     velocity: values.velocity,
     start_date: new Date(
       selectedStartDateField.value.value -
@@ -98,13 +104,12 @@ const submit = handleSubmit((values: CreateSprintData) => {
         selectedEndDateField.value.value.getTimezoneOffset() * 60000,
     ),
   }).then(() => {
-    useToast().success("Successfully created new sprint!", {
+    useToast().success("Successfully updated new sprint!", {
       position: "top",
     });
 
     isError = ref(false);
     emitter.emit("dialogClose");
-    emit("get-sprints");
   });
 });
 </script>
@@ -161,7 +166,7 @@ const submit = handleSubmit((values: CreateSprintData) => {
           type="submit"
           class="w-66"
         >
-          Create sprint
+          Update sprint
         </v-btn>
       </div>
     </div>

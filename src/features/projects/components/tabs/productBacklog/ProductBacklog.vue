@@ -141,7 +141,8 @@ getCurrentSprint().then((returnedSprint: Sprint) => {
 const triggerGetStories = () => {
   getStories().then((returned: Story[]) => {
     backlogStories.value = returned.filter(
-      (story: Story) => story.status === "PRODUCT",
+      (story: Story) =>
+        story.status === "PRODUCT" && story.priority !== "WONT_HAVE_THIS_TIME",
     );
     sprintStories.value = returned.filter(
       (story: Story) => story.status === "SPRINT",

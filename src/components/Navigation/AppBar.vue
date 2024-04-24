@@ -1,7 +1,10 @@
 <template>
   <v-app-bar class="px-3">
     <template v-slot:prepend>
-      <Heading :title="route.name as string" :icon="getCurrentRouteIcon" />
+      <Heading
+        :title="route.name as string"
+        :icon="getCurrentRouteIcon ? getCurrentRouteIcon : 'mdi-account'"
+      />
     </template>
     <template v-slot:append>
       <v-menu v-model="menu" :close-on-content-click="true" location="bottom">
@@ -28,6 +31,7 @@
 
               <v-list-item
                 prepend-icon="mdi-account"
+                @click="router.push({ name: `profile` })"
                 title="Profile"
                 value="profile"
               />
