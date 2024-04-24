@@ -84,18 +84,26 @@ const deleteUser = async (email) => {
     method: "delete",
     url: "user/delete/" + responseId.id,
   });
-  const responseDelete = await executeDelete();
-
-  if (!isError.value) {
-    useToast().success(`User successfully deleted!`, {
+  try {
+    const responseDelete = await executeDelete();
+    if (!isError.value) {
+      useToast().success(`User successfully deleted!`, {
+        position: "top",
+      });
+    } else {
+      useToast().error(`Error while deleting user!`, {
+        position: "top",
+      });
+    }
+    console.log(responseDelete);
+    emitter.emit("dialogClose");
+  } catch (err) {
+    console.log(err)
+    useToast().error(`Error while deleting user: ${err.message.error}`, {
       position: "top",
     });
-  } else {
-    useToast().error(`Error while deleting user!`, {
-      position: "top",
-    });
+    emitter.emit("dialogClose");
   }
   emitter.emit("dialogClose");
-  console.log(responseDelete);
 };
 </script>

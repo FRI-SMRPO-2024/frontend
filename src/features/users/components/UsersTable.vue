@@ -21,12 +21,14 @@ import { Alert } from "@/components/Alert";
 import { onMounted, ref } from "vue";
 import { formattedDate } from "@/utils/date";
 import emitter from "@/plugins";
+import {useUserStore} from "@/stores/user.store";
 
 const { execute, isLoading, isError, error } = useAxios<User[]>({
   method: "get",
   url: "user/get-all",
 });
 const usersData = ref<TableUser[]>([]);
+const userStore = useUserStore().getData();
 
 const mapUserData = (users: User[]): TableUser[] => {
   return users.map((user: User) => ({
@@ -41,6 +43,7 @@ const mapUserData = (users: User[]): TableUser[] => {
 
 const fetchUserData = (): void => {
   execute().then((users: User[]) => {
+    users = users.filter(obj => obj.email !== userStore.email)
     usersData.value = mapUserData(users);
   });
 };
