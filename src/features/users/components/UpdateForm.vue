@@ -163,7 +163,7 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
       isErrorUpdate.value,
       isErrorSetRole.value,
       isErrorChangePassword.value,
-      isErrorChangeEmail.value
+      isErrorChangeEmail.value,
     );
     if (
       !isErrorId.value &&
