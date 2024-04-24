@@ -6,6 +6,7 @@ import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
 import { useToast } from "vue-toast-notification";
 import emitter from "@/plugins";
+import { defineProps } from "vue";
 
 type TaskFormProps = {
   taskId: number;

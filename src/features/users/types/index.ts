@@ -7,6 +7,7 @@ type User = {
   is_admin: true;
   created_at: string;
   last_login: string;
+  last_login_array: string[];
 };
 
 interface CreateUserData {

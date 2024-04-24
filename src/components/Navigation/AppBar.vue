@@ -22,10 +22,7 @@
           <v-list>
             <v-list density="compact" nav>
               <v-list-item class="text-xs text-gray-700"
-                >Last login:
-                {{
-                  formattedDateTime(userStore.getData()?.last_login ?? "")
-                }}</v-list-item
+                >Last login: {{ lastLogin }}</v-list-item
               >
 
               <v-divider></v-divider>
@@ -53,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onMounted } from "vue";
 import { Heading } from "../Heading";
 import { useRoute, useRouter } from "vue-router";
 import { sidebarRoutes } from "./sidebar.routes";
@@ -77,9 +74,19 @@ const getCurrentRouteIcon = computed(() => {
   return currentRoute ? currentRoute.icon : "";
 });
 
+const lastLogin = ref<string>();
+
 const { execute } = useAxios<LoginResponse>({
   method: "post",
   url: "auth/logout",
+});
+
+onMounted(() => {
+  lastLogin.value = formattedDateTime(
+    userStore.getData()?.last_login_array.reverse()[1] ??
+      userStore.getData()?.last_login ??
+      "",
+  );
 });
 
 const logoutUser = () => {

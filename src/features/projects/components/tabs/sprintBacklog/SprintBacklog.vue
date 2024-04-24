@@ -114,7 +114,7 @@ import { StoryTask } from "@/features/tasks/types";
 import { TaskCard } from "@/features/tasks";
 
 const currentSprint = ref<Sprint | null>(null);
-let sprints = ref([]);
+let sprints = ref<Sprint[]>([]);
 
 type SprintProps = {
   project: Project;

@@ -13,6 +13,7 @@ interface Task {
 
 interface StoryTask {
   task: Task;
+  time_logs: TimeLog[];
   assignee: AuthUser;
 }
 
@@ -22,4 +23,50 @@ interface CreateTaskData {
   time_estimation: number;
 }
 
-export type { Task, CreateTaskData, StoryTask };
+interface TaskWithAssigneeTimeLogInfo {
+  task: Task;
+  time_logs: TimeLog[];
+  assignee: AuthUser | null;
+}
+
+interface TimeLog {
+  id: number;
+  task_id: number;
+  user_id: string;
+  date: string;
+  time_from: string;
+  time_to: string;
+  estimated_time_left: number;
+  description: string;
+  created_at: string;
+}
+
+interface TimeLogCreate {
+  task_id: number;
+  user_id: string;
+  date: string;
+  time_from: string;
+  time_to: string;
+  estimated_time_left: number;
+  description: string;
+}
+
+interface TimeLogUpdate {
+  task_id: number;
+  user_id: string;
+  date: string;
+  time_from: string;
+  time_to: string;
+  estimated_time_left: number;
+  description: string;
+}
+
+export type {
+  Task,
+  CreateTaskData,
+  StoryTask,
+  TimeLog,
+  TimeLogCreate,
+  TimeLogUpdate,
+  TaskWithAssigneeTimeLogInfo,
+};
