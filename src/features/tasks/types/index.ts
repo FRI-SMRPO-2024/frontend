@@ -23,6 +23,12 @@ interface CreateTaskData {
   time_estimation: number;
 }
 
+interface TaskWithAssigneeTimeLogInfo {
+  task: Task;
+  time_logs: TimeLog[];
+  assignee: AuthUser | null;
+}
+
 interface TimeLog {
   id: number;
   task_id: number;
@@ -62,4 +68,5 @@ export type {
   TimeLog,
   TimeLogCreate,
   TimeLogUpdate,
+  TaskWithAssigneeTimeLogInfo,
 };

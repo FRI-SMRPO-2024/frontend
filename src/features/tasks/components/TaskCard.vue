@@ -8,7 +8,7 @@ import { Alert } from "@/components/Alert";
 import { Loader } from "@/components/Common";
 import emitter from "@/plugins";
 import { EditTimeEstimationForm } from "@/features/tasks/components";
-import { TimeLogForm } from "@/features/tasks/components";
+import { TimeLogsForm } from "@/features/tasks/components";
 import { useToast } from "vue-toast-notification";
 import { computed } from "vue";
 
@@ -243,13 +243,13 @@ emitter.on(
                 <span>{{ logTimeCombinedValue }}h</span>
               </div>
             </template>
-            <v-card min-width="700" v-if="task.task.status !== 'COMPLETED'">
+            <v-card wv-if="task.task.status !== 'COMPLETED'">
               <v-list>
                 <v-list-item prepend-icon="mdi-timer-sand" subtitle="Log time">
                 </v-list-item>
                 <v-list-item>
-                  <TimeLogForm
-                    :time-logs="timeLogs"
+                  <TimeLogsForm
+                    :timeLogs="timeLogs"
                     :task="task.task"
                     class="mt-2"
                   />
