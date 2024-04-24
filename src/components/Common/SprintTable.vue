@@ -9,7 +9,7 @@
     </thead>
     <tbody>
       <tr v-for="(row, idx) in rows" :key="idx">
-        <td>
+        <td :bgcolor="(new Date() < new Date(row.end_date)) ? ( (new Date() < new Date(row.start_date)) ? '' : '#f0f8ff' ) : '#e5fbe5'">
           {{ idx + 1 }}
         </td>
         <td v-for="(item, idx) in filteredRow(row)" :key="idx">
