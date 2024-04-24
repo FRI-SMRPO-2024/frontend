@@ -10,6 +10,7 @@ type AxiosProps = {
 };
 
 export const useAxios = <T>({ method, url }: AxiosProps) => {
+  console.log("useAxios");
   const isLoading = ref<boolean>(false);
   const error = ref<ApiError>({
     status: 0,
@@ -25,9 +26,11 @@ export const useAxios = <T>({ method, url }: AxiosProps) => {
 
     return axios({ method, url: API_URL + overrideUrl, data: body })
       .then((res: AxiosResponse<T>) => {
+        console.log("res", res);
         return Promise.resolve(res.data);
       })
       .catch((err: ApiError) => {
+        console.log("err", err);
         error.value = err;
         isError.value = true;
         return Promise.reject(err);

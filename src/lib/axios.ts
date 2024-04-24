@@ -23,17 +23,18 @@ axios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 axios.interceptors.response.use(
   (response) => {
+    console.log("response", response);
     return response;
   },
   (error) => {
-    const apiError: ApiError = {
-      status: error.response.status,
+    console.log("error", error);
+    const apiError = {
+      // status: error.response.status,
       message: error.response.data,
     };
 
     if (
-      apiError.status === 400 &&
-      apiError.message === "Invalid login credentials"
+      apiError.message.message === "Invalid login credentials"
     ) {
       return Promise.reject(apiError);
     }
