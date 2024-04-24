@@ -155,6 +155,7 @@ const submit = handleSubmit((values: CreateSprintData) => {
           variant="outlined"
           type="number"
           :min="1"
+          :max="100"
         ></v-text-field>
       </div>
       <div class="w-50 flex justify-end">

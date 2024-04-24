@@ -122,6 +122,8 @@ const submit = handleSubmit((values: CreateStoryData) => {
         density="compact"
         class="w-full"
         type="number"
+        :min="1"
+        :max="10"
       ></v-text-field>
       <v-select
         v-model="priority.value.value"

@@ -98,8 +98,10 @@ let error = ref(undefined);
 const submit = handleSubmit(async (values: UpdateUserData) => {
   try {
     const responseId = await executeId({
-      email: values.email,
+      email: props.emailProp,
     });
+    console.log("GER IDDDDD");
+    console.log(props.emailProp);
     console.log(responseId);
 
     const { execute: executeUpdate, isError: isErrorUpdate } = useAxios({
@@ -138,17 +140,37 @@ const submit = handleSubmit(async (values: UpdateUserData) => {
       console.log(responseChangePassword);
     }
 
+    const { execute: executeChangeEmail, isError: isErrorChangeEmail } =
+      useAxios({
+        method: "post",
+        url: "auth/change-email/",
+      });
+
+    if (values.email !== props.emailProp) {
+      console.log("CHANGE EMAIL");
+      console.log(responseId.id);
+      const responseChangeEmail = await executeChangeEmail({
+        new_email: values.email,
+        id: responseId.id,
+      });
+      console.log(responseChangeEmail);
+    }
+    console.log(values.email);
+    console.log(props.emailProp);
+
     console.log(
       isErrorId.value,
       isErrorUpdate.value,
       isErrorSetRole.value,
       isErrorChangePassword.value,
+      isErrorChangeEmail.value
     );
     if (
       !isErrorId.value &&
       !isErrorUpdate.value &&
       !isErrorSetRole.value &&
-      !isErrorChangePassword.value
+      !isErrorChangePassword.value &&
+      !isErrorChangeEmail.value
     ) {
       useToast().success(`User successfully updated!`, {
         position: "top",
@@ -212,7 +234,6 @@ const hidePassword = ref<boolean>(true);
       density="compact"
       :error-messages="email.errorMessage.value"
       label="Email"
-      disabled
     ></v-text-field>
     <v-text-field
       v-model="username.value.value"
