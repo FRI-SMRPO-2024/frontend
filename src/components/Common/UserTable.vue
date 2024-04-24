@@ -98,7 +98,7 @@ const deleteUser = async (email) => {
     console.log(responseDelete);
     emitter.emit("dialogClose");
   } catch (err) {
-    console.log(err)
+    console.log(err);
     useToast().error(`Error while deleting user: ${err.message.error}`, {
       position: "top",
     });
